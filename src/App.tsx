@@ -30,7 +30,6 @@ function App() {
           </button>
         </div>
       </div>
-
       <div className='flex justify-center mt-5'>
         <div className='text-3xl'>Coming soon...</div>
       </div>
