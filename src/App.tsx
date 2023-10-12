@@ -16,7 +16,6 @@ function App() {
     localStorage.setItem('isDarkTheme', isDarkTheme ? 'true' : 'false');
   }
 
-
   return (
     <div className={`${isDarkTheme ? 'dark' : 'light'}-theme app`}>
       <div className='flex m-3 border-b-2'>
