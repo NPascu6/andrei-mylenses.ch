@@ -16,6 +16,7 @@ function App() {
     localStorage.setItem('isDarkTheme', isDarkTheme ? 'true' : 'false');
   }
 
+
   return (
     <div className={`${isDarkTheme ? 'dark' : 'light'}-theme app`}>
       <div className='flex m-3 border-b-2'>
@@ -29,6 +30,7 @@ function App() {
           </button>
         </div>
       </div>
+
       <div className='flex justify-center mt-5'>
         <div className='text-3xl'>Coming soon...</div>
       </div>
