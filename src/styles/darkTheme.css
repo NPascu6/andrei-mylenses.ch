@@ -1,0 +1,29 @@
+.dark-theme {
+    color: #ffffff;
+    background-color: #333333;
+}
+
+.dark-theme table {
+    color: #ffffff;
+    background-color: #333833;
+    padding: 1em
+}
+
+.dark-theme .footer {
+    color: #ffffff;
+    background-color: #333833;
+}
+
+.dark-theme ::-webkit-scrollbar-thumb {
+    background-color: #8888;
+    border-radius: 4px;
+}
+
+.dark-theme ::-webkit-scrollbar-thumb:hover {
+    background-color: black;
+}
+
+.dark-theme ::-webkit-scrollbar {
+    width: 4px;
+    background: #413b3b;
+}

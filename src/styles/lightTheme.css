@@ -1,0 +1,29 @@
+.light-theme {
+    color: #333333;
+    background-color: #ffffff;
+}
+
+.light-theme table {
+    color: #333333;
+    background-color: #fffff9;
+    padding: 1em
+}
+
+.light-theme .footer {
+    color: #333333;
+    background-color: #fffff9;
+}
+
+.light-theme ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: #8888;
+}
+
+.light-theme ::-webkit-scrollbar-thumb:hover {
+    background-color: black;
+}
+
+.light-theme ::-webkit-scrollbar {
+    width: 4px;
+    background: whitesmoke;
+}
