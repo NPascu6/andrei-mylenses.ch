@@ -1,5 +1,6 @@
 {
   "name": "andrei-mylenses.ch",
+  "homepage": "http://andrei-mylenses.ch",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -29,7 +30,6 @@
     "start:production": "env-cmd -f .env.production react-scripts start",
     "build": "react-scripts build",
     "build-production": "env-cmd -f .env.production react-scripts build",
-    "build:local": "env-cmd -f .env.local react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

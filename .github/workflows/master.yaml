@@ -33,7 +33,7 @@ jobs:
       - name: 📂 Sync files andrei-mylenses.ch
         uses: SamKirkland/FTP-Deploy-Action@4.3.2
         with:
-          server: 92.205.151.24
+          server: ftp.andrei-mylenses.ch
           username: ${{ secrets.ftp_username_1 }}
           password: ${{ secrets.ftp_password_1 }}
           port: 21
