@@ -4,6 +4,7 @@ import ToggleSvgDark from './ToggleSvgDark';
 import ToggleSvgLight from './ToggleSvgLight';
 import { setTheme } from './store/appSlice';
 import { RootState } from './store/store';
+import { RoutesSwitch } from './Routes';
 
 function App() {
   const dipatch = useDispatch()
@@ -33,6 +34,7 @@ function App() {
 
       <div className='flex justify-center mt-5'>
         <div className='text-3xl'>Coming soon...</div>
+        <RoutesSwitch />
       </div>
     </div>
   );
