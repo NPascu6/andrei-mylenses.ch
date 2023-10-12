@@ -4,7 +4,7 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      Website for photo gallery... In progress
+      Andrew's photo shop.
     </div>
   );
 }
