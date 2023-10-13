@@ -28,21 +28,20 @@ function App() {
 
   return (
     <div className={`${isDarkTheme ? 'dark' : 'light'}-theme app`}>
-      <div className='flex m-3 border-b-2'>
-        <div style={{ minWidth: '21.2em' }} className='flex justify-center w-full'>
-          <div>
-            <img className='p-1' src={Favicon32} alt="favicon" />
-          </div>
-          <div className="text-3xl p-1">My Lenses</div>
-          <div className='text-md p-5'>by Andrei Pascu</div>
+      <div className='flex flex-col md:flex-row md:items-center p-3 border-b-2'>
+        <div className='flex flex-grow justify-center items-center'>
+          <img className='w-8 h-8 md:w-12 md:h-12 mr-1' src={Favicon32} alt="favicon" />
+          <div className='text-xl md:text-3xl font-semibold'>My Lenses</div>
+          <div className='text-xs md:text-md ml-1 pt-3'>by Andrei Pascu</div>
+
         </div>
-        <div className='flex justify-end w-full p-1'>
+        <div className='flex justify-end items-center'>
           <button onClick={changeTheme}>
             {!isDarkTheme ? <ToggleSvgDark /> : <ToggleSvgLight />}
           </button>
         </div>
       </div>
-      <div className='flex justify-center mt-2 p-2'>
+      <div className='flex justify-center p-2'>
         <RoutesSwitch />
       </div>
     </div>
