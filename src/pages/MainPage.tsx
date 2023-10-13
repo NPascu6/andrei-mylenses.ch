@@ -31,21 +31,49 @@ const images = [
     import('../assets/photos/Sunset between trees.jpg'),
 ];
 
-
+const imageDescriptions = [
+    { title: 'Angel frame', description: 'An artistic angelic frame.' },
+    { title: 'Angels of Oradea', description: 'Angelic figures in Oradea.' },
+    { title: 'Artist on street v1', description: 'Street artist creating art.' },
+    { title: 'Artist on street v2', description: 'Another street artist at work.' },
+    { title: 'Busy winter in Zurich', description: `'Zurich's bustling winter scene.'` },
+    { title: 'Croix domini', description: 'A peaceful cross in nature.' },
+    { title: 'Cubanito Fat Bob', description: 'Cubanito Fat Bob motorcycle.' },
+    { title: 'Fisherman preparing', description: 'A fisherman getting ready.' },
+    { title: 'Fisherman sillhouette', description: 'Silhouetted fisherman.' },
+    { title: 'Fishing village', description: 'Charming fishing village.' },
+    { title: 'Gulf of Poets', description: 'Scenic Gulf of Poets.' },
+    { title: 'Halong Bay Rock', description: 'Iconic rock formations in Halong Bay.' },
+    { title: 'Kid over sunset', description: 'A kid enjoying the sunset.' },
+    { title: 'Lonely boat', description: 'A solitary boat on the water.' },
+    { title: 'Lonely stork', description: 'A lone stork in the wild.' },
+    { title: 'One legged bird', description: 'A one-legged bird in nature.' },
+    { title: 'Palm tree sunset', description: 'Palm trees during a stunning sunset.' },
+    { title: 'Palm tree sunset2', description: 'Another beautiful palm tree sunset.' },
+    { title: 'Passing life', description: 'Capturing the passage of life.' },
+    { title: 'Stelvio pass v2', description: 'Stunning Stelvio mountain pass.' },
+    { title: 'Stelvio pass', description: 'Scenic drive on the Stelvio pass.' },
+    { title: 'Stork over houses', description: 'A stork flying over houses.' },
+    { title: 'Story family', description: `'A family's heartwarming story.'` },
+    { title: 'Sunset between trees', description: 'A tranquil sunset scene.' },
+];
 
 const MainPage = () => {
-
     const [loadedImages, setLoadedImages] = useState<any>([]);
 
     useEffect(() => {
+        if (loadedImages.length > 0) return;
+
         Promise.all(images)
             .then((loadedImages) => setLoadedImages(loadedImages))
-            .catch((error) => console.error('Error loading images', error));
-    }, []);
+            .catch((error) => console.error('Error loading images', error))
+            .finally(() => console.log('Images loaded'));
+    }, [loadedImages]);
 
     return (
         <div>
-            <PhotoGallery images={loadedImages} />
+            {loadedImages.length === 0 && <div>Loading...</div>}
+            <PhotoGallery images={loadedImages} imageDescriptions={imageDescriptions} />
         </div>
     );
 }

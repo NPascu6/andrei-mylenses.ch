@@ -28,12 +28,10 @@ function App() {
 
   return (
     <div className={`${isDarkTheme ? 'dark' : 'light'}-theme app`}>
-      <div className='flex flex-col md:flex-row md:items-center p-3 border-b-2'>
+      <div className='flex flex-row md:flex-row md:items-center p-3 border-b-2'>
         <div className='flex flex-grow justify-center items-center'>
-          <img className='w-8 h-8 md:w-12 md:h-12 mr-1' src={Favicon32} alt="favicon" />
-          <div className='text-xl md:text-3xl font-semibold'>My Lenses</div>
-          <div className='text-xs md:text-md ml-1 pt-3'>by Andrei Pascu</div>
-
+          <img className='w-8 h-8 md:w-10 md:h-10 mr-1' src={Favicon32} alt="favicon" />
+          <div className='text-2xl md:text-3xl font-semibold'>My Lenses<div className='text-xs md:text-md ml-1'>by Andrei Pascu</div></div>
         </div>
         <div className='flex justify-end items-center'>
           <button onClick={changeTheme}>
