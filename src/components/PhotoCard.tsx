@@ -22,17 +22,18 @@ const PhotoCard = ({ title, description, price, onAddToBasket }: PhotoCardProps)
     };
 
     return (
-        <div className="max-w-sm rounded overflow-hidden shadow-lg bg-gray-300 m-10 h-1/4">
-            <div className="px-6 py-2">
+        <div className="py-0 px-0 rounded overflow-hidden shadow-lg bg-gray-400">
+            <div className="px-2 py-2">
                 <div className="font-bold text-xl mb-1">{title}</div>
             </div>
-            <div className="px-6 py-2">
+            <div className='divide-y-1' />
+            <div className="px-2 py-2">
                 <p className="text-gray-700 text-base">{description}</p>
             </div>
-            <div className="px-6 py-2">
+            <div className="px-2 py-2">
                 <p className="text-gray-700 font-bold text-xl">${price}</p>
             </div>
-            <div className="px-6 py-2">
+            <div className="px-2 py-2">
                 <label htmlFor="quantity" className="text-gray-700">Quantity:</label>
                 <input
                     type="number"
@@ -40,13 +41,13 @@ const PhotoCard = ({ title, description, price, onAddToBasket }: PhotoCardProps)
                     name="quantity"
                     value={quantity}
                     onChange={handleQuantityChange}
-                    className="w-16 p-2 bg-white rounded-md border border-gray-400"
+                    className="w-16 bg-white rounded-md border border-gray-400"
                 />
             </div>
-            <div className="px-6 py-4 flex justify-end">
+            <div className="px-4 py-2 flex justify-end">
                 <button
                     onClick={onAddToBasket}
-                    className="bg-gray-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    className="bg-gray-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded">
                     Add to Basket
                 </button>
             </div>

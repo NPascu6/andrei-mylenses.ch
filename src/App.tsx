@@ -39,7 +39,7 @@ function App() {
           </button>
         </div>
       </div>
-      <div className='flex justify-center p-2'>
+      <div style={{ maxHeight: 'calc(100vh - 100px)', overflowY: 'auto' }}>
         <RoutesSwitch />
       </div>
     </div>
