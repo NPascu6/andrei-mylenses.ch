@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import PhotoGallery from '../components/PhotoGallery';
+import artistImage from '../assets/portrait.jpg';
 
 const images = [
     import('../assets/photos/Angel frame.jpg'),
@@ -58,6 +59,48 @@ const imageDescriptions = [
     { title: 'Sunset between trees', description: 'A tranquil sunset scene.' },
 ];
 
+const BusinessDescriptionCard = () => {
+    return (
+        <div className="p-4 border rounded-md shadow-lg m-4">
+            <h2 className="text-2xl font-semibold mb-3 text-center">
+                Where Art Meets Canvas!
+            </h2>
+            <p className="">
+                We are your one-stop destination for exquisite canvas prints that bring the beauty of photography to life. Our passion is capturing the world's wonders through the lens, and we're excited to share these stunning moments with you. With a wide range of canvas sizes and styles to choose from, you can bring the magic of photography into your home or office.
+            </p>
+            <p className="mt-3">
+                Whether it's a picturesque landscape, a mesmerizing portrait, or a captivating abstract, our canvas prints are carefully crafted to elevate your space. Experience the fusion of art and technology, as we transform each photograph into a timeless piece of decor that will leave a lasting impression. Join us on this artistic journey, and let our canvas prints inspire your world.
+            </p>
+        </div>
+    );
+};
+
+const PhotographerDescriptionCard = () => {
+    return (
+        <div className="p-4 border rounded-md shadow-lg m-4 flex items-center">
+
+            <div>
+                <h2 className="text-2xl font-semibold mb-3 text-center">
+                    Andrei Pascu - The Creative Genius
+                    <div className="m-8 flex justify-center">
+                        <img
+                            src={artistImage}
+                            alt="Artist's Face"
+                            className="w-50 h-30 rounded-full"
+                        />
+                    </div>
+                </h2>
+                <p>
+                    Andrei is the creative genius behind My Lenses. With a deep passion for photography, an artist's eye for detail, and years of experience capturing life's extraordinary moments, Andrei has curated a portfolio that showcases the world's natural beauty.
+                </p>
+                <p className="mt-3">
+                    Their commitment to artistry and their unique approach to photography result in breathtaking compositions that evoke emotion and wonder. As a dedicated photographer, Andrei has transformed their love for photography into a business that allows others to enjoy and share the magic of their artistry. Join us in celebrating the world's beauty through Andrei's lens.
+                </p>
+            </div>
+        </div>
+    );
+};
+
 const MainPage = () => {
     const [loadedImages, setLoadedImages] = useState<any>([]);
 
@@ -73,6 +116,8 @@ const MainPage = () => {
     return (
         <div>
             {loadedImages.length === 0 && <div>Loading...</div>}
+            <PhotographerDescriptionCard />
+            <BusinessDescriptionCard />
             <PhotoGallery images={loadedImages} imageDescriptions={imageDescriptions} />
         </div>
     );

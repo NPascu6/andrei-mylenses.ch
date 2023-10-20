@@ -6,6 +6,7 @@ import { setTheme } from './store/appSlice';
 import { RootState } from './store/store';
 import { RoutesSwitch } from './Routes';
 import Favicon32 from './assets/favicon-32x32.png';
+import CartIcon from './components/CartIcon';
 
 function App() {
   const dipatch = useDispatch()
@@ -25,15 +26,20 @@ function App() {
     dipatch(setTheme(isDarkTheme))
   }, [dipatch])
 
+  const products = useSelector((state: RootState) => state.productBasket.products);
+
 
   return (
-    <div className={`${isDarkTheme ? 'dark' : 'light'}-theme app`}>
-      <div className='flex flex-row md:flex-row md:items-center p-3 border-b-2'>
+    <div className={`${isDarkTheme ? 'dark' : 'light'}-theme app select-none`}>
+      <div className='flex flex-row md:flex-row md:items-center p-3 border-b-2 '>
         <div className='flex flex-grow justify-center items-center'>
           <img className='w-8 h-8 md:w-10 md:h-10 mr-1' src={Favicon32} alt="favicon" />
           <div className='text-2xl md:text-3xl font-semibold'>My Lenses<div className='text-xs md:text-md ml-1'>by Andrei Pascu</div></div>
         </div>
         <div className='flex justify-end items-center'>
+          {products?.length > 0 && <div className='mr-2 cursor-pointer'>
+            <CartIcon />
+          </div>}
           <button onClick={changeTheme}>
             {!isDarkTheme ? <ToggleSvgDark /> : <ToggleSvgLight />}
           </button>
