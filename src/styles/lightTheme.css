@@ -35,3 +35,21 @@
     right: 0;
     z-index: 1000;
 }
+
+.light-theme #selected-photo {
+    border: 1px solid black;
+    background-color: #ffffff;
+    color: #333333;
+}
+
+.light-theme #photo-canvas-details {
+    border: 1px solid black;
+    background-color: #ffffff;
+    color: black;
+}
+
+.light-theme #photo-canvas-details select {
+    border: 1px solid black;
+    background-color: #ffffff;
+    color: black
+}

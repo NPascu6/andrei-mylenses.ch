@@ -34,3 +34,24 @@
     right: 0;
     z-index: 1000;
 }
+
+.dark-theme #selected-photo {
+    border: 1px solid #ffffff;
+    background-color: black;
+}
+
+.dark-theme #photo-canvas-details {
+    border: 1px solid #ffffff;
+    background-color: black;
+    color: #ffffff;
+}
+
+.dark-theme #photo-canvas-details select {
+    border: 1px solid #ffffff;
+    background-color: black;
+    color: #ffffff;
+}
+
+.dark-theme #product-basket {
+    color: black;
+}

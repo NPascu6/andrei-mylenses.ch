@@ -78,7 +78,6 @@ const BusinessDescriptionCard = () => {
 const PhotographerDescriptionCard = () => {
     return (
         <div className="p-4 border rounded-md shadow-lg m-4 flex items-center">
-
             <div>
                 <h2 className="text-2xl font-semibold mb-3 text-center">
                     Andrei Pascu - The Creative Genius
