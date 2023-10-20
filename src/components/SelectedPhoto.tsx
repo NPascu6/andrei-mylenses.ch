@@ -1,9 +1,9 @@
 import { useDispatch } from "react-redux";
 import { addProduct, setToasterMessage, showToaster } from "../store/productBasketSlice";
-import CloseIcon from "./CloseIcon";
+import CloseIcon from "./icons/CloseIcon";
 import { useState } from "react";
-import ChevronLeft from "./ChevronLeft";
-import ChevronRight from "./ChevronRight";
+import ChevronLeft from "./icons/ChevronLeft";
+import ChevronRight from "./icons/ChevronRight";
 
 const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage, nextSelectedImage, images, index, setPreviousSelectedImage, setNextSelectedImage, setIndex }: any) => {
     const [selectedSize, setSelectedSize] = useState('16x20');

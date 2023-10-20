@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store/store';
-import { showToaster } from '../store/productBasketSlice';
+import { RootState } from '../../store/store';
+import { showToaster } from '../../store/productBasketSlice';
 
 const Toaster = () => {
     const showToasterStore = useSelector((state: RootState) => state.productBasket.showToaster);

@@ -6,9 +6,9 @@ import { setTheme } from './store/appSlice';
 import { RootState } from './store/store';
 import { RoutesSwitch } from './Routes';
 import Favicon32 from './assets/favicon-32x32.png';
-import CartIcon from './components/CartIcon';
+import CartIcon from './components/icons/CartIcon';
 import ProductBasket from './components/ProductBasket';
-import Toaster from './components/Toaster';
+import Toaster from './components/common/Toaster';
 
 function App() {
   const dipatch = useDispatch()

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import CloseIcon from './CloseIcon';
+import CloseIcon from './icons/CloseIcon';
 import { setProducts } from '../store/productBasketSlice';
 
 const ProductBasket = ({ setBasketClosed }: any) => {
