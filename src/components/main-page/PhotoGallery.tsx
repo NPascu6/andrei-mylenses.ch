@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SelectedPhoto from './SelectedPhoto';
+import SelectedPhoto from '../SelectedPhoto';
 
 interface PhotoGalleryProps {
     images: any[]
