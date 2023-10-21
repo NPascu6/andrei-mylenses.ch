@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import ToggleSvgDark from './ToggleSvgDark';
-import ToggleSvgLight from './ToggleSvgLight';
+import ToggleSvgDark from './components/icons/ToggleSvgDark';
+import ToggleSvgLight from './components/icons/ToggleSvgLight';
 import { setTheme } from './store/appSlice';
 import { RootState } from './store/store';
 import { RoutesSwitch } from './Routes';
@@ -34,7 +34,6 @@ function App() {
   useEffect(() => {
     function handleClickOutside(event: any) {
       if (cartRef.current && !cartRef.current.contains(event.target)) {
-        debugger
         setBasketClosed(true);
       }
     }

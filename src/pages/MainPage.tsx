@@ -115,8 +115,10 @@ const MainPage = () => {
     return (
         <div>
             {loadedImages.length === 0 && <div>Loading...</div>}
-            <PhotographerDescriptionCard />
-            <BusinessDescriptionCard />
+            <div className='flex flex-col md:flex-row'>
+                <PhotographerDescriptionCard />
+                <BusinessDescriptionCard />
+            </div>
             <PhotoGallery images={loadedImages} imageDescriptions={imageDescriptions} />
         </div>
     );
