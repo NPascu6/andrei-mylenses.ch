@@ -4,6 +4,12 @@
 import React, { useEffect, useState } from 'react';
 import PhotoGallery from '../components/PhotoGallery';
 import artistImage from '../assets/portrait.jpg';
+import Instagram from '../components/icons/Instagram';
+import WhatsApp from '../components/icons/WhatsApp';
+import Facebook from '../components/icons/Facebook';
+import Email from '../components/icons/Email';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const images = [
     import('../assets/photos/Angel frame.jpg'),
@@ -102,6 +108,7 @@ const PhotographerDescriptionCard = () => {
 
 const MainPage = () => {
     const [loadedImages, setLoadedImages] = useState<any>([]);
+    const isDarkTheme = useSelector((state: RootState) => state.app.isDarkTheme)
 
     useEffect(() => {
         if (loadedImages.length > 0) return;
@@ -120,6 +127,23 @@ const MainPage = () => {
                 <BusinessDescriptionCard />
             </div>
             <PhotoGallery images={loadedImages} imageDescriptions={imageDescriptions} />
+            {/* Footer Section for Contact and Social Links */}
+            <div className="p-4 text-center border mb-6 ml-4 mr-4 rounded" style={{ height: '6em' }}>
+                <div className="flex justify-evenly space-x-4">
+                    <a href="https://www.instagram.com/andrei_mylenses/" target="_blank" rel="noopener noreferrer">
+                        <Instagram color={isDarkTheme ? 'black' : 'white'} width='34' height='34' />
+                    </a>
+                    <a href="https://www.whatsapp.com/send?phone=0041795718784" target="_blank" rel="noopener noreferrer">
+                        <WhatsApp color={isDarkTheme ? 'black' : 'white'} width='34' height='34' />
+                    </a>
+                    <a href="https://www.facebook.com/andrei.pascu.58/about" target="_blank" rel="noopener noreferrer">
+                        <Facebook color={isDarkTheme ? 'black' : 'white'} width='34' height='34' />
+                    </a>
+                    <a href="mailto:andrei.pascu86@yahoo.com">
+                        <Email color={isDarkTheme ? 'black' : 'white'} width='34' height='34' />
+                    </a>
+                </div>
+            </div>
         </div>
     );
 }

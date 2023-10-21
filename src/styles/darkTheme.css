@@ -1,17 +1,17 @@
 .dark-theme {
     color: #ffffff;
-    background-color: #333333;
+    background-color: #1a1d24;
 }
 
 .dark-theme table {
     color: #ffffff;
-    background-color: #333833;
+    background-color: #1a1d24;
     padding: 1em
 }
 
 .dark-theme .footer {
     color: #ffffff;
-    background-color: #333833;
+    background-color: #1a1d24;
 }
 
 .dark-theme ::-webkit-scrollbar-thumb {
@@ -37,21 +37,19 @@
 
 .dark-theme #selected-photo {
     border: 1px solid #ffffff;
-    background-color: black;
+    background-color: #1a1d24;
 }
 
 .dark-theme #photo-canvas-details {
-    border: 1px solid #ffffff;
-    background-color: black;
+    background-color: #1a1d24;
     color: #ffffff;
 }
 
 .dark-theme #photo-canvas-details select {
-    border: 1px solid #ffffff;
-    background-color: black;
+    background-color: #1a1d24;
     color: #ffffff;
 }
 
 .dark-theme #product-basket {
-    color: black;
+    color: #1a1d24;
 }

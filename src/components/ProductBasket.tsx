@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import CloseIcon from './icons/CloseIcon';
 import { setProducts } from '../store/productBasketSlice';
+import CartFilled from './icons/CartFilled';
 
 const getScreenHeightAsCssClass = () => {
     const height = window.innerHeight;
@@ -70,7 +71,10 @@ const ProductBasket = ({ setBasketClosed }: any) => {
         <div id={'product-basket'} className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70 h-full">
             <div className="bg-white rounded-lg shadow-md w-2/3">
                 <div className='flex justify-between align-center'>
-                    <div className="text-2xl font-semibold p-3 border-b w-full">
+                    <div className="text-2xl font-semibold p-3 border-b w-full flex">
+                        <div className='mr-2'>
+                            <CartFilled color='green' width='34' height='34' />
+                        </div>
                         Basket
                     </div>
                     <div className='p-2' onClick={() => setBasketClosed(true)}>

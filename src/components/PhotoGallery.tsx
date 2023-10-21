@@ -13,7 +13,7 @@ const PhotoGallery = ({ images }: PhotoGalleryProps) => {
     const [index, setIndex] = useState(0);
 
     return (
-        <div className="p-4 border rounded-md shadow-lg m-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="p-4 border rounded-full shadow-lg m-4 grid grid-cols-2 md:grid-cols-4 gap-4">
             {images.map((image, index) => (
                 <div
                     key={index}

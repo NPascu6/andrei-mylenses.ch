@@ -1,9 +1,10 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addProduct, setToasterMessage, showToaster } from "../store/productBasketSlice";
 import CloseIcon from "./icons/CloseIcon";
 import { useState } from "react";
 import ChevronLeft from "./icons/ChevronLeft";
 import ChevronRight from "./icons/ChevronRight";
+import { RootState } from "../store/store";
 
 const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage, nextSelectedImage, images, index, setPreviousSelectedImage, setNextSelectedImage, setIndex }: any) => {
     const [selectedSize, setSelectedSize] = useState('16x20');
@@ -24,6 +25,7 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
 
     const PhotoCanvasDetails = () => {
         const dispatch = useDispatch();
+        const isDarkTheme = useSelector((state: RootState) => state.app.isDarkTheme);
 
         const sendToBasket = () => {
             const product = {
@@ -40,10 +42,18 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
         }
 
         return (
-            <div id='photo-canvas-details' className="rounded-md shadow-lg p-2" style={{ minWidth: '7em' }}>
-                <div className="mb-2">
-                    <label className="block text-sm font-medium">Price</label>
-                    <div className="text-lg font-semibold">$99.99</div>
+            <div id='photo-canvas-details' className="rounded shadow-lg p-2" style={{ minWidth: '7em' }}>
+                <div className="mb-2 flex justify-between">
+                    <div>
+                        <label className="block text-sm font-medium">Price</label>
+                        <div className="text-lg font-semibold">$99.99</div>
+                    </div>
+                    <div className="flex justify-end align-center hover:bg-green hover:color-white">
+                        <button style={{ width: '3em', height: '2em', color: 'green', border: isDarkTheme ? '1px solid green' : '1px solid green' }} onClick={sendToBasket}
+                            className="m-4 border rounded-md" >
+                            +
+                        </button>
+                    </div>
                 </div>
                 <div className="mb-2">
                     <label className="block text-sm font-medium">Quantity</label>
@@ -66,48 +76,45 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
                         <option value="24x36">24x36</option>
                     </select>
                 </div>
-                <div className="flex justify-center align-center">
-                    <button style={{ width: '2em' }} onClick={sendToBasket} className="m-4 border rounded-md hover:bg-red" >
-                        +
-                    </button>
-                </div>
-
             </div>
         );
     };
 
-    return <div id="selected-photo" className={`fixed top-4 left-0 w-3/4 flex items-start justify-center bg-opacity-90`}>
+    return <div id="selected-photo" className={`fixed top-6 left-2 w-3/4 flex items-start justify-center bg-opacity-90 rounded`}>
         <div className="rounded-lg shadow-lg flex flex-col md:flex-row select-none">
             <div>
                 <div className="flex align-center justify-between">
-                    <div className="pt-3" onClick={() => {
-                        setIndex(index - 1);
-                        setPreviousSelectedImage(images[index - 2]);
-                        setNextSelectedImage(images[index + 2]);
-                        setSelectedImage(previouseSelectedImage.default)
-                    }}>
-                        <ChevronLeft />
+                    <div className="flex align-center justify-between w-full">
+                        <div className="p-3 cursor-pointer" onClick={() => {
+                            setIndex(index - 1);
+                            setPreviousSelectedImage(images[index - 2]);
+                            setNextSelectedImage(images[index + 2]);
+                            setSelectedImage(previouseSelectedImage.default)
+                        }}>
+                            <ChevronLeft />
+                        </div>
+                        <div className="flex align-center justify-between">
+                            <h2 className="text-2xl font-semibold text-center select-none pt-2">
+                                {getTitle(selectedImage)}
+                            </h2>
+                        </div>
+                        <div className="p-3 cursor-pointer" onClick={() => {
+                            setIndex(index + 1);
+                            setPreviousSelectedImage(images[index - 2]);
+                            setNextSelectedImage(images[index + 2]);
+                            setSelectedImage(nextSelectedImage.default)
+                        }}>
+                            <ChevronRight />
+                        </div>
                     </div>
-                    <div className="flex align-center justify-between">
-                        <h2 className="text-2xl font-semibold text-center select-none pt-2 pl-1">
-                            {getTitle(selectedImage)}
-                        </h2>
+                    <div>
+                        <span className="flex justify-center align-center p-2" onClick={() => {
+                            setSelectedImage(null)
+                        }}>
+                            <CloseIcon />
+                        </span>
                     </div>
-                    <div className="pt-3" onClick={() => {
-                        setIndex(index + 1);
-                        setPreviousSelectedImage(images[index - 2]);
-                        setNextSelectedImage(images[index + 2]);
-                        setSelectedImage(nextSelectedImage.default)
-                    }}>
-                        <ChevronRight />
-                    </div>
-                    <span className="flex justify-center align-center p-2" onClick={() => {
-                        setSelectedImage(null)
-                    }}>
-                        <CloseIcon />
-                    </span>
                 </div>
-
                 <img
                     src={selectedImage}
                     alt={selectedImage}
