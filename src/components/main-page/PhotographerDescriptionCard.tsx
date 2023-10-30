@@ -4,6 +4,7 @@ import FullScreenImage from "../common/FullScreenImage";
 
 const PhotographerDescriptionCard = ({ artistImage, firstPhoto, secondPhoto }: any) => {
     const { isFullScreen, toggleFullScreen } = useFullScreenToggle();
+    const [selectedImage, setSelectedImage] = React.useState(firstPhoto);
 
     return (
         <div className="p-4 flex flex-col md:flex-col text-center">
@@ -23,7 +24,10 @@ const PhotographerDescriptionCard = ({ artistImage, firstPhoto, secondPhoto }: a
                     />
                 </div>
             </div>
-            <div className="w-full h-full mt-2 mb-2" onClick={toggleFullScreen}>
+            <div className="w-full h-full mt-2 mb-2" onClick={() => {
+                setSelectedImage(firstPhoto);
+                toggleFullScreen()
+            }}>
                 <img
                     src={firstPhoto}
                     alt={firstPhoto}
@@ -44,14 +48,17 @@ const PhotographerDescriptionCard = ({ artistImage, firstPhoto, secondPhoto }: a
                     Why photography? Because photography compels us to pause and observe the world around us. Whether it's the beauty of people, animals, landscapes, or architecture, there are moments that simply demand our attention. My goal is to capture these moments and freeze the time. With the click of the camera button.
                 </p>
             </div>
-            <div className="w-full h-full mt-2" onClick={toggleFullScreen}>
+            <div className="w-full h-full mt-2" onClick={() => {
+                setSelectedImage(secondPhoto);
+                toggleFullScreen()
+            }}>
                 <img
                     src={secondPhoto}
                     alt={secondPhoto}
                     className="rounded-lg shadow-xl"
                 />
             </div>
-            {isFullScreen && <FullScreenImage toggleFullScreen={toggleFullScreen} selectedImage={firstPhoto} />}
+            {isFullScreen && <FullScreenImage toggleFullScreen={toggleFullScreen} selectedImage={selectedImage} />}
         </div>
     );
 }

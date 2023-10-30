@@ -19,6 +19,8 @@ function useFullScreenToggle(initialState = false) {
         };
     }, [isFullScreen]);
 
+    
+
     return { isFullScreen, toggleFullScreen };
 }
 

@@ -1,5 +1,5 @@
 import CloseIcon from "../assets/icons/CloseIcon";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import ChevronLeft from "../assets/icons/ChevronLeft";
 import ChevronRight from "../assets/icons/ChevronRight";
 import Contact from "./common/Contact";
@@ -9,6 +9,45 @@ import FullScreenImage from "./common/FullScreenImage";
 const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage, nextSelectedImage, images, index, setPreviousSelectedImage, setNextSelectedImage, setIndex }: any) => {
     const [selectedSize, setSelectedSize] = useState('16x20');
     const { isFullScreen, toggleFullScreen } = useFullScreenToggle();
+    const touchStartX = useRef(null);
+    const touchEndX = useRef(null);
+
+    const handlePrevClick = (e: any) => {
+        e.stopPropagation();
+        e.preventDefault();
+        setIndex(index - 1);
+        setPreviousSelectedImage(images[index - 2]);
+        setNextSelectedImage(images[index + 2]);
+        setSelectedImage(previouseSelectedImage?.default)
+    }
+
+    const handleNextClick = (e: any) => {
+        e.stopPropagation();
+        e.preventDefault();
+        setIndex(index + 1);
+        setPreviousSelectedImage(images[index - 2]);
+        setNextSelectedImage(images[index + 2]);
+        setSelectedImage(nextSelectedImage?.default)
+    }
+
+    const handleTouchStart = (e: any) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = (e: any) => {
+        touchEndX.current = e.changedTouches[0].clientX;
+        if (touchEndX.current === null || touchStartX.current === null) return;
+
+        const swipeDistance = touchEndX?.current - touchStartX?.current;
+
+        if (swipeDistance > 0) {
+            // Swipe right, go to the previous image
+            handlePrevClick(e)
+        } else if (swipeDistance < 0) {
+            // Swipe left, go to the next image
+            handleNextClick(e)
+        }
+    };
 
     const handleSizeChange = (e: any) => {
         setSelectedSize(e.target.value);
@@ -47,12 +86,7 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
             <div>
                 <div className="flex align-center justify-between">
                     <div className="flex align-center justify-between w-full">
-                        <div className="p-3 cursor-pointer" onClick={() => {
-                            setIndex(index - 1);
-                            setPreviousSelectedImage(images[index - 2]);
-                            setNextSelectedImage(images[index + 2]);
-                            setSelectedImage(previouseSelectedImage.default)
-                        }}>
+                        <div className="p-3 cursor-pointer" onClick={handlePrevClick}>
                             <ChevronLeft />
                         </div>
                         <div className="flex align-center justify-between">
@@ -60,12 +94,7 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
                                 {getTitle(selectedImage)}
                             </h2>
                         </div>
-                        <div className="p-3 cursor-pointer" onClick={() => {
-                            setIndex(index + 1);
-                            setPreviousSelectedImage(images[index - 2]);
-                            setNextSelectedImage(images[index + 2]);
-                            setSelectedImage(nextSelectedImage.default)
-                        }}>
+                        <div className="p-3 cursor-pointer" onClick={handleNextClick}>
                             <ChevronRight />
                         </div>
                     </div>
@@ -78,6 +107,7 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
                     </div>
                 </div>
                 <img
+                    onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}
                     src={selectedImage}
                     alt={selectedImage}
                     onClick={toggleFullScreen}
@@ -88,7 +118,13 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
                 <PhotoCanvasDetails />
             </div>
 
-            {isFullScreen && <FullScreenImage toggleFullScreen={toggleFullScreen} selectedImage={selectedImage} />}
+            {isFullScreen && <FullScreenImage
+                handlePrevClick={handlePrevClick}
+                handleNextClick={handleNextClick}
+                toggleFullScreen={toggleFullScreen}
+                selectedImage={selectedImage}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd} />}
         </div>
     </div>;
 }

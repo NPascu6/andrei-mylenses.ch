@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SelectedPhoto from '../SelectedPhoto';
+import InitialImage from '../../assets/photos/Stelvio pass v2.jpg';
 
 interface PhotoGalleryProps {
     images: any[]
@@ -8,7 +9,7 @@ interface PhotoGalleryProps {
 
 const PhotoGallery = ({ images }: PhotoGalleryProps) => {
     const [selectedImage, setSelectedImage] = useState<any | null>(null);
-    const [previouseSelectedImage, setPreviousSelectedImage] = useState<any | null>(null);
+    const [previouseSelectedImage, setPreviousSelectedImage] = useState<any | null>(InitialImage);
     const [nextSelectedImage, setNextSelectedImage] = useState<any | null>(null);
     const [index, setIndex] = useState(0);
 
