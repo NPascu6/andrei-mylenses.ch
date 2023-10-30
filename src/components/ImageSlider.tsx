@@ -33,9 +33,7 @@ const ImageSlider = ({ images }: any) => {
                 <ChevronRight />
             </button>
             {isFullScreen && <FullScreenImage toggleFullScreen={toggleFullScreen} selectedImage={selectedImage} />}
-
         </div>
-
     );
 };
 

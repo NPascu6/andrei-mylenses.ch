@@ -30,7 +30,6 @@ const PhotographerDescriptionCard = ({ artistImage, firstPhoto, secondPhoto }: a
                     className="rounded-lg shadow-xl"
                 />
             </div>
-
             <div className="rounded-lg shadow-xl pb-3 card p-2">
                 <p className="mb-4">
                     My journey began in the heart of Transylvania, Romania, a land shrouded in misty forests and guarded by enigmatic castles, where legends often blur the line between reality and myth. It's here that my unyielding passion for nature and the great outdoors was born.
