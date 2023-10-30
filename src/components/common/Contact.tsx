@@ -1,6 +1,6 @@
-import Instagram from '../../components/icons/Instagram';
-import WhatsApp from '../../components/icons/WhatsApp';
-import Email from '../../components/icons/Email';
+import Instagram from '../../assets/icons/Instagram';
+import WhatsApp from '../../assets/icons/WhatsApp';
+import Email from '../../assets/icons/Email';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 

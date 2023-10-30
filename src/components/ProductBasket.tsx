@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import CloseIcon from './icons/CloseIcon';
+import CloseIcon from '../assets/icons/CloseIcon';
 import { setProducts } from '../store/productBasketSlice';
-import CartFilled from './icons/CartFilled';
+import CartFilled from '../assets/icons/CartFilled';
 
 const getScreenHeightAsCssClass = () => {
     const height = window.innerHeight;

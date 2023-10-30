@@ -52,3 +52,8 @@
     background-color: #ECEFF1;
     color: black
 }
+
+.light-theme .card {
+    background-color: #F5F7FA;
+    /* Lighter shade for .card background */
+}

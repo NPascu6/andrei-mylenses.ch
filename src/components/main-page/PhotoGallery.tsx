@@ -13,11 +13,11 @@ const PhotoGallery = ({ images }: PhotoGalleryProps) => {
     const [index, setIndex] = useState(0);
 
     return (
-        <>
-            <h1 className='text-center font-bold'>
-                Check out some of the available photos below
+        <div className='card m-4 mt-1 rounded-lg shadow-xl p-1'>
+            <h1 className='text-center font-bold mb-2'>
+                Check out some of the available photos
             </h1>
-            <div className="p-4 border rounded shadow-lg m-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="rounded shadow-lg m-1 grid grid-cols-2 md:grid-cols-4 gap-2">
 
                 {images.map((image, index) => (
                     <div
@@ -56,7 +56,7 @@ const PhotoGallery = ({ images }: PhotoGalleryProps) => {
                         nextSelectedImage={nextSelectedImage} />
                 )}
             </div>
-        </>
+        </div>
 
     );
 };

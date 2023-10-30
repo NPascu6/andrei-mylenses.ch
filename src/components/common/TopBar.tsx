@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import Favicon32 from '../../assets/favicon-32x32.png';
-import CartIcon from '../../components/icons/CartIcon';
+import CartIcon from '../../assets/icons/CartIcon';
 import ProductBasket from '../../components/ProductBasket';
-import ToggleSvgDark from '../../components/icons/ToggleSvgDark';
-import ToggleSvgLight from '../../components/icons/ToggleSvgLight';
+import ToggleSvgDark from '../../assets/icons/ToggleSvgDark';
+import ToggleSvgLight from '../../assets/icons/ToggleSvgLight';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { setTheme } from '../../store/appSlice';
@@ -37,7 +37,7 @@ const TopBar = ({ products, isBasketClosed, setBasketClosed }: any) => {
     }, [cartRef, setBasketClosed]);
 
 
-    return <div className='flex flex-row md:flex-row md:items-center p-2'>
+    return <div className='flex flex-row md:flex-row md:items-center p-2 shadow-xl'>
         <div className='flex flex-grow justify-start items-center pl-4'>
             <img className='w-8 h-8 md:w-10 md:h-10 mr-2' src={Favicon32} alt="favicon" />
             <div className='text-2xl md:text-3xl font-semibold'>My Lenses<div className='text-xs md:text-md ml-1'>by Andrei Pascu</div></div>

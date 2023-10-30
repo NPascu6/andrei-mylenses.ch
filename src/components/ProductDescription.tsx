@@ -1,9 +1,18 @@
 import React from "react";
 import Contact from "./common/Contact";
+import ImageSlider from "./ImageSlider";
+import CanvasExample from "../assets/canvas/CanvasExample.jpg";
+import CanvasExample1 from "../assets/canvas/CanvasExample1.jpg";
+import CanvasExample2 from "../assets/canvas/CanvasExample2.jpg";
+import CanvasExample3 from "../assets/canvas/CanvasExample3.jpg";
 
 const ProductDescription = () => {
+    const images = [
+        CanvasExample, CanvasExample1, CanvasExample2, CanvasExample3
+    ];
+
     return (
-        <div className="p-4 m-4 rounded-md shadow-xl text-center">
+        <div className="p-4 m-4 mt-1 rounded-md shadow-xl text-center card">
             <h1 className="text-3xl font-semibold text-center mb-4">
                 Giclee High-Quality Canvas Prints
             </h1>
@@ -37,7 +46,9 @@ const ProductDescription = () => {
                     </p>
                 </div>
             </div>
-
+            <div className="flex justify-center items-center">
+                <ImageSlider images={images} />
+            </div>
             <h2 className="text-xl font-semibold border-t-2 pt-2">What Sets My Prints Apart</h2>
             <ul className="list-disc ml-6 mt-2 text-left">
                 <li>

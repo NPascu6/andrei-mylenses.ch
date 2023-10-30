@@ -1,12 +1,14 @@
-import CloseIcon from "./icons/CloseIcon";
-import { useEffect, useState } from "react";
-import ChevronLeft from "./icons/ChevronLeft";
-import ChevronRight from "./icons/ChevronRight";
+import CloseIcon from "../assets/icons/CloseIcon";
+import { useState } from "react";
+import ChevronLeft from "../assets/icons/ChevronLeft";
+import ChevronRight from "../assets/icons/ChevronRight";
 import Contact from "./common/Contact";
+import useFullScreenToggle from "../hooks/useToggleFullscreen";
+import FullScreenImage from "./common/FullScreenImage";
 
 const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage, nextSelectedImage, images, index, setPreviousSelectedImage, setNextSelectedImage, setIndex }: any) => {
     const [selectedSize, setSelectedSize] = useState('16x20');
-    const [isFullScreen, setFullScreen] = useState(false);
+    const { isFullScreen, toggleFullScreen } = useFullScreenToggle();
 
     const handleSizeChange = (e: any) => {
         setSelectedSize(e.target.value);
@@ -40,42 +42,7 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
         );
     };
 
-    const toggleFullScreen = () => {
-        setFullScreen(!isFullScreen);
-    };
-
-    useEffect(() => {
-        if (isFullScreen) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "auto";
-        }
-    }, [isFullScreen]);
-
-    if (isFullScreen) {
-        return (
-            <div
-                id="full-screen-photo"
-                className="flex fixed top-0 left-0 w-full h-full bg-black z-50 items-center justify-center"
-                onClick={toggleFullScreen}
-            >
-                <div className="flex p-2 w-full flex ">
-                    {/* Full-screen image */}
-                    <img
-                        src={selectedImage}
-                        alt={selectedImage}
-                        className="max-w-full max-h-full"
-                    />
-
-                </div>
-                <span className="absolute top-2 right-2 cursor-pointer text-white" onClick={toggleFullScreen}>
-                    <CloseIcon />
-                </span>
-            </div>
-        );
-    }
-
-    return <div id="selected-photo" className={`fixed top-16 left-2 w-5/6 flex items-start justify-center bg-opacity-90 rounded`}>
+    return <div id="selected-photo" className={`fixed top-1 left-2 w-5/6 flex items-start justify-center bg-opacity-90 rounded`}>
         <div className="rounded-lg shadow-lg flex flex-col md:flex-row select-none">
             <div>
                 <div className="flex align-center justify-between">
@@ -120,6 +87,8 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
             <div className="rounded-lg shadow-lg">
                 <PhotoCanvasDetails />
             </div>
+
+            {isFullScreen && <FullScreenImage toggleFullScreen={toggleFullScreen} selectedImage={selectedImage} />}
         </div>
     </div>;
 }

@@ -54,3 +54,8 @@
 .dark-theme #product-basket {
     color: #1a1d24;
 }
+
+.dark-theme .card {
+    background-color: #2e333c;
+    /* Darker shade for .card background */
+}
