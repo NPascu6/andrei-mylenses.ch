@@ -1,21 +1,15 @@
-import { useDispatch, useSelector } from "react-redux";
-import { addProduct, setToasterMessage, showToaster } from "../store/productBasketSlice";
 import CloseIcon from "./icons/CloseIcon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChevronLeft from "./icons/ChevronLeft";
 import ChevronRight from "./icons/ChevronRight";
-import { RootState } from "../store/store";
+import Contact from "./common/Contact";
 
 const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage, nextSelectedImage, images, index, setPreviousSelectedImage, setNextSelectedImage, setIndex }: any) => {
     const [selectedSize, setSelectedSize] = useState('16x20');
-    const [selectedQuantity, setSelectedQuantity] = useState(1);
+    const [isFullScreen, setFullScreen] = useState(false);
 
     const handleSizeChange = (e: any) => {
         setSelectedSize(e.target.value);
-    }
-
-    const handleQuantityChange = (e: any) => {
-        setSelectedQuantity(e.target.value);
     }
 
     const getTitle = (image: any) => {
@@ -24,63 +18,64 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
     }
 
     const PhotoCanvasDetails = () => {
-        const dispatch = useDispatch();
-        const isDarkTheme = useSelector((state: RootState) => state.app.isDarkTheme);
-
-        const sendToBasket = () => {
-            const product = {
-                title: getTitle(selectedImage),
-                price: 99.99,
-                quantity: selectedQuantity,
-                size: selectedSize,
-                image: selectedImage
-            }
-
-            dispatch(addProduct(product));
-            dispatch(showToaster(true));
-            dispatch(setToasterMessage('Added to basket!'));
-        }
-
         return (
             <div id='photo-canvas-details' className="rounded shadow-lg p-2" style={{ minWidth: '7em' }}>
                 <div className="mb-2 flex justify-between">
                     <div>
                         <label className="block text-sm font-medium">Price</label>
-                        <div className="text-lg font-semibold">$99.99</div>
-                    </div>
-                    <div className="flex justify-end align-center hover:bg-green hover:color-white">
-                        <button style={{ width: '3em', height: '2em', color: 'green', border: isDarkTheme ? '1px solid green' : '1px solid green' }} onClick={sendToBasket}
-                            className="m-4 border rounded-md" >
-                            +
-                        </button>
+                        <div className="text-lg font-semibold">{selectedSize === '90x60' ? '60' : '40'} CHF</div>
                     </div>
                 </div>
-                <div className="mb-2">
-                    <label className="block text-sm font-medium">Quantity</label>
-                    <input
-                        onChange={handleQuantityChange}
-                        type="number"
-                        className="w-full py-2 px-2 border rounded-md"
-                        value={selectedQuantity}
-                    />
-                </div>
-                <div className="mb-2">
-                    <label className="text-sm font-medium">Size</label>
-                    <select
-                        onChange={handleSizeChange}
-                        className="py-2 px-2 border rounded-md w-full"
-                        value={selectedSize}
-                    >
-                        <option value="8x10">8x10</option>
-                        <option value="16x20">16x20</option>
-                        <option value="24x36">24x36</option>
-                    </select>
-                </div>
+                <label className="text-sm font-medium mb-2">Size</label>
+                <select
+                    onChange={handleSizeChange}
+                    className="py-2 px-2 border rounded-md w-full"
+                    value={selectedSize}
+                >
+                    <option value="50x30">50x30cm</option>
+                    <option value="90x60">90x60cm</option>
+                </select>
+                <Contact />
             </div>
         );
     };
 
-    return <div id="selected-photo" className={`fixed top-6 left-2 w-3/4 flex items-start justify-center bg-opacity-90 rounded`}>
+    const toggleFullScreen = () => {
+        setFullScreen(!isFullScreen);
+    };
+
+    useEffect(() => {
+        if (isFullScreen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+    }, [isFullScreen]);
+
+    if (isFullScreen) {
+        return (
+            <div
+                id="full-screen-photo"
+                className="flex fixed top-0 left-0 w-full h-full bg-black z-50 items-center justify-center"
+                onClick={toggleFullScreen}
+            >
+                <div className="flex p-2 w-full flex ">
+                    {/* Full-screen image */}
+                    <img
+                        src={selectedImage}
+                        alt={selectedImage}
+                        className="max-w-full max-h-full"
+                    />
+
+                </div>
+                <span className="absolute top-2 right-2 cursor-pointer text-white" onClick={toggleFullScreen}>
+                    <CloseIcon />
+                </span>
+            </div>
+        );
+    }
+
+    return <div id="selected-photo" className={`fixed top-16 left-2 w-5/6 flex items-start justify-center bg-opacity-90 rounded`}>
         <div className="rounded-lg shadow-lg flex flex-col md:flex-row select-none">
             <div>
                 <div className="flex align-center justify-between">
@@ -94,7 +89,7 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
                             <ChevronLeft />
                         </div>
                         <div className="flex align-center justify-between">
-                            <h2 className="text-2xl font-semibold text-center select-none pt-2">
+                            <h2 className="text-md font-semibold text-center select-none pt-2">
                                 {getTitle(selectedImage)}
                             </h2>
                         </div>
@@ -118,6 +113,7 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
                 <img
                     src={selectedImage}
                     alt={selectedImage}
+                    onClick={toggleFullScreen}
                     className="max-w-70% select-none p-1"
                 />
             </div>
