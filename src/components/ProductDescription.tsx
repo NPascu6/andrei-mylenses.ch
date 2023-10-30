@@ -94,6 +94,16 @@ const ProductDescription = () => {
             <p className="mt-3">
                 Whether it's a picturesque landscape, a mesmerizing portrait, or a captivating abstract, our canvas prints are carefully crafted to elevate your space. Experience the fusion of art and technology, as we transform each photograph into a timeless piece of decor that will leave a lasting impression. Join us on this artistic journey, and let our canvas prints inspire your world.
             </p>
+            <hr className="border-t-2 mt-4" />
+            <p className="mt-4 font-bold text-xl mb-4">
+                What's more, you can bring the beauty of my work into your home with canvas prints that can be
+                delivered anywhere in Switzerland, thanks to Swiss Post's reliable service.
+            </p>
+            <hr className="border-t-2 m-4" />
+            <p className="text-xl  font-bold  mb-4">
+                Also you can discover the world through the lens of a professional photographer. I offer high-quality digital copies of photos for sale online.
+            </p>
+            <hr className="border-t-2" />
             <Contact />
         </div>
     );
