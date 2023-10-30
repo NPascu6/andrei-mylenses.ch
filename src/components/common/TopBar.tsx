@@ -37,7 +37,7 @@ const TopBar = ({ products, isBasketClosed, setBasketClosed }: any) => {
     }, [cartRef, setBasketClosed]);
 
 
-    return <div className='flex flex-row md:flex-row md:items-center p-2 shadow-xl'>
+    return <div id='top-bar' className='flex flex-row md:flex-row md:items-center p-2 shadow-xl'>
         <div className='flex flex-grow justify-start items-center pl-4'>
             <img className='w-8 h-8 md:w-10 md:h-10 mr-2' src={Favicon32} alt="favicon" />
             <div className='text-2xl md:text-3xl font-semibold'>My Lenses<div className='text-xs md:text-md ml-1'>by Andrei Pascu</div></div>
