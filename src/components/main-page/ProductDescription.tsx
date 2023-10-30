@@ -1,10 +1,10 @@
 import React from "react";
-import Contact from "./common/Contact";
-import ImageSlider from "./ImageSlider";
-import CanvasExample from "../assets/canvas/CanvasExample.jpg";
-import CanvasExample1 from "../assets/canvas/CanvasExample1.jpg";
-import CanvasExample2 from "../assets/canvas/CanvasExample2.jpg";
-import CanvasExample3 from "../assets/canvas/CanvasExample3.jpg";
+import Contact from "../common/Contact";
+import ImageSlider from "../ImageSlider";
+import CanvasExample from "../../assets/canvas/CanvasExample.jpg";
+import CanvasExample1 from "../../assets/canvas/CanvasExample1.jpg";
+import CanvasExample2 from "../../assets/canvas/CanvasExample2.jpg";
+import CanvasExample3 from "../../assets/canvas/CanvasExample3.jpg";
 
 const ProductDescription = () => {
     const images = [

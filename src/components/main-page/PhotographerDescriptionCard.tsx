@@ -1,6 +1,7 @@
 import React from "react";
 import useFullScreenToggle from "../../hooks/useToggleFullscreen";
 import FullScreenImage from "../common/FullScreenImage";
+import ProductDescription from "./ProductDescription";
 
 const PhotographerDescriptionCard = ({ artistImage, firstPhoto, secondPhoto }: any) => {
     const { isFullScreen, toggleFullScreen } = useFullScreenToggle();
@@ -9,8 +10,8 @@ const PhotographerDescriptionCard = ({ artistImage, firstPhoto, secondPhoto }: a
     return (
         <div className="p-4 flex flex-col md:flex-col text-center">
             <div className="flex shadow-xl rounded-lg card">
-                <div className="w-2/3">
-                    <h2 className="text-xl font-semibold text-center flex flex-col justify-center items-center">
+                <div className="w-2/3 flex  align-center">
+                    <h2 className="flex  align-center text-xl font-semibold text-start flex-col justify-center items-center">
                         <p className="text-lg mb-2 pb-3 card rounded-lg p-2">
                             Fueled by an insatiable curiosity for capturing the essence of unique moments, I firmly believe that each second holds the potential for creating a remarkable image.
                         </p>
@@ -58,6 +59,7 @@ const PhotographerDescriptionCard = ({ artistImage, firstPhoto, secondPhoto }: a
                     className="rounded-lg shadow-xl"
                 />
             </div>
+            <ProductDescription />
             {isFullScreen && <FullScreenImage toggleFullScreen={toggleFullScreen} selectedImage={selectedImage} />}
         </div>
     );
