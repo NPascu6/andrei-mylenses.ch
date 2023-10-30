@@ -25,6 +25,7 @@
 html,
 body {
   padding: 0;
+  /* Remove the default margin */
   margin: 0;
   height: 100%;
   min-height: 100%;
@@ -48,4 +49,11 @@ code {
   flex-direction: column;
   overflow-y: auto;
   max-height: calc(100vh - 80px);
+}
+
+@media (max-width: 768px) {
+  .content-container {
+    padding-bottom: -80px;
+    /* Add padding only on mobile devices */
+  }
 }
