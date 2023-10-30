@@ -23,9 +23,7 @@ function App() {
     <div className={`${isDarkTheme ? 'dark' : 'light'}-theme app select-none`}>
       <TopBar products={products} isBasketClosed={isBasketClosed} setBasketClosed={setBasketClosed} />
       <div className="content-container">
-        <div style={{ maxHeight: 'calc(100vh - 70px)', overflowY: 'auto' }}>
-          <RoutesSwitch />
-        </div>
+        <RoutesSwitch />
       </div>
       <Toaster />
     </div>
