@@ -6,7 +6,7 @@ const ChevronRight = React.lazy(() => import('../../assets/icons/ChevronRight'))
 const FullScreenImage = React.lazy(() => import('./FullScreenImage'));
 
 const ImageSlider = ({ images, autoSlideTimeout = 4000 }: any) => {
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [currentImageIndex, setCurrentImageIndex] = useState(Math.floor(Math.random() * images?.length));
     const { isFullScreen, toggleFullScreen } = useFullScreenToggle();
     const touchStartX = useRef(null);
     const touchEndX = useRef(null);
