@@ -1,8 +1,10 @@
-import Instagram from '../../assets/icons/Instagram';
-import WhatsApp from '../../assets/icons/WhatsApp';
-import Email from '../../assets/icons/Email';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+
+const Instagram = React.lazy(() => import('../../assets/icons/Instagram'));
+const WhatsApp = React.lazy(() => import('../../assets/icons/WhatsApp'));
+const Email = React.lazy(() => import('../../assets/icons/Email'));
 
 const Contact = () => {
     const isDarkTheme = useSelector((state: RootState) => state.app.isDarkTheme)

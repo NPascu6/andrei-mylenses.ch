@@ -1,11 +1,11 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import ImageSlider from "../common/ImageSlider";
+
+const ImageSlider = React.lazy(() => import('../common/ImageSlider'));
 
 const PhotographerDescriptionCard = ({ artistImage }: any) => {
     const photos = useSelector((state: RootState) => state.app.photos);
-
     const imageSources = photos?.map((photo: any) => photo.default);
 
     return (
@@ -20,6 +20,7 @@ const PhotographerDescriptionCard = ({ artistImage }: any) => {
                 </div>
                 <div className="w-1/3 mt-2 mr-2">
                     <img
+                        loading="lazy"
                         src={artistImage}
                         alt={artistImage}
                         className="rounded-full"

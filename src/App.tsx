@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setTheme } from './store/appSlice';
 import { RootState } from './store/store';
 import { RoutesSwitch } from './Routes';
-import Toaster from './components/common/Toaster';
-import TopBar from './components/common/TopBar';
+
+//import topbar lazy
+const TopBar = React.lazy(() => import('./components/common/TopBar'));
+const Toaster = React.lazy(() => import('./components/common/Toaster'));
 
 function App() {
   const dipatch = useDispatch()
@@ -18,16 +20,21 @@ function App() {
   }, [dipatch])
 
   useEffect(() => {
-   dipatch(setTheme(true));
+    dipatch(setTheme(true));
   }, [dipatch])
 
   return (
     <div className={`${isDarkTheme ? 'dark' : 'light'}-theme app select-none`}>
-      <TopBar />
+      <React.Suspense fallback={<div></div>}>
+        <TopBar />
+      </React.Suspense>
       <div className="content-container">
         <RoutesSwitch />
       </div>
-      <Toaster />
+      <React.Suspense fallback={<div></div>}>
+        <Toaster />
+      </React.Suspense>
+
     </div>
   );
 }

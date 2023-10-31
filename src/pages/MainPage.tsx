@@ -1,18 +1,21 @@
 import React from 'react';
 import artistImage from '../assets/portrait.jpg';
-import PhotographerDescriptionCard from '../components/main-page/PhotographerDescriptionCard';
-import FirstImage from '../assets/photos/Stelvio pass v2.jpg'
-import SecondImage from '../assets/photos/Angels of Oradea.jpg'
-import ProductDescription from '../components/main-page/ProductDescription';
+
+const ProductDescription = React.lazy(() => import('../components/main-page/ProductDescription'));
+const PhotographerDescriptionCard = React.lazy(() => import('../components/main-page/PhotographerDescriptionCard'));
 
 const MainPage = () => {
     return (
         <div>
             <div className='flex flex-col md:flex-row'>
-                <PhotographerDescriptionCard artistImage={artistImage} firstPhoto={FirstImage} secondPhoto={SecondImage} />
+                <React.Suspense fallback={<div></div>}>
+                    <PhotographerDescriptionCard artistImage={artistImage} />
+                </React.Suspense>
             </div>
             <div className='flex flex-col md:flex-row'>
-                <ProductDescription />
+                <React.Suspense fallback={<div></div>}>
+                    <ProductDescription />
+                </React.Suspense>
             </div>
         </div>
     );

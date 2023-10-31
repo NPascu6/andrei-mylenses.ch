@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SelectedPhoto from '../SelectedPhoto';
+import SelectedPhoto from './SelectedPhoto';
 import InitialImage from '../../assets/photos/Stelvio pass v2.jpg';
 
 interface PhotoGalleryProps {
@@ -34,6 +34,7 @@ const PhotoGallery = ({ images }: PhotoGalleryProps) => {
 
                         }}>
                         <img
+                            loading="lazy"
                             src={image.default}
                             alt={image.default}
                             className="w-full h-auto rounded-md"

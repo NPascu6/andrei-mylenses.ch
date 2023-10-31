@@ -1,10 +1,11 @@
-import CloseIcon from "../assets/icons/CloseIcon";
-import { useRef, useState } from "react";
-import ChevronLeft from "../assets/icons/ChevronLeft";
-import ChevronRight from "../assets/icons/ChevronRight";
-import Contact from "./common/Contact";
-import useFullScreenToggle from "../hooks/useToggleFullscreen";
-import FullScreenImage from "./common/FullScreenImage";
+import React, { useRef, useState } from "react";
+import useFullScreenToggle from "../../hooks/useToggleFullscreen";
+
+const ChevronLeft = React.lazy(() => import('../../assets/icons/ChevronLeft'));
+const ChevronRight = React.lazy(() => import('../../assets/icons/ChevronRight'));
+const CloseIcon = React.lazy(() => import('../../assets/icons/CloseIcon'));
+const FullScreenImage = React.lazy(() => import('../common/FullScreenImage'));
+const Contact = React.lazy(() => import('../common/Contact'));
 
 const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage, nextSelectedImage, images, index, setPreviousSelectedImage, setNextSelectedImage, setIndex }: any) => {
     const [selectedSize, setSelectedSize] = useState('16x20');
@@ -107,6 +108,7 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
                     </div>
                 </div>
                 <img
+                    loading="lazy"
                     onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}
                     src={selectedImage}
                     alt={selectedImage}

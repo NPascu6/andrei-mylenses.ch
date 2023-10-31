@@ -1,6 +1,8 @@
-import CloseIcon from "../../assets/icons/CloseIcon";
-import ChevronLeft from '../../assets/icons/ChevronLeft'; // Update the path to your chevron icons
-import ChevronRight from '../../assets/icons/ChevronRight'; // Update the path to your chevron icons
+import React from 'react'
+
+const CloseIcon = React.lazy(() => import('../../assets/icons/CloseIcon'));
+const ChevronLeft = React.lazy(() => import('../../assets/icons/ChevronLeft'));
+const ChevronRight = React.lazy(() => import('../../assets/icons/ChevronRight'));
 
 const FullScreenImage = ({ handlePrevClick, handleNextClick, toggleFullScreen, selectedImage, onTouchStart, onTouchEnd }: any) => {
     return (
@@ -10,7 +12,7 @@ const FullScreenImage = ({ handlePrevClick, handleNextClick, toggleFullScreen, s
             onClick={toggleFullScreen}
         >
             <div className='flex items-center'>
-                {handlePrevClick && <span className="transform -translate-y-1/2" onClick={handlePrevClick}>
+                {handlePrevClick && <span className="transform -translate-y-1/2 text-white" onClick={handlePrevClick}>
                     <ChevronLeft />
                 </span>}
                 <div className="flex p-2"
@@ -18,12 +20,13 @@ const FullScreenImage = ({ handlePrevClick, handleNextClick, toggleFullScreen, s
                     onTouchEnd={onTouchEnd && onTouchEnd}>
                     {/* Full-screen image */}
                     <img
+                        loading="lazy"
                         style={{ maxHeight: '70vh', maxWidth: '87vw' }}
                         src={selectedImage}
                         alt={selectedImage}
                     />
                 </div>
-                {handleNextClick && <span className="transform -translate-y-1/2" onClick={handleNextClick}>
+                {handleNextClick && <span className="transform -translate-y-1/2 text-white" onClick={handleNextClick}>
                     <ChevronRight />
                 </span>}
             </div>

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { JsxElement } from "typescript";
-import ChevronUp from "../../assets/icons/ChevronUp";
-import ChevronDown from "../../assets/icons/ChevronDown";
+
+const ChevronDown = React.lazy(() => import('../../assets/icons/ChevronDown'));
+const ChevronUp = React.lazy(() => import('../../assets/icons/ChevronUp'));
 
 interface CollapsibleSectionpProps {
     title: string,

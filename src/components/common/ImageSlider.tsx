@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ChevronLeft from '../../assets/icons/ChevronLeft'; // Update the path to your chevron icons
-import ChevronRight from '../../assets/icons/ChevronRight'; // Update the path to your chevron icons
 import useFullScreenToggle from '../../hooks/useToggleFullscreen';
-import FullScreenImage from './FullScreenImage';
+
+const ChevronLeft = React.lazy(() => import('../../assets/icons/ChevronLeft'));
+const ChevronRight = React.lazy(() => import('../../assets/icons/ChevronRight'));
+const FullScreenImage = React.lazy(() => import('./FullScreenImage'));
 
 const ImageSlider = ({ images, autoSlideTimeout = 4000 }: any) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -48,7 +49,7 @@ const ImageSlider = ({ images, autoSlideTimeout = 4000 }: any) => {
             setCurrentImageIndex((prevIndex) => (prevIndex < images.length - 1 ? prevIndex + 1 : 0));
         };
 
-        const clickEvent = new MouseEvent('click', { 
+        const clickEvent = new MouseEvent('click', {
             view: window,
             bubbles: true,
             cancelable: true,
@@ -63,15 +64,16 @@ const ImageSlider = ({ images, autoSlideTimeout = 4000 }: any) => {
     }, [currentImageIndex, autoSlideTimeout, images]);
 
     return (
-        <div className='flex card items-center rounded-lg shadow-xl'>
+        <div className='flex card items-center rounded-lg shadow-xl justify-center align-center min-w-full'>
             <span className="transform -translate-y-1/2" onClick={handlePrevClick}>
                 <ChevronLeft />
             </span>
-            <div className="relative flex justify-center" onClick={toggleFullScreen} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+            <div className="relative flex justify-center rounded-lg" style={{ height: '15em', maxHeight: '15em', minHeight: '15em' }} onClick={toggleFullScreen} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
                 <img
+                    loading="lazy"
                     src={images[currentImageIndex]}
                     alt={`${currentImageIndex + 1}`}
-                    className="w-full rounded-lg max-h-96 object-contain p-1"
+                    className="w-full rounded-lg object-contain p-1"
                 />
             </div>
             <span className="transform -translate-y-1/2" onClick={handleNextClick}>
@@ -89,4 +91,4 @@ const ImageSlider = ({ images, autoSlideTimeout = 4000 }: any) => {
     );
 };
 
-export default ImageSlider;
+export default React.memo(ImageSlider);
