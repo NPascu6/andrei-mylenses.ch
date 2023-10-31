@@ -10,9 +10,9 @@ const FullScreenImage = ({ handlePrevClick, handleNextClick, toggleFullScreen, s
             onClick={toggleFullScreen}
         >
             <div className='flex items-center'>
-                {handlePrevClick && <button className="transform -translate-y-1/2" onClick={handlePrevClick}>
+                {handlePrevClick && <span className="transform -translate-y-1/2" onClick={handlePrevClick}>
                     <ChevronLeft />
-                </button>}
+                </span>}
                 <div className="flex p-2"
                     onTouchStart={onTouchStart && onTouchStart}
                     onTouchEnd={onTouchEnd && onTouchEnd}>
@@ -23,9 +23,9 @@ const FullScreenImage = ({ handlePrevClick, handleNextClick, toggleFullScreen, s
                         alt={selectedImage}
                     />
                 </div>
-                {handleNextClick && <button className="transform -translate-y-1/2" onClick={handleNextClick}>
+                {handleNextClick && <span className="transform -translate-y-1/2" onClick={handleNextClick}>
                     <ChevronRight />
-                </button>}
+                </span>}
             </div>
 
             <span className="absolute top-2 right-2 cursor-pointer text-white" onClick={toggleFullScreen}>

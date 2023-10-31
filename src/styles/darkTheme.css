@@ -1,61 +1,91 @@
+/* Improved Dark Theme Styles */
+
+/* Fonts */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Background and Text Colors */
 .dark-theme {
     color: #ffffff;
-    background-color: #1a1d24;
+    background-color: #121212;
 }
 
+/* Tables */
 .dark-theme table {
+    background-color: #1a1a1a;
     color: #ffffff;
-    background-color: #1a1d24;
-    padding: 1em
+    padding: 1em;
 }
 
+/* Footer */
 .dark-theme .footer {
+    background-color: #121212;
     color: #ffffff;
-    background-color: #1a1d24;
 }
 
+/* Scrollbars */
 .dark-theme ::-webkit-scrollbar-thumb {
-    background-color: #8888;
+    background-color: #666;
     border-radius: 4px;
 }
 
 .dark-theme ::-webkit-scrollbar-thumb:hover {
-    background-color: black;
+    background-color: #444;
 }
 
 .dark-theme ::-webkit-scrollbar {
-    width: 4px;
-    background: #413b3b;
+    width: 6px;
+    background: #292929;
 }
 
+/* Site Seal */
 #siteseal {
     display: none;
     position: fixed;
-    bottom: 0;
-    right: 0;
+    bottom: 10px;
+    right: 10px;
     z-index: 1000;
 }
 
+/* Selected Photo */
 .dark-theme #selected-photo {
     border: 1px solid #ffffff;
-    background-color: #1a1d24;
+    background-color: #121212;
 }
 
+/* Photo Canvas Details */
 .dark-theme #photo-canvas-details {
-    background-color: #1a1d24;
+    background-color: #121212;
     color: #ffffff;
 }
 
 .dark-theme #photo-canvas-details select {
-    background-color: #1a1d24;
+    background-color: #121212;
     color: #ffffff;
 }
 
-.dark-theme #product-basket {
-    color: #1a1d24;
+/* Cards */
+.dark-theme .card {
+    background-color: #1e1e1e;
 }
 
-.dark-theme .card {
-    background-color: #2e333c;
-    /* Darker shade for .card background */
+/* Additional Styling for Specific Elements */
+.dark-theme button {
+    background-color: #444;
+    color: #ffffff;
+    border: none;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.dark-theme a {
+    color: #8cb0ff;
+    text-decoration: none;
+}
+
+/* Hover Effect for Links */
+.dark-theme a:hover {
+    text-decoration: underline;
 }

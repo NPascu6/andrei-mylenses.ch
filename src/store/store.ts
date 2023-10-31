@@ -1,11 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import appReducer from './appSlice';
-import productBasketReducer from './productBasketSlice';
 
 const store = configureStore({
     reducer: {
-        app: appReducer,
-        productBasket: productBasketReducer,
+        app: appReducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

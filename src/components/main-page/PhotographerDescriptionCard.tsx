@@ -1,18 +1,19 @@
 import React from "react";
-import useFullScreenToggle from "../../hooks/useToggleFullscreen";
-import FullScreenImage from "../common/FullScreenImage";
-import ProductDescription from "./ProductDescription";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import ImageSlider from "../common/ImageSlider";
 
-const PhotographerDescriptionCard = ({ artistImage, firstPhoto, secondPhoto }: any) => {
-    const { isFullScreen, toggleFullScreen } = useFullScreenToggle();
-    const [selectedImage, setSelectedImage] = React.useState(firstPhoto);
+const PhotographerDescriptionCard = ({ artistImage }: any) => {
+    const photos = useSelector((state: RootState) => state.app.photos);
+
+    const imageSources = photos?.map((photo: any) => photo.default);
 
     return (
-        <div className="p-4 flex flex-col md:flex-col text-center">
+        <div className="p-2 flex flex-col md:flex-col text-center">
             <div className="flex shadow-xl rounded-lg card">
                 <div className="w-2/3 flex  align-center">
                     <h2 className="flex  align-center text-xl font-semibold text-start flex-col justify-center items-center">
-                        <p className="text-lg mb-2 pb-3 card rounded-lg p-2">
+                        <p className="text-lg mb-2 pb-3 card rounded-lg p-6">
                             Fueled by an insatiable curiosity for capturing the essence of unique moments, I firmly believe that each second holds the potential for creating a remarkable image.
                         </p>
                     </h2>
@@ -25,15 +26,10 @@ const PhotographerDescriptionCard = ({ artistImage, firstPhoto, secondPhoto }: a
                     />
                 </div>
             </div>
-            <div className="w-full h-full mt-2 mb-2" onClick={() => {
-                setSelectedImage(firstPhoto);
-                toggleFullScreen()
-            }}>
-                <img
-                    src={firstPhoto}
-                    alt={firstPhoto}
-                    className="rounded-lg shadow-xl"
-                />
+            <div className="w-full h-full mt-2 mb-2">
+                {photos?.length > 0 && <div className="flex justify-center items-center">
+                    <ImageSlider images={imageSources} />
+                </div>}
             </div>
             <div className="rounded-lg shadow-xl pb-3 card p-2">
                 <p className="mb-4">
@@ -49,18 +45,11 @@ const PhotographerDescriptionCard = ({ artistImage, firstPhoto, secondPhoto }: a
                     Why photography? Because photography compels us to pause and observe the world around us. Whether it's the beauty of people, animals, landscapes, or architecture, there are moments that simply demand our attention. My goal is to capture these moments and freeze the time. With the click of the camera button.
                 </p>
             </div>
-            <div className="w-full h-full mt-2" onClick={() => {
-                setSelectedImage(secondPhoto);
-                toggleFullScreen()
-            }}>
-                <img
-                    src={secondPhoto}
-                    alt={secondPhoto}
-                    className="rounded-lg shadow-xl"
-                />
+            <div className="w-full h-full mt-2">
+                {photos?.length > 0 && <div className="flex justify-center items-center">
+                    <ImageSlider images={imageSources} />
+                </div>}
             </div>
-            <ProductDescription />
-            {isFullScreen && <FullScreenImage toggleFullScreen={toggleFullScreen} selectedImage={selectedImage} />}
         </div>
     );
 }

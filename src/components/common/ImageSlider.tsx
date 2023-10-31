@@ -1,24 +1,24 @@
-import React, { useRef, useState } from 'react';
-import ChevronLeft from '../assets/icons/ChevronLeft'; // Update the path to your chevron icons
-import ChevronRight from '../assets/icons/ChevronRight'; // Update the path to your chevron icons
-import useFullScreenToggle from '../hooks/useToggleFullscreen';
-import FullScreenImage from './common/FullScreenImage';
+import React, { useEffect, useRef, useState } from 'react';
+import ChevronLeft from '../../assets/icons/ChevronLeft'; // Update the path to your chevron icons
+import ChevronRight from '../../assets/icons/ChevronRight'; // Update the path to your chevron icons
+import useFullScreenToggle from '../../hooks/useToggleFullscreen';
+import FullScreenImage from './FullScreenImage';
 
-const ImageSlider = ({ images }: any) => {
+const ImageSlider = ({ images, autoSlideTimeout = 4000 }: any) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const { isFullScreen, toggleFullScreen } = useFullScreenToggle();
     const touchStartX = useRef(null);
     const touchEndX = useRef(null);
 
     const handlePrevClick = (e: any) => {
-        e.stopPropagation();
-        e.preventDefault();
+        e?.stopPropagation();
+        e?.preventDefault();
         setCurrentImageIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : images.length - 1));
     };
 
     const handleNextClick = (e: any) => {
-        e.stopPropagation();
-        e.preventDefault();
+        e?.stopPropagation();
+        e?.preventDefault();
         setCurrentImageIndex((prevIndex) => (prevIndex < images.length - 1 ? prevIndex + 1 : 0));
     };
 
@@ -41,21 +41,42 @@ const ImageSlider = ({ images }: any) => {
         }
     };
 
+    useEffect(() => {
+        const handleNextClickScoped = (e: any) => {
+            e?.stopPropagation();
+            e?.preventDefault();
+            setCurrentImageIndex((prevIndex) => (prevIndex < images.length - 1 ? prevIndex + 1 : 0));
+        };
+
+        const clickEvent = new MouseEvent('click', { 
+            view: window,
+            bubbles: true,
+            cancelable: true,
+        });
+        const autoSlideInterval = setInterval(() => {
+            handleNextClickScoped(clickEvent); // Simulate a click on the next span
+        }, autoSlideTimeout);
+
+        return () => {
+            clearInterval(autoSlideInterval);
+        };
+    }, [currentImageIndex, autoSlideTimeout, images]);
+
     return (
-        <div className='flex card items-center'>
-            <button className="transform -translate-y-1/2" onClick={handlePrevClick}>
+        <div className='flex card items-center rounded-lg shadow-xl'>
+            <span className="transform -translate-y-1/2" onClick={handlePrevClick}>
                 <ChevronLeft />
-            </button>
+            </span>
             <div className="relative flex justify-center" onClick={toggleFullScreen} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
                 <img
                     src={images[currentImageIndex]}
                     alt={`${currentImageIndex + 1}`}
-                    className="w-2/3 p-2 max-h-96 object-contain"
+                    className="w-full rounded-lg max-h-96 object-contain p-1"
                 />
             </div>
-            <button className="transform -translate-y-1/2" onClick={handleNextClick}>
+            <span className="transform -translate-y-1/2" onClick={handleNextClick}>
                 <ChevronRight />
-            </button>
+            </span>
             {isFullScreen && <FullScreenImage
                 handlePrevClick={handlePrevClick}
                 handleNextClick={handleNextClick}

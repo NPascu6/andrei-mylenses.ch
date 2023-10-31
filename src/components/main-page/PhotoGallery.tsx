@@ -14,11 +14,8 @@ const PhotoGallery = ({ images }: PhotoGalleryProps) => {
     const [index, setIndex] = useState(0);
 
     return (
-        <div className='card m-4 mt-1 rounded-lg shadow-xl p-1'>
-            <h1 className='text-center font-bold mb-2'>
-                Check out some of the available photos
-            </h1>
-            <div className="rounded shadow-lg m-1 grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className='card m-2 mt-1 rounded-lg shadow-xl p-0.5'>
+            <div className="rounded shadow-lg m-0 grid grid-cols-2 md:grid-cols-4 gap-1">
 
                 {images.map((image, index) => (
                     <div
