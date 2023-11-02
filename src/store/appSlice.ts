@@ -7,6 +7,7 @@ interface AppState {
         message: string;
     }
     photos: any[];
+    canvasPhotos: any[];
 }
 
 const initialState: AppState = {
@@ -15,7 +16,8 @@ const initialState: AppState = {
         isVisible: false,
         message: ''
     },
-    photos: []
+    photos: [],
+    canvasPhotos: []
 };
 
 const appSlice = createSlice({
@@ -30,9 +32,12 @@ const appSlice = createSlice({
         },
         setPhotos: (state, action) => {
             state.photos = action.payload;
+        },
+        setCanvasPhotos: (state, action) => {
+            state.canvasPhotos = action.payload;
         }
     },
 });
 
-export const { setTheme, showToaster, setPhotos } = appSlice.actions;
+export const { setTheme, showToaster, setPhotos, setCanvasPhotos } = appSlice.actions;
 export default appSlice.reducer;

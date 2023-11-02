@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SelectedPhoto from './SelectedPhoto';
 import InitialImage from '../../assets/photos/Stelvio pass v2.jpg';
 
@@ -7,11 +7,24 @@ interface PhotoGalleryProps {
     imageDescriptions: { title: string, description: string }[]
 }
 
-const PhotoGallery = ({ images }: PhotoGalleryProps) => {
+const PhotoGallery = ({ images, imageDescriptions }: PhotoGalleryProps) => {
     const [selectedImage, setSelectedImage] = useState<any | null>(null);
+    const [selectedImageDescription, setSelectedImageDescription] = useState<any | null>(null);
+    const [selectedImageTitle, setSelectedImageTitle] = useState<any | null>(null);
     const [previouseSelectedImage, setPreviousSelectedImage] = useState<any | null>(InitialImage);
     const [nextSelectedImage, setNextSelectedImage] = useState<any | null>(null);
     const [index, setIndex] = useState(0);
+
+    useEffect(() => {
+        if(!selectedImage) return;
+        const title = selectedImage.split('/').pop()?.split('.')[0];
+        const image = imageDescriptions.find((imageDescription) => imageDescription.title === title);
+        const imageTitle = image?.title;
+        const imageDescription = image?.description;
+
+        setSelectedImageTitle(imageTitle);
+        setSelectedImageDescription(imageDescription);
+    }, [imageDescriptions, selectedImage])
 
     return (
         <div className='card m-2 mt-1 rounded-lg shadow-xl p-0.5'>
@@ -45,8 +58,10 @@ const PhotoGallery = ({ images }: PhotoGalleryProps) => {
                 {selectedImage && (
                     <SelectedPhoto
                         index={index}
-                        setIndex={setIndex}
                         images={images}
+                        setIndex={setIndex}
+                        selectedImageDescription={selectedImageDescription}
+                        selectedImageTitle={selectedImageTitle}
                         selectedImage={selectedImage}
                         setPreviousSelectedImage={setPreviousSelectedImage}
                         setNextSelectedImage={setNextSelectedImage}

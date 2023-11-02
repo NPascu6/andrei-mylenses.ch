@@ -10,15 +10,16 @@ const PhotographerDescriptionCard = ({ artistImage }: any) => {
 
     return (
         <div className="p-2 flex flex-col md:flex-row text-center">
+
             <div className="flex shadow-xl rounded-lg card">
                 <div className="w-2/3 flex  align-center">
                     <h2 className="flex  align-center text-xl font-semibold text-start flex-col justify-center items-center">
-                        <p className="text-lg mb-2 pb-3 card rounded-lg p-6">
+                        <p className="text-lg mb-2 pb-1 card rounded-lg p-4">
                             Fueled by an insatiable curiosity for capturing the essence of unique moments, I firmly believe that each second holds the potential for creating a remarkable image.
                         </p>
                     </h2>
                 </div>
-                <div className="w-1/3 mt-2 mr-2">
+                <div className="w-1/3 mt-2 mr-2 mt-6">
                     <img
                         loading="lazy"
                         src={artistImage}
@@ -46,12 +47,6 @@ const PhotographerDescriptionCard = ({ artistImage }: any) => {
                     Why photography? Because photography compels us to pause and observe the world around us. Whether it's the beauty of people, animals, landscapes, or architecture, there are moments that simply demand our attention. My goal is to capture these moments and freeze the time. With the click of the camera button.
                 </p>
             </div>
-            <div className="w-full h-full mt-2 md:hidden">
-                {photos?.length > 0 && <div className="flex justify-center items-center">
-                    <ImageSlider images={imageSources} />
-                </div>}
-            </div>
-  
         </div>
     );
 }

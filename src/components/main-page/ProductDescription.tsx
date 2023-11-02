@@ -1,34 +1,47 @@
 import React, { useEffect, useState } from "react";
 import Contact from "../common/Contact";
 import ImageSlider from "../common/ImageSlider";
-import CanvasExample from "../../assets/canvas/CanvasExample.jpg";
-import CanvasExample1 from "../../assets/canvas/CanvasExample1.jpg";
-import CanvasExample2 from "../../assets/canvas/CanvasExample2.jpg";
-import CanvasExample3 from "../../assets/canvas/CanvasExample3.jpg";
 import PhotoGallery from "./PhotoGallery";
 import { useDispatch } from "react-redux";
-import { setPhotos } from "../../store/appSlice";
-import { imageDescriptions, images } from "../../config/images";
+import { setCanvasPhotos, setPhotos } from "../../store/appSlice";
+import { imageDescriptions, images, canvaseImages } from "../../config/images";
 import CollapsibleSection from "../common/CollapsableSection";
 
 const ProductDescription = () => {
-    const canvasImages = [
-        CanvasExample, CanvasExample1, CanvasExample2, CanvasExample3
-    ];
     const [loadedImages, setLoadedImages] = useState<any>([]);
+    const [loadedCanvasImages, setLoadedCanvasImages] = useState<any>([]);
     const dispatch = useDispatch();
 
     useEffect(() => {
         if (loadedImages.length > 0) return;
 
         Promise.all(images)
-            .then((loadedImages) => {
-                setLoadedImages(loadedImages)
-                dispatch(setPhotos(loadedImages));
+            .then((imgs) => {
+                setLoadedImages(imgs)
+                dispatch(setPhotos(imgs));
             })
             .catch((error) => console.error('Error loading images', error))
             .finally(() => console.log('Images loaded'));
     }, [loadedImages, dispatch]);
+
+    useEffect(() => {
+        if (loadedCanvasImages.length > 0) return;
+
+        Promise.all(canvaseImages)
+            .then((imgs) => {
+                setLoadedCanvasImages(imgs)
+                const images = imgs.map((img: any) => {
+                    return {
+                        src: img.default,
+                        //extract the title from the image source
+                        title: img.default.split('/').pop()?.split('.')[0],
+                    }
+                });
+                dispatch(setCanvasPhotos(images));
+            })
+            .catch((error) => console.error('Error loading images', error))
+            .finally(() => console.log('Images loaded'));
+    }, [loadedCanvasImages, dispatch]);
 
     return (
         <div className="m-2 mt-0">
@@ -36,7 +49,9 @@ const ProductDescription = () => {
                 <h1 className="text-xl font-semibold text-center mb-4">
                     Giclee High-Quality Canvas Prints
                 </h1>
-
+                {loadedCanvasImages?.length > 0 && <div className="flex justify-center items-center">
+                    <ImageSlider images={loadedCanvasImages?.map((i: any) => i.default)} />
+                </div>}
                 <div className="mb-4 text-center">
                     <div className="flex flex-col space-y-2 pt-2  border-t-2">
                         <div className="flex items-center">
@@ -65,8 +80,11 @@ const ProductDescription = () => {
                         </p>
                     </div>
                 </div>
-                <div className="flex justify-center items-center">
-                    <ImageSlider images={canvasImages} />
+
+                <div>
+                    {imageDescriptions?.length > 0 && <CollapsibleSection title={"Check out some more of my art"} >
+                        <PhotoGallery images={loadedImages} imageDescriptions={imageDescriptions} />
+                    </CollapsibleSection>}
                 </div>
                 <Contact />
                 <h2 className="text-xl font-semibold border-t-2 pt-2 border-b-2 pb-2">What Sets My Prints Apart</h2>
@@ -93,9 +111,6 @@ const ProductDescription = () => {
                         ensure that you receive a product of the highest quality.
                     </li>
                 </ul>
-                <CollapsibleSection title={"Check out some of my art"} >
-                    <PhotoGallery images={loadedImages} imageDescriptions={imageDescriptions} />
-                </CollapsibleSection>
 
                 <p className="mt-4 border-t-2 pt-2">
                     <strong>Select Your Size:</strong> Choose between the 90x60 cm and 50x30 cm

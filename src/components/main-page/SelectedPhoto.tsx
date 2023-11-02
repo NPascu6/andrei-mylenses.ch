@@ -7,7 +7,18 @@ const CloseIcon = React.lazy(() => import('../../assets/icons/CloseIcon'));
 const FullScreenImage = React.lazy(() => import('../common/FullScreenImage'));
 const Contact = React.lazy(() => import('../common/Contact'));
 
-const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage, nextSelectedImage, images, index, setPreviousSelectedImage, setNextSelectedImage, setIndex }: any) => {
+const SelectedPhoto = ({
+    selectedImage,
+    images,
+    selectedImageDescription,
+    selectedImageTitle,
+    setSelectedImage,
+    previouseSelectedImage,
+    nextSelectedImage,
+    index,
+    setPreviousSelectedImage,
+    setNextSelectedImage,
+    setIndex }: any) => {
     const [selectedSize, setSelectedSize] = useState('16x20');
     const { isFullScreen, toggleFullScreen } = useFullScreenToggle();
     const touchStartX = useRef(null);
@@ -54,19 +65,12 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
         setSelectedSize(e.target.value);
     }
 
-    const getTitle = (image: any) => {
-        const title = image.split('/').pop()?.split('.')[0];
-        return title?.replace(/-/g, ' ');
-    }
-
-    const PhotoCanvasDetails = () => {
+    const PhotoCanvasDetails = ({ description }: any) => {
         return (
             <div id='photo-canvas-details' className="rounded shadow-lg p-2" style={{ minWidth: '7em' }}>
-                <div className="mb-2 flex justify-between">
-                    <div>
-                        <label className="block text-sm font-medium">Price</label>
-                        <div className="text-lg font-semibold">{selectedSize === '90x60' ? '60' : '40'} CHF</div>
-                    </div>
+
+                <div>
+                    <p className="text-sm">{description}</p>
                 </div>
                 <label className="text-sm font-medium mb-2">Size</label>
                 <select
@@ -77,7 +81,13 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
                     <option value="50x30">50x30cm</option>
                     <option value="90x60">90x60cm</option>
                 </select>
-                <Contact />
+                <div className="mb-2 flex justify-center mt-2">
+                    <div>
+                        <label className="block text-sm font-medium">Price</label>
+                        <div className="text-lg font-semibold">{selectedSize === '90x60' ? '60' : '40'} CHF</div>
+                    </div>
+                </div>
+                <Contact showTitle={false} />
             </div>
         );
     };
@@ -92,7 +102,7 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
                         </div>
                         <div className="flex align-center justify-between">
                             <h2 className="text-md font-semibold text-center select-none pt-2">
-                                {getTitle(selectedImage)}
+                                {selectedImageTitle}
                             </h2>
                         </div>
                         <div className="p-3 cursor-pointer" onClick={handleNextClick}>
@@ -117,7 +127,7 @@ const SelectedPhoto = ({ selectedImage, setSelectedImage, previouseSelectedImage
                 />
             </div>
             <div className="rounded-lg shadow-lg">
-                <PhotoCanvasDetails />
+                <PhotoCanvasDetails description={selectedImageDescription} />
             </div>
 
             {isFullScreen && <FullScreenImage
