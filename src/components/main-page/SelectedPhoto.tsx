@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, {useRef, useState} from "react";
 import useFullScreenToggle from "../../hooks/useToggleFullscreen";
 
 const ChevronLeft = React.lazy(() => import('../../assets/icons/ChevronLeft'));
@@ -8,19 +8,20 @@ const FullScreenImage = React.lazy(() => import('../common/FullScreenImage'));
 const Contact = React.lazy(() => import('../common/Contact'));
 
 const SelectedPhoto = ({
-    selectedImage,
-    images,
-    selectedImageDescription,
-    selectedImageTitle,
-    setSelectedImage,
-    previouseSelectedImage,
-    nextSelectedImage,
-    index,
-    setPreviousSelectedImage,
-    setNextSelectedImage,
-    setIndex }: any) => {
+                           selectedImage,
+                           images,
+                           selectedImageDescription,
+                           selectedImageTitle,
+                           setSelectedImage,
+                           previouseSelectedImage,
+                           nextSelectedImage,
+                           index,
+                           setPreviousSelectedImage,
+                           setNextSelectedImage,
+                           setIndex
+                       }: any) => {
     const [selectedSize, setSelectedSize] = useState('16x20');
-    const { isFullScreen, toggleFullScreen } = useFullScreenToggle();
+    const {isFullScreen, toggleFullScreen} = useFullScreenToggle();
     const touchStartX = useRef(null);
     const touchEndX = useRef(null);
 
@@ -65,9 +66,9 @@ const SelectedPhoto = ({
         setSelectedSize(e.target.value);
     }
 
-    const PhotoCanvasDetails = ({ description }: any) => {
+    const PhotoCanvasDetails = ({description}: any) => {
         return (
-            <div id='photo-canvas-details' className="rounded shadow-lg p-2" style={{ minWidth: '7em' }}>
+            <div id='photo-canvas-details' className="rounded shadow-lg p-2" style={{minWidth: '7em'}}>
 
                 <div>
                     <p className="text-sm">{description}</p>
@@ -87,18 +88,18 @@ const SelectedPhoto = ({
                         <div className="text-lg font-semibold">{selectedSize === '90x60' ? '60' : '40'} CHF</div>
                     </div>
                 </div>
-                <Contact showTitle={false} />
             </div>
         );
     };
 
-    return <div id="selected-photo" className={`fixed top-1 left-2 w-5/6 flex items-start justify-center bg-opacity-90 rounded`}>
+    return <div id="selected-photo"
+                className={`fixed top-1 left-2 w-5/6 flex items-start justify-center bg-opacity-90 rounded`}>
         <div className="rounded-lg shadow-lg flex flex-col md:flex-row select-none">
             <div>
                 <div className="flex align-center justify-between">
                     <div className="flex align-center justify-between w-full">
                         <div className="p-3 cursor-pointer" onClick={handlePrevClick}>
-                            <ChevronLeft />
+                            <ChevronLeft/>
                         </div>
                         <div className="flex align-center justify-between">
                             <h2 className="text-md font-semibold text-center select-none pt-2">
@@ -106,14 +107,14 @@ const SelectedPhoto = ({
                             </h2>
                         </div>
                         <div className="p-3 cursor-pointer" onClick={handleNextClick}>
-                            <ChevronRight />
+                            <ChevronRight/>
                         </div>
                     </div>
                     <div>
                         <span className="flex justify-center align-center p-2" onClick={() => {
                             setSelectedImage(null)
                         }}>
-                            <CloseIcon />
+                            <CloseIcon/>
                         </span>
                     </div>
                 </div>
@@ -127,7 +128,7 @@ const SelectedPhoto = ({
                 />
             </div>
             <div className="rounded-lg shadow-lg">
-                <PhotoCanvasDetails description={selectedImageDescription} />
+                <PhotoCanvasDetails description={selectedImageDescription}/>
             </div>
 
             {isFullScreen && <FullScreenImage
@@ -136,7 +137,7 @@ const SelectedPhoto = ({
                 toggleFullScreen={toggleFullScreen}
                 selectedImage={selectedImage}
                 onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd} />}
+                onTouchEnd={handleTouchEnd}/>}
         </div>
     </div>;
 }

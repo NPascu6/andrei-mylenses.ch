@@ -1,22 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import SelectedPhoto from './SelectedPhoto';
 import InitialImage from '../../assets/photos/Stelvio pass v2.jpg';
+import {useSelector} from "react-redux";
+import {RootState} from "../../store/store";
 
 interface PhotoGalleryProps {
     images: any[]
     imageDescriptions: { title: string, description: string }[]
 }
 
-const PhotoGallery = ({ images, imageDescriptions }: PhotoGalleryProps) => {
+const PhotoGallery = ({images, imageDescriptions}: PhotoGalleryProps) => {
     const [selectedImage, setSelectedImage] = useState<any | null>(null);
     const [selectedImageDescription, setSelectedImageDescription] = useState<any | null>(null);
     const [selectedImageTitle, setSelectedImageTitle] = useState<any | null>(null);
     const [previouseSelectedImage, setPreviousSelectedImage] = useState<any | null>(InitialImage);
     const [nextSelectedImage, setNextSelectedImage] = useState<any | null>(null);
     const [index, setIndex] = useState(0);
+    const isDarkTheme = useSelector((state: RootState) => state.app.isDarkTheme);
+
 
     useEffect(() => {
-        if(!selectedImage) return;
+        if (!selectedImage) return;
         const title = selectedImage.split('/').pop()?.split('.')[0];
         const image = imageDescriptions.find((imageDescription) => imageDescription.title === title);
         const imageTitle = image?.title;
@@ -39,17 +43,16 @@ const PhotoGallery = ({ images, imageDescriptions }: PhotoGalleryProps) => {
                                 setIndex(index);
                                 setPreviousSelectedImage(images[index - 1]);
                                 setNextSelectedImage(images[index + 1]);
-                                setSelectedImage(image.default)
-                            }
-                            else {
+                                setSelectedImage(image.src)
+                            } else {
                                 setSelectedImage(null)
                             }
 
                         }}>
                         <img
                             loading="lazy"
-                            src={image.default}
-                            alt={image.default}
+                            src={image.src}
+                            alt={image.src}
                             className="w-full h-auto rounded-md"
                         />
                     </div>
@@ -67,7 +70,7 @@ const PhotoGallery = ({ images, imageDescriptions }: PhotoGalleryProps) => {
                         setNextSelectedImage={setNextSelectedImage}
                         setSelectedImage={setSelectedImage}
                         previouseSelectedImage={previouseSelectedImage}
-                        nextSelectedImage={nextSelectedImage} />
+                        nextSelectedImage={nextSelectedImage}/>
                 )}
             </div>
         </div>

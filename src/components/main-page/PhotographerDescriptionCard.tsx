@@ -1,54 +1,89 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import React, {Suspense} from "react";
+import {useSelector} from "react-redux";
+import {RootState} from "../../store/store";
+import Loading from "../common/Loading";
+import ImageSlider from "../common/ImageSlider";
 
-const ImageSlider = React.lazy(() => import('../common/ImageSlider'));
 
-const PhotographerDescriptionCard = ({ artistImage }: any) => {
+interface PhotographerDescriptionCardProps {
+    artistImage: string;
+}
+
+
+const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = ({
+                                                                                     artistImage,
+                                                                                 }) => {
+    const isDarkTheme = useSelector((state: RootState) => state.app.isDarkTheme);
     const photos = useSelector((state: RootState) => state.app.photos);
-    const imageSources = photos?.map((photo: any) => photo.default);
+    const imageSources: string[] =
+        photos?.map((photo: { src: string }) => photo.src) || [];
+
+    // Theme-based classes.
+    const cardBg = isDarkTheme ? "bg-gray-800" : "bg-white";
+    const cardText = isDarkTheme ? "text-gray-200" : "text-gray-800";
+    const shadowClass =
+        "shadow-xl hover:shadow-2xl transition-shadow duration-300";
 
     return (
-        <div className="p-2 flex flex-col md:flex-row text-center">
+        <div className={`p-1 flex flex-col md:flex-row gap-2 ${cardText}`}>
+            {/* Artist Description */}
+            <div
+                className={`${shadowClass} ${cardBg} rounded-lg flex flex-row md:flex-row w-full`}
+            >
 
-            <div className="flex shadow-xl rounded-lg card">
-                <div className="w-2/3 flex  align-center">
-                    <h2 className="flex  align-center text-xl font-semibold text-start flex-col justify-center items-center">
-                        <p className="text-lg mb-2 pb-1 card rounded-lg p-4">
-                            Fueled by an insatiable curiosity for capturing the essence of unique moments, I firmly believe that each second holds the potential for creating a remarkable image.
-                        </p>
+                <div className="flex flex-col justify-center p-2 w-2/3">
+                    <h2 className="text-xl font-semibold text-left p-1">
+                        Capturing Life's Unforgettable Moments
                     </h2>
+                    <div className="p-1 rounded-lg">
+                        Fueled by an insatiable curiosity to capture every fleeting detail, I believe
+                        each second holds the potential to become a masterpiece
+                    </div>
                 </div>
-                <div className="w-1/3 mt-2 mr-2 mt-6">
+
+                <div className="flex justify-center items-center p-2 w-1/3">
                     <img
                         loading="lazy"
                         src={artistImage}
-                        alt={artistImage}
-                        className="rounded-full"
+                        alt="Artist portrait"
+                        className="rounded-full w-32 h-32 md:w-40 md:h-40 object-cover border-4 border-gray-700"
                     />
                 </div>
             </div>
-            <div className="w-full h-full mt-2 mb-2 md:hidden">
-                {photos?.length > 0 && <div className="flex justify-center items-center h-full">
-                    <ImageSlider images={imageSources} />
-                </div>}
+
+            {/* Mobile-Only Image Slider */}
+            <div className="w-full">
+                {imageSources.length > 0 && (
+                    <Suspense fallback={<Loading/>}>
+                        <div className="flex justify-center items-center">
+                            <ImageSlider images={imageSources}/>
+                        </div>
+                    </Suspense>
+                )}
             </div>
-            <div className="rounded-lg shadow-xl pb-3 card p-2 md:ml-1">
-                <p className="mb-4">
-                    My journey began in the heart of Transylvania, Romania, a land shrouded in misty forests and guarded by enigmatic castles, where legends often blur the line between reality and myth. It's here that my unyielding passion for nature and the great outdoors was born.
-                </p>
-                <p className="mb-4">
-                    Having dedicated over 25 years to the world of professional basketball, both as a player and a coach, and now nearing a decade in the fast-paced corporate world, I've come to realize that both sports and corporate life are in a fast forward mode.
-                </p>
-                <p className="mb-4">
-                    This realization led me to the next chapter in my life, where I began channeling my energy into creating moments where time stops: photography.
-                </p>
-                <p className="mb-4">
-                    Why photography? Because photography compels us to pause and observe the world around us. Whether it's the beauty of people, animals, landscapes, or architecture, there are moments that simply demand our attention. My goal is to capture these moments and freeze the time. With the click of the camera button.
-                </p>
+
+            {/* Photographer's Journey */}
+            <div
+                className={`${shadowClass} ${cardBg} text-sm rounded-lg p-2 w-full`}
+            >
+                My journey began in the mystical heart of Transylvania, Romania—a land of foggy forests
+                and ancient castles where myth meets reality. It was there that my passion for capturing
+                nature’s raw beauty was born.
+                <br/>
+                <br/>
+                After dedicating over 25 years to professional basketball as both a player and a coach,
+                and nearly a decade navigating the dynamic corporate world, I realized that life is fleeting and
+                every moment deserves to be immortalized.
+                Photography became my gateway to freeze time, capturing the spirit and emotion of life's
+                most candid moments.
+                <br/>
+                <br/>
+                Every frame tells a story, whether it’s the subtle smile of a stranger, the grandeur of nature,
+                or the vibrant pulse of urban life. My goal is to preserve these moments, inviting you to
+                pause and savor the beauty of the present.
             </div>
         </div>
     );
-}
+};
 
 export default PhotographerDescriptionCard;

@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 interface AppState {
     isDarkTheme: boolean;
@@ -39,5 +39,5 @@ const appSlice = createSlice({
     },
 });
 
-export const { setTheme, showToaster, setPhotos, setCanvasPhotos } = appSlice.actions;
+export const {setTheme, showToaster, setPhotos, setCanvasPhotos} = appSlice.actions;
 export default appSlice.reducer;
