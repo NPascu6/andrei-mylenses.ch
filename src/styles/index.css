@@ -37,5 +37,5 @@ code {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    max-height: calc(100dvh - 110px);
+    max-height: calc(100dvh - 120px);
 }

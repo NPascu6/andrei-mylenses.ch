@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { JsxElement } from "typescript";
+import React, {useState} from "react";
+import {JsxElement} from "typescript";
 
 const ChevronDown = React.lazy(() => import('../../assets/icons/ChevronDown'));
 const ChevronUp = React.lazy(() => import('../../assets/icons/ChevronUp'));
 
 interface CollapsibleSectionpProps {
-    title: string,
-    children: JsxElement | any
+    title?: string,
+    children?: JsxElement | any
 }
 
-function CollapsibleSection({ title, children }: CollapsibleSectionpProps) {
+function CollapsibleSection({title, children}: CollapsibleSectionpProps) {
     const [isOpen, setIsOpen] = useState(true);
 
     const toggleSection = () => {
@@ -22,9 +22,9 @@ function CollapsibleSection({ title, children }: CollapsibleSectionpProps) {
                 <div className='w-full text-sm font-bold alig-center'>
                     <div className={isOpen ? 'w-full' : 'w-full'}>{title}</div>
                 </div>
-                <div > {isOpen ? <ChevronUp /> : <ChevronDown />}</div>
+                <div> {isOpen ? <ChevronUp/> : <ChevronDown/>}</div>
             </div>
-            <div className="shadow-xl" id="collapsable-section-body" style={{ marginTop: isOpen ? '-1em' : '-0.5em' }}>
+            <div className="shadow-xl" id="collapsable-section-body" style={{marginTop: isOpen ? '-1em' : '-0.5em'}}>
                 {isOpen && children}
             </div>
         </div>

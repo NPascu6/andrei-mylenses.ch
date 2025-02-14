@@ -11,11 +11,9 @@ const GallerySection: React.FC = () => {
     if (!imageDescriptions?.length) return null;
 
     return (
-        <div className={"border-t-2"}>
-            <CollapsibleSection title="Check out some more of my art">
-                <PhotoGallery images={loadedImages} imageDescriptions={imageDescriptions}/>
-            </CollapsibleSection>
-        </div>
+        <CollapsibleSection>
+            <PhotoGallery images={loadedImages} imageDescriptions={imageDescriptions}/>
+        </CollapsibleSection>
 
     );
 };

@@ -2,7 +2,7 @@ import React from "react";
 import PrintDetailCard from "./PrintDetailCard";
 
 const PrintDetails: React.FC = () => (
-    <div className="mb-4 text-center md:grid md:grid-cols-2 md:gap-6 lg:gap-8">
+    <div className="mb-4 mt-4 text-center md:grid md:grid-cols-2 md:gap-2 lg:gap-2">
         <PrintDetailCard
             dimensions="90x60 cm"
             price="60 CHF"
@@ -12,6 +12,7 @@ const PrintDetails: React.FC = () => (
         The larger canvas allows you to appreciate every intricate detail, making it an
         ideal choice for art enthusiasts.`}
         />
+
         <PrintDetailCard
             dimensions="50x30 cm"
             price="40 CHF"

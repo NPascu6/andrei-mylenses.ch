@@ -53,8 +53,8 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({
                 conversation, inspire creativity, and elevate your home or office with a touch of brilliance.
             </p></ExpandableParagraph>
 
-            <hr className="border-t-2 mt-4"/>
-            <div className="grid  grid-cols-2">
+            <hr className="border-t-2 mt-6 mb-4"/>
+            <div className="grid grid-cols-2">
                 <DescriptionText/>
                 <DigitalCopiesSection/>
             </div>

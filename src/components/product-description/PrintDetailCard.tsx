@@ -11,7 +11,7 @@ const PrintDetailCard: React.FC<PrintDetailCardProps> = ({
                                                              price,
                                                              description,
                                                          }) => (
-    <div className="flex flex-col space-y-2 pt-2 border-t-2">
+    <div className="flex flex-col space-y-2 pt-2 border-2">
         <div className="flex items-center">
             <div className="w-32 font-bold">{dimensions}</div>
             <div className="flex-1 font-bold">Price: {price}</div>
