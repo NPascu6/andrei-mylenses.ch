@@ -50,18 +50,17 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                     />
                 </div>
             </div>
+            <div
+                className={`${shadowClass} ${cardBg} rounded-lg flex w-full`}
+            >
 
-            {/* Mobile-Only Image Slider */}
-            <div className="w-full">
+                {/* Mobile-Only Image Slider */}
                 {imageSources.length > 0 && (
                     <Suspense fallback={<Loading/>}>
-                        <div className="flex justify-center items-center">
-                            <ImageSlider images={imageSources}/>
-                        </div>
+                        <ImageSlider images={imageSources}/>
                     </Suspense>
                 )}
             </div>
-
             {/* Photographer's Journey */}
             <div
                 className={`${shadowClass} ${cardBg} text-sm rounded-lg p-2 w-full`}
