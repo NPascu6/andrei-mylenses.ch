@@ -37,7 +37,7 @@ const PhotoGallery = ({images, imageDescriptions}: PhotoGalleryProps) => {
                 {images.map((image, index) => (
                     <div
                         key={index}
-                        className="cursor-pointer"
+                        className="cursor-pointer flex"
                         onClick={() => {
                             if (!selectedImage) {
                                 setIndex(index);
@@ -53,7 +53,7 @@ const PhotoGallery = ({images, imageDescriptions}: PhotoGalleryProps) => {
                             loading="lazy"
                             src={image.src}
                             alt={image.src}
-                            className="w-full h-auto rounded-md"
+                            className="w-full h-auto rounded-lg"
                         />
                     </div>
                 ))}

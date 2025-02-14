@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
 function useFullScreenToggle(initialState = false) {
     const [isFullScreen, setFullScreen] = useState(initialState);
@@ -19,9 +19,8 @@ function useFullScreenToggle(initialState = false) {
         };
     }, [isFullScreen]);
 
-    
 
-    return { isFullScreen, toggleFullScreen };
+    return {isFullScreen, toggleFullScreen};
 }
 
 export default useFullScreenToggle;

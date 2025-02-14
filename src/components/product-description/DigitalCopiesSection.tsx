@@ -12,6 +12,7 @@ const DigitalCopiesSection: React.FC = () => (
           className="flex justify-center"
       >
         <img
+            className="rounded-lg"
             style={{maxWidth: "25%"}}
             alt="picfair"
             src="https://logowik.com/content/uploads/images/picfair3077.logowik.com.webp"

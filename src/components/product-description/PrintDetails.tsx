@@ -2,7 +2,7 @@ import React from "react";
 import PrintDetailCard from "./PrintDetailCard";
 
 const PrintDetails: React.FC = () => (
-    <div className="mb-4 mt-4 text-center md:grid md:grid-cols-2 md:gap-2 lg:gap-2">
+    <div className="mb-4 m-2 text-center md:grid md:grid-cols-2 md:gap-2 lg:gap-2">
         <PrintDetailCard
             dimensions="90x60 cm"
             price="60 CHF"

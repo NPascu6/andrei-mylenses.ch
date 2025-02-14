@@ -124,7 +124,7 @@ const SelectedPhoto = ({
                     src={selectedImage}
                     alt={selectedImage}
                     onClick={toggleFullScreen}
-                    className="max-w-70% select-none p-1"
+                    className="max-w-70% select-none p-1 rounded-lg"
                 />
             </div>
             <div className="rounded-lg shadow-lg">

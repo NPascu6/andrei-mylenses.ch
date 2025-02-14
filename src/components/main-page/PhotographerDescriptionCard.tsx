@@ -46,7 +46,7 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                         loading="lazy"
                         src={artistImage}
                         alt="Artist portrait"
-                        className="rounded-full w-32 h-32 md:w-40 md:h-40 object-cover border-4 border-gray-700"
+                        className="rounded-full w-32 h-32 md:w-40 md:h-40 object-cover border-2 border-gray-700"
                     />
                 </div>
             </div>

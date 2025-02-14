@@ -27,12 +27,12 @@ const PrintFeatures: React.FC = () => {
                 What Sets My Prints Apart
             </h2>
             <ul className={`list-disc space-y-2 ${listTextColor} md:grid md:grid-cols-3 md:gap-1`}>
-                <li className={`space-y-2 border text-center items-center justify-center flex p-1 flex-wrap mt-2 ${listTextColor}`}>
+                <li className={`rounded-lg space-y-2 border text-center items-center justify-center flex p-1 flex-wrap mt-2 ${listTextColor}`}>
                     <span className="font-bold">Giclee Printing</span> Our prints are created using a cutting-edge
                     Giclee printing process renowned for exceptional color accuracy, sharpness, and longevity. Every
                     print is a true-to-life reproduction that captures the finest details of the original photograph.
                 </li>
-                <li className={`space-y-2 border text-center items-center justify-center flex p-1 flex-wrap ${listTextColor}`}>
+                <li className={`rounded-lg space-y-2 border text-center items-center justify-center flex p-1 flex-wrap ${listTextColor}`}>
                     <span className="font-bold">Canvas Quality</span> We utilize premium, museum-grade canvas to give
                     your prints an authentic, tactile feel. The rich texture of the canvas adds depth and dimension,
                     elevating the overall aesthetic appeal of each piece.
@@ -46,12 +46,12 @@ const PrintFeatures: React.FC = () => {
                         </Suspense>
                     )}
                 </div>
-                <li className={`space-y-2 border text-center items-center justify-center flex p-1 flex-wrap ${listTextColor}`}>
+                <li className={`rounded-lg space-y-2 border text-center items-center justify-center flex p-1 flex-wrap ${listTextColor}`}>
                     <span className="font-bold">Vibrant Colors</span> Our prints burst with vivid, true-to-life colors
                     that bring every scene to life. Each photograph pops with brilliance, ensuring your space is filled
                     with dynamic, eye-catching art.
                 </li>
-                <li className={`space-y-2 border text-center items-center justify-center flex p-1 flex-wrap ${listTextColor}`}>
+                <li className={`rounded-lg space-y-2 border text-center items-center justify-center flex p-1 flex-wrap ${listTextColor}`}>
                     <span className="font-bold">Handcrafted Precision</span> Every print is meticulously handcrafted,
                     thoroughly inspected, and handled with utmost care. This dedication to detail guarantees that you
                     receive a product of the highest quality.
