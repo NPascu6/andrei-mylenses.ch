@@ -49,14 +49,10 @@ function App() {
     }, []);
 
     useEffect(() => {
-        const isDarkTheme = localStorage.getItem('isDarkTheme') === 'true';
-        const theme = isDarkTheme ? 'dark' : 'light';
+        const savedPreference = localStorage.getItem('isDarkTheme') === 'true';
+        const theme = savedPreference ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', theme);
-        dispatch(setTheme(isDarkTheme))
-    }, [])
-
-    useEffect(() => {
-        dispatch(setTheme(true));
+        dispatch(setTheme(savedPreference));
     }, [])
 
     return (
