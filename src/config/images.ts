@@ -1,14 +1,14 @@
 // config/images.ts
 
-// Use Vite’s import.meta.glob with eager loading so that each module is imported immediately.
-// This returns an object whose keys are the file paths and whose values are the module objects.
+// Use Vite's import.meta.glob to provide dynamic import functions for each image.
+// Each value is a function returning a promise that resolves to the module.
 export const images = Object.values(
-    import.meta.glob('../assets/photos/*.jpg', {eager: true})
-) as { default: string }[];
+    import.meta.glob('../assets/photos/*.jpg')
+) as Array<() => Promise<{ default: string }>>;
 
 export const canvaseImages = Object.values(
-    import.meta.glob('../assets/canvas/*.jpg', {eager: true})
-) as { default: string }[];
+    import.meta.glob('../assets/canvas/*.jpg')
+) as Array<() => Promise<{ default: string }>>;
 
 export const imageDescriptions = [
     {

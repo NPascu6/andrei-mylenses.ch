@@ -31,7 +31,7 @@ const SelectedPhoto = ({
         setIndex(index - 1);
         setPreviousSelectedImage(images[index - 2]);
         setNextSelectedImage(images[index + 2]);
-        setSelectedImage(previouseSelectedImage?.default)
+        setSelectedImage(previouseSelectedImage?.src)
     }
 
     const handleNextClick = (e: any) => {
@@ -40,7 +40,7 @@ const SelectedPhoto = ({
         setIndex(index + 1);
         setPreviousSelectedImage(images[index - 2]);
         setNextSelectedImage(images[index + 2]);
-        setSelectedImage(nextSelectedImage?.default)
+        setSelectedImage(nextSelectedImage?.src)
     }
 
     const handleTouchStart = (e: any) => {
