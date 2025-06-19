@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import SelectedPhoto from './SelectedPhoto';
-import InitialImage from '../../assets/photos/Stelvio pass v2.jpg';
 import {useSelector} from "react-redux";
 import {RootState} from "../../store/store";
 
@@ -13,7 +12,7 @@ const PhotoGallery = ({images, imageDescriptions}: PhotoGalleryProps) => {
     const [selectedImage, setSelectedImage] = useState<any | null>(null);
     const [selectedImageDescription, setSelectedImageDescription] = useState<any | null>(null);
     const [selectedImageTitle, setSelectedImageTitle] = useState<any | null>(null);
-    const [previouseSelectedImage, setPreviousSelectedImage] = useState<any | null>(InitialImage);
+    const [previouseSelectedImage, setPreviousSelectedImage] = useState<any | null>(null);
     const [nextSelectedImage, setNextSelectedImage] = useState<any | null>(null);
     const [index, setIndex] = useState(0);
     const isDarkTheme = useSelector((state: RootState) => state.app.isDarkTheme);
@@ -78,4 +77,4 @@ const PhotoGallery = ({images, imageDescriptions}: PhotoGalleryProps) => {
     );
 };
 
-export default PhotoGallery;
+export default React.memo(PhotoGallery);

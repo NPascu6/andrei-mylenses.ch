@@ -10,7 +10,7 @@ const PhotographerDescriptionCard = React.lazy(() => import('../components/main-
 
 const MainPage = () => {
     const photos = useSelector((state: RootState) => state.app.photos);
-    const imageSources = photos?.map((photo: any) => photo.default);
+    const imageSources = photos?.map((photo: any) => photo.src);
 
     return (
         <div>

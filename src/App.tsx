@@ -16,9 +16,9 @@ function App() {
 
 
     useEffect(() => {
-        Promise.all(images)
+        Promise.all(images.map((load) => load()))
             .then((imgs) => {
-                const images = imgs.map((img: any) => {
+                const loaded = imgs.map((img: any) => {
                     return {
                         src: img.default,
                         //extract the title from the image source
@@ -26,23 +26,23 @@ function App() {
                     }
                 });
 
-                dispatch(setPhotos(images));
+                dispatch(setPhotos(loaded));
             })
             .catch((error) => console.error('Error loading images', error))
             .finally(() => console.log('Images loaded'));
     }, []);
 
     useEffect(() => {
-        Promise.all(canvaseImages)
+        Promise.all(canvaseImages.map((load) => load()))
             .then((imgs) => {
-                const images = imgs.map((img: any) => {
+                const imagesLoaded = imgs.map((img: any) => {
                     return {
                         src: img.default,
                         //extract the title from the image source
                         title: img.default.split('/').pop()?.split('.')[0],
                     }
                 });
-                dispatch(setCanvasPhotos(images));
+                dispatch(setCanvasPhotos(imagesLoaded));
             })
             .catch((error) => console.error('Error loading images', error))
             .finally(() => console.log('Canvas Images loaded'));
