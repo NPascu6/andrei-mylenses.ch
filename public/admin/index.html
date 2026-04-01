@@ -3,9 +3,561 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#191414" />
     <title>My Lenses CMS</title>
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --admin-bg: #161111;
+        --admin-bg-alt: #241917;
+        --admin-bg-soft: rgba(53, 37, 33, 0.72);
+        --admin-panel: rgba(30, 21, 21, 0.88);
+        --admin-panel-strong: rgba(42, 30, 28, 0.94);
+        --admin-border: rgba(231, 215, 205, 0.14);
+        --admin-border-strong: rgba(231, 215, 205, 0.22);
+        --admin-text: #f2e8de;
+        --admin-text-muted: #cfbeb0;
+        --admin-accent: #d2ac8e;
+        --admin-accent-strong: #e5c8ae;
+        --admin-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        --admin-radius-xl: 28px;
+        --admin-radius-lg: 20px;
+        --admin-radius-md: 14px;
+        --admin-font-body: "Inter", "Segoe UI", sans-serif;
+        --admin-font-display: "Cormorant Garamond", "Times New Roman", serif;
+      }
+
+      body[data-admin-theme="gallery"] {
+        --admin-bg: #161111;
+        --admin-bg-alt: #241917;
+        --admin-bg-soft: rgba(53, 37, 33, 0.72);
+        --admin-panel: rgba(30, 21, 21, 0.88);
+        --admin-panel-strong: rgba(42, 30, 28, 0.94);
+        --admin-border: rgba(231, 215, 205, 0.14);
+        --admin-border-strong: rgba(231, 215, 205, 0.22);
+        --admin-text: #f2e8de;
+        --admin-text-muted: #cfbeb0;
+        --admin-accent: #d2ac8e;
+        --admin-accent-strong: #e5c8ae;
+      }
+
+      body[data-admin-theme="forest"] {
+        --admin-bg: #0f1713;
+        --admin-bg-alt: #1b2a20;
+        --admin-bg-soft: rgba(29, 48, 37, 0.76);
+        --admin-panel: rgba(18, 30, 24, 0.9);
+        --admin-panel-strong: rgba(25, 39, 31, 0.95);
+        --admin-border: rgba(214, 231, 214, 0.14);
+        --admin-border-strong: rgba(214, 231, 214, 0.22);
+        --admin-text: #edf5ee;
+        --admin-text-muted: #bfd0c1;
+        --admin-accent: #87b295;
+        --admin-accent-strong: #b5d5be;
+      }
+
+      body[data-admin-theme="stone"] {
+        --admin-bg: #17181c;
+        --admin-bg-alt: #272c34;
+        --admin-bg-soft: rgba(42, 46, 56, 0.76);
+        --admin-panel: rgba(25, 28, 34, 0.9);
+        --admin-panel-strong: rgba(34, 38, 46, 0.94);
+        --admin-border: rgba(220, 226, 236, 0.14);
+        --admin-border-strong: rgba(220, 226, 236, 0.24);
+        --admin-text: #eff2f8;
+        --admin-text-muted: #c8d0df;
+        --admin-accent: #9fb6d8;
+        --admin-accent-strong: #c7d9f0;
+      }
+
+      body[data-admin-theme="paper"] {
+        color-scheme: light;
+        --admin-bg: #f3ede7;
+        --admin-bg-alt: #efe4d8;
+        --admin-bg-soft: rgba(255, 252, 247, 0.84);
+        --admin-panel: rgba(255, 251, 246, 0.92);
+        --admin-panel-strong: rgba(255, 248, 240, 0.96);
+        --admin-border: rgba(93, 68, 51, 0.12);
+        --admin-border-strong: rgba(93, 68, 51, 0.18);
+        --admin-text: #2e211c;
+        --admin-text-muted: #68524a;
+        --admin-accent: #986f57;
+        --admin-accent-strong: #b28268;
+        --admin-shadow: 0 30px 80px rgba(103, 71, 49, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--admin-font-body);
+        color: var(--admin-text);
+        background:
+          radial-gradient(circle at top left, color-mix(in srgb, var(--admin-accent) 26%, transparent), transparent 32%),
+          radial-gradient(circle at top right, color-mix(in srgb, var(--admin-bg-alt) 82%, white 6%), transparent 28%),
+          linear-gradient(180deg, var(--admin-bg-alt) 0%, var(--admin-bg) 56%, color-mix(in srgb, var(--admin-bg) 92%, black 8%) 100%);
+        background-attachment: fixed;
+        transition:
+          background 220ms ease,
+          color 220ms ease;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),
+          repeating-linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.03) 0,
+            rgba(255, 255, 255, 0.03) 1px,
+            transparent 1px,
+            transparent 18px
+          );
+        opacity: 0.35;
+      }
+
+      .admin-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        transition:
+          opacity 320ms ease,
+          visibility 320ms ease;
+        background:
+          radial-gradient(circle at center, rgba(255, 255, 255, 0.03), transparent 42%),
+          linear-gradient(180deg, rgba(14, 10, 10, 0.76), rgba(14, 10, 10, 0.92));
+        backdrop-filter: blur(16px);
+      }
+
+      body.cms-ready .admin-splash {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .admin-splash__card {
+        width: min(100%, 720px);
+        padding: 36px;
+        border: 1px solid var(--admin-border);
+        border-radius: var(--admin-radius-xl);
+        background:
+          linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--admin-bg-soft) 86%, transparent),
+            color-mix(in srgb, var(--admin-panel) 88%, transparent)
+          ),
+          var(--admin-panel);
+        box-shadow: var(--admin-shadow);
+      }
+
+      .admin-splash__top {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .admin-splash__logo {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid var(--admin-border-strong);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+        flex-shrink: 0;
+      }
+
+      .admin-splash__eyebrow {
+        margin: 0 0 6px;
+        color: var(--admin-accent);
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .admin-splash__title {
+        margin: 0;
+        font-family: var(--admin-font-display);
+        font-size: clamp(2.25rem, 4vw, 3.5rem);
+        line-height: 0.95;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+      }
+
+      .admin-splash__copy {
+        margin: 18px 0 0;
+        max-width: 56ch;
+        color: var(--admin-text-muted);
+        line-height: 1.75;
+        font-size: 0.98rem;
+      }
+
+      .admin-splash__meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .admin-splash__pill {
+        padding: 15px 16px;
+        border: 1px solid var(--admin-border);
+        border-radius: var(--admin-radius-md);
+        background: color-mix(in srgb, var(--admin-panel-strong) 72%, transparent);
+      }
+
+      .admin-splash__pill strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--admin-text);
+        font-size: 0.9rem;
+      }
+
+      .admin-splash__pill span {
+        color: var(--admin-text-muted);
+        font-size: 0.88rem;
+        line-height: 1.6;
+      }
+
+      .admin-splash__status {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 28px;
+        color: var(--admin-text-muted);
+        font-size: 0.92rem;
+      }
+
+      .admin-splash__dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, var(--admin-accent-strong), var(--admin-accent));
+        box-shadow: 0 0 0 8px rgba(229, 200, 174, 0.08);
+        animation: pulse 1.8s ease-in-out infinite;
+      }
+
+      .admin-theme-dock {
+        position: fixed;
+        top: 18px;
+        right: 18px;
+        z-index: 10000;
+        width: min(320px, calc(100vw - 24px));
+        padding: 14px;
+        border: 1px solid var(--admin-border);
+        border-radius: 18px;
+        background: color-mix(in srgb, var(--admin-panel) 92%, transparent);
+        box-shadow: var(--admin-shadow);
+        backdrop-filter: blur(16px);
+      }
+
+      .admin-theme-dock__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .admin-theme-dock__title {
+        margin: 0;
+        color: var(--admin-text);
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .admin-theme-dock__toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 42px;
+        height: 42px;
+        border: 1px solid var(--admin-border-strong);
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--admin-panel-strong) 90%, transparent);
+        color: var(--admin-text);
+        cursor: pointer;
+      }
+
+      .admin-theme-dock__body {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .admin-theme-dock[data-collapsed="true"] .admin-theme-dock__body {
+        display: none;
+      }
+
+      .admin-theme-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .admin-theme-option {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--admin-border);
+        border-radius: 14px;
+        background: color-mix(in srgb, var(--admin-panel-strong) 84%, transparent);
+        color: var(--admin-text);
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .admin-theme-option strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 0.92rem;
+      }
+
+      .admin-theme-option span {
+        color: var(--admin-text-muted);
+        font-size: 0.78rem;
+      }
+
+      .admin-theme-option[aria-pressed="true"] {
+        border-color: color-mix(in srgb, var(--admin-accent) 68%, white 10%);
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--admin-accent) 28%, transparent);
+      }
+
+      body.cms-ready > #nc-root,
+      body.cms-ready > div[id],
+      body.cms-ready > div:not(.admin-splash):not(.admin-theme-dock) {
+        position: relative;
+        z-index: 1;
+      }
+
+      body.cms-ready button,
+      body.cms-ready [role="button"] {
+        border-radius: 14px !important;
+      }
+
+      body.cms-ready input,
+      body.cms-ready textarea,
+      body.cms-ready select {
+        border-radius: 12px !important;
+      }
+
+      body.cms-ready input,
+      body.cms-ready textarea,
+      body.cms-ready select,
+      body.cms-ready button {
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          background-color 180ms ease,
+          color 180ms ease;
+      }
+
+      body.cms-ready input:focus,
+      body.cms-ready textarea:focus,
+      body.cms-ready select:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--admin-accent) 22%, transparent) !important;
+      }
+
+      body.cms-ready a {
+        color: var(--admin-accent);
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .admin-theme-dock {
+          top: auto;
+          right: 12px;
+          bottom: 12px;
+          left: 12px;
+          width: auto;
+        }
+
+        .admin-theme-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .admin-splash__card {
+          padding: 24px;
+          border-radius: 22px;
+        }
+
+        .admin-splash__top {
+          align-items: flex-start;
+        }
+
+        .admin-splash__logo {
+          width: 58px;
+          height: 58px;
+        }
+      }
+    </style>
   </head>
   <body>
+    <div class="admin-theme-dock" data-collapsed="true">
+      <div class="admin-theme-dock__header">
+        <p class="admin-theme-dock__title">Admin Theme</p>
+        <button class="admin-theme-dock__toggle" type="button" aria-label="Toggle admin theme picker">
+          ✦
+        </button>
+      </div>
+      <div class="admin-theme-dock__body">
+        <div class="admin-theme-grid">
+          <button class="admin-theme-option" type="button" data-theme="gallery">
+            <strong>Gallery</strong>
+            <span>Warm dark editorial</span>
+          </button>
+          <button class="admin-theme-option" type="button" data-theme="forest">
+            <strong>Forest</strong>
+            <span>Deep green studio</span>
+          </button>
+          <button class="admin-theme-option" type="button" data-theme="stone">
+            <strong>Stone</strong>
+            <span>Cool slate control room</span>
+          </button>
+          <button class="admin-theme-option" type="button" data-theme="paper">
+            <strong>Paper</strong>
+            <span>Soft light proofing desk</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="admin-splash" aria-hidden="true">
+      <div class="admin-splash__card">
+        <div class="admin-splash__top">
+          <img class="admin-splash__logo" src="/logo192.png" alt="My Lenses logo" />
+          <div>
+            <p class="admin-splash__eyebrow">My Lenses Admin</p>
+            <h1 class="admin-splash__title">Curate the portfolio with care.</h1>
+          </div>
+        </div>
+        <p class="admin-splash__copy">
+          Upload new work, refine descriptions, and shape the public gallery in one place.
+          This editor is reserved for approved accounts and publishes directly into the live
+          portfolio workflow.
+        </p>
+        <div class="admin-splash__meta">
+          <div class="admin-splash__pill">
+            <strong>Portfolio-first workflow</strong>
+            <span>Manage titles, locations, featured status, and print-ready selections.</span>
+          </div>
+          <div class="admin-splash__pill">
+            <strong>Protected access</strong>
+            <span>Only approved GitHub email accounts can complete the editor login.</span>
+          </div>
+          <div class="admin-splash__pill">
+            <strong>Live publishing path</strong>
+            <span>Changes commit to GitHub, build automatically, and deploy to the live site.</span>
+          </div>
+        </div>
+        <div class="admin-splash__status">
+          <span class="admin-splash__dot"></span>
+          <span>Preparing the editorial workspace…</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var themeStorageKey = 'my-lenses-admin-theme';
+        var themeDock = document.querySelector('.admin-theme-dock');
+        var themeToggle = document.querySelector('.admin-theme-dock__toggle');
+        var themeButtons = Array.prototype.slice.call(
+          document.querySelectorAll('.admin-theme-option')
+        );
+        var rootObserver;
+
+        var applyTheme = function (themeName) {
+          document.body.setAttribute('data-admin-theme', themeName);
+          window.localStorage.setItem(themeStorageKey, themeName);
+          themeButtons.forEach(function (button) {
+            button.setAttribute('aria-pressed', String(button.dataset.theme === themeName));
+          });
+        };
+
+        var savedTheme = window.localStorage.getItem(themeStorageKey) || 'gallery';
+        applyTheme(savedTheme);
+
+        themeButtons.forEach(function (button) {
+          button.addEventListener('click', function () {
+            applyTheme(button.dataset.theme);
+          });
+        });
+
+        themeToggle.addEventListener('click', function () {
+          var isCollapsed = themeDock.getAttribute('data-collapsed') === 'true';
+          themeDock.setAttribute('data-collapsed', String(!isCollapsed));
+        });
+
+        var rootObserver = new MutationObserver(function () {
+          if (document.querySelector('button, [role="button"], input, textarea, main')) {
+            document.body.classList.add('cms-ready');
+            if (rootObserver) {
+              rootObserver.disconnect();
+            }
+          }
+        });
+
+        rootObserver.observe(document.body, { childList: true, subtree: true });
+
+        window.addEventListener('load', function () {
+          setTimeout(function () {
+            if (document.querySelector('button, [role="button"], input, textarea, main')) {
+              document.body.classList.add('cms-ready');
+            }
+          }, 500);
+        });
+
+        var previewStyle = [
+          ':root { color-scheme: light; }',
+          'body { font-family: "Inter", "Segoe UI", sans-serif; color: #2f241f; background: linear-gradient(180deg, #faf5ef, #f4ece3); padding: 28px; }',
+          'h1, h2, h3 { font-family: "Cormorant Garamond", "Times New Roman", serif; letter-spacing: -0.02em; color: #241917; }',
+          'img { border-radius: 20px; box-shadow: 0 18px 48px rgba(36, 25, 23, 0.14); }',
+          'p, li { line-height: 1.8; }',
+          '.frame-content, .css-1f5h6t6-PreviewPaneContainer { max-width: 920px; margin: 0 auto; }'
+        ].join('');
+
+        var registerPreviewStyle = function () {
+          if (!window.CMS || typeof window.CMS.registerPreviewStyle !== 'function') {
+            window.setTimeout(registerPreviewStyle, 300);
+            return;
+          }
+
+          window.CMS.registerPreviewStyle(previewStyle, { raw: true });
+        };
+
+        registerPreviewStyle();
+      })();
+    </script>
     <script src="https://unpkg.com/decap-cms@^3.5.0/dist/decap-cms.js"></script>
   </body>
 </html>
