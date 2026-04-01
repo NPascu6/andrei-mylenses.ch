@@ -3,46 +3,99 @@ backend:
   repo: NPascu6/andrei-mylenses.ch
   branch: master
   base_url: https://andrei-mylenses-cms-oauth.vercel.app
-  auth_endpoint: auth
+  auth_endpoint: /auth
   site_domain: andrei-mylenses.ch
 
 site_url: https://andrei-mylenses.ch
 display_url: https://andrei-mylenses.ch
 logo_url: /logo192.png
 publish_mode: editorial_workflow
+locale: en
 
 media_folder: "src/assets/photos"
 public_folder: "src/assets/photos"
 
 collections:
   - name: "photos"
-    label: "Photos"
-    label_singular: "Photo"
+    label: "Portfolio Library"
+    label_singular: "Portfolio Entry"
     folder: "src/content/photos"
     create: true
+    delete: true
     slug: "{{slug}}"
     extension: "json"
     format: "json"
     identifier_field: "title"
-    summary: "{{title}} - {{category}}"
+    summary: "{{title}} · {{category}} · {{location}}"
+    sortable_fields: ["title", "category", "location", "takenAt", "featured", "printReady"]
+    view_filters:
+      - label: "Featured only"
+        field: "featured"
+        pattern: true
+      - label: "Print-ready only"
+        field: "printReady"
+        pattern: true
+      - label: "Instagram imports"
+        field: "category"
+        pattern: "Instagram"
+    editor:
+      preview: false
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Image", name: "image", widget: "image", allow_multiple: false }
-      - { label: "Description", name: "description", widget: "text", required: false }
-      - { label: "Location", name: "location", widget: "string", required: false }
+      - label: "Artwork Title"
+        name: "title"
+        widget: "string"
+        hint: "Public-facing title shown in the gallery and fullscreen view."
+      - label: "Photo File"
+        name: "image"
+        widget: "image"
+        allow_multiple: false
+        hint: "Upload a single image for this entry. Landscape and portrait both work."
+      - label: "Description"
+        name: "description"
+        widget: "text"
+        required: false
+        hint: "Write 1-3 sentences that describe the scene, mood, or story behind the image."
+      - label: "Location"
+        name: "location"
+        widget: "string"
+        required: false
+        hint: "Use a clean human-readable location, for example: Zurich, Switzerland."
       - label: "Category"
         name: "category"
         widget: "select"
         required: false
+        default: "Travel"
+        hint: "Used for gallery filtering on the public site."
         options:
-          - "Travel"
-          - "Nature"
-          - "Street"
-          - "Wildlife"
-          - "Portrait"
-          - "Architecture"
-          - "Instagram"
-      - { label: "Featured", name: "featured", widget: "boolean", default: false, required: false }
-      - { label: "Print Ready", name: "printReady", widget: "boolean", default: false, required: false }
-      - { label: "Instagram / Source Link", name: "permalink", widget: "string", required: false }
-      - { label: "Date Taken", name: "takenAt", widget: "datetime", required: false, format: "YYYY-MM-DD", time_format: false, date_format: "YYYY-MM-DD" }
+          - { label: "Travel", value: "Travel" }
+          - { label: "Nature", value: "Nature" }
+          - { label: "Street", value: "Street" }
+          - { label: "Wildlife", value: "Wildlife" }
+          - { label: "Portrait", value: "Portrait" }
+          - { label: "Architecture", value: "Architecture" }
+          - { label: "Instagram", value: "Instagram" }
+      - label: "Show as featured work"
+        name: "featured"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "Turn this on if the image should be highlighted more prominently across the site."
+      - label: "Available as print-ready work"
+        name: "printReady"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "Turn this on for images that should support stronger print-focused messaging."
+      - label: "Instagram or source link"
+        name: "permalink"
+        widget: "string"
+        required: false
+        hint: "Optional source URL, useful for Instagram imports or original post links."
+      - label: "Date captured"
+        name: "takenAt"
+        widget: "datetime"
+        required: false
+        format: "YYYY-MM-DD"
+        time_format: false
+        date_format: "YYYY-MM-DD"
+        hint: "Optional capture date shown in metadata when available."
