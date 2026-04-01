@@ -24,24 +24,27 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
             <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
                 <article className="surface-panel relative overflow-hidden rounded-[2rem]">
                     <div className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top_left,_rgba(var(--accent-color),0.22),_transparent_60%)]"/>
-                    <div className="relative space-y-6 p-1">
-                        <div className="grid gap-5 md:grid-cols-[auto_1fr] md:items-center">
+                    <div className="relative space-y-7 p-6 md:p-8">
+                        <div className="grid gap-6 md:grid-cols-[auto_1fr] md:items-center">
                             <div className="relative mx-auto md:mx-0">
                                 <div className="absolute -inset-3 rounded-full blur-2xl" style={{backgroundColor: 'rgba(var(--accent-color), 0.16)'}}/>
                                 <img
                                     loading="lazy"
                                     src={artistImage}
                                     alt="Andrei Pascu portrait"
-                                    className="relative h-32 w-32 rounded-full object-cover shadow-2xl shadow-black/20 md:h-40 md:w-40"
+                                    className="relative h-32 w-32 rounded-full object-cover shadow-2xl shadow-black/20 md:h-36 md:w-36"
                                     style={{border: '1px solid var(--color-line)'}}
                                 />
                             </div>
 
-                            <div className="space-y-4 text-center md:text-left">
-                                <h1 className="font-display text-4xl leading-none text-appText sm:text-5xl lg:text-[4.25rem]">
+                            <div className="space-y-5 text-center md:text-left">
+                                <p className="text-[10px] uppercase tracking-[0.28em] md:text-xs" style={{color: 'var(--color-nav)'}}>
+                                    Fine art and travel photography
+                                </p>
+                                <h1 className="font-display max-w-[11ch] text-[3.15rem] leading-[0.92] text-appText sm:text-[3.7rem] lg:text-[5rem]">
                                     Capturing life&apos;s unforgettable moments with calm, depth, and presence.
                                 </h1>
-                                <p className="max-w-2xl text-lg leading-8" style={{color: 'var(--color-muted)'}}>
+                                <p className="max-w-2xl text-base leading-8 md:text-[1.05rem]" style={{color: 'var(--color-muted)'}}>
                                     "Fueled by an insatiable curiosity to capture every fleeting detail, I believe each second holds the potential to become a masterpiece."
                                 </p>
                             </div>

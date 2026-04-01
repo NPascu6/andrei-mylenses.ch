@@ -20,24 +20,24 @@ const TopBar = () => {
 
     return (
         <header className="sticky top-0 z-50 border-b backdrop-blur-2xl" style={{borderColor: 'var(--color-line)', backgroundColor: 'color-mix(in srgb, var(--color-bg) 76%, transparent)'}}>
-            <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 md:px-6">
+            <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 md:px-6 md:py-4">
                 <button
                     type="button"
                     onClick={() => scrollToSection('top')}
-                    className="flex min-w-0 flex-1 items-center gap-3 text-left"
+                    className="flex min-w-0 flex-1 items-center gap-4 text-left"
                 >
                     <img
                         loading="lazy"
-                        className="h-10 w-10 rounded-full object-cover shadow-lg shadow-black/10"
+                        className="h-12 w-12 rounded-full object-cover shadow-lg shadow-black/10 md:h-14 md:w-14"
                         style={{border: '1px solid var(--color-line)'}}
                         src={Favicon32}
                         alt="My Lenses"
                     />
                     <div className="min-w-0">
-                        <p className="font-display text-base uppercase tracking-[0.28em] text-appText md:text-xl">
+                        <p className="font-display text-[1.15rem] uppercase tracking-[0.22em] text-appText md:text-[1.7rem]">
                             My Lenses
                         </p>
-                        <p className="text-[10px] uppercase tracking-[0.3em] md:text-xs" style={{color: 'var(--color-nav)'}}>
+                        <p className="text-[9px] uppercase tracking-[0.26em] md:text-[0.72rem]" style={{color: 'var(--color-nav)'}}>
                             Fine art photography by Andrei Pascu
                         </p>
                     </div>
@@ -45,7 +45,7 @@ const TopBar = () => {
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => setIsThemePanelOpen((open) => !open)}
-                        className={`theme-chip inline-flex h-10 items-center justify-center rounded-full px-4 text-[11px] uppercase tracking-[0.22em] ${isThemePanelOpen ? 'theme-chip-active' : ''}`}
+                        className={`theme-chip inline-flex h-10 items-center justify-center rounded-full px-4 text-[10px] uppercase tracking-[0.2em] md:h-11 md:px-5 md:text-[11px] ${isThemePanelOpen ? 'theme-chip-active' : ''}`}
                         aria-label="Open theme controls"
                         aria-expanded={isThemePanelOpen}
                     >
