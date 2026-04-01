@@ -3,7 +3,7 @@ backend:
   repo: NPascu6/andrei-mylenses.ch
   branch: master
   base_url: https://andrei-mylenses-cms-oauth.vercel.app
-  auth_endpoint: auth
+  auth_endpoint: /auth
   site_domain: andrei-mylenses.ch
 
 site_url: https://andrei-mylenses.ch
