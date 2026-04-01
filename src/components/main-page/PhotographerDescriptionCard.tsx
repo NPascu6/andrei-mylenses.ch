@@ -72,7 +72,7 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                         <>
                             <img
                                 loading="eager"
-                                src={heroPhoto.src}
+                                src={heroPhoto.fullSrc || heroPhoto.src}
                                 alt={heroPhoto.title}
                                 className="absolute inset-0 h-full w-full object-cover"
                             />

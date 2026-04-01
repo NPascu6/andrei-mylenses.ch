@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import compression from 'vite-plugin-compression';
 import {VitePWA} from 'vite-plugin-pwa';
+import {imagetools} from 'vite-imagetools';
 
 export default defineConfig({
     base: './',
@@ -16,6 +17,7 @@ export default defineConfig({
     plugins: [
         react(),
         viteTsconfigPaths(),
+        imagetools(),
         compression({
             algorithm: 'gzip',
             threshold: 1024,

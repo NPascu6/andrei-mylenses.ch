@@ -3,6 +3,7 @@ import SelectedPhoto from './SelectedPhoto';
 
 interface GalleryImage {
     src: string;
+    fullSrc?: string;
     title: string;
     description?: string;
     location?: string;

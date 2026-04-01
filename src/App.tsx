@@ -28,16 +28,15 @@ function App() {
             .replace(/\b\w/g, (char) => char.toUpperCase());
 
     useEffect(() => {
-        Promise.all(images.map((load) => load()))
-            .then((imgs) => {
-                const loaded = imgs.map((img: any) => {
-                    const title = img.default.split('/').pop()?.split('.')[0] || '';
+        const loaded = images.map((image) => {
+                    const title = image.baseName;
                     const portfolioMetadata = getPhotoMetadata(title);
                     const instagramMetadata = instagramMetadataByFile.get(`${title}.jpg`) || instagramMetadataByFile.get(`${title}.jpeg`) || instagramMetadataByFile.get(`${title}.png`) || instagramMetadataByFile.get(`${title}.webp`);
                     const metadata = portfolioMetadata || instagramMetadata;
 
                     return {
-                        src: img.default,
+                        src: image.src,
+                        fullSrc: image.fullSrc,
                         title: portfolioMetadata?.displayTitle || instagramMetadata?.title || formatFallbackTitle(title),
                         slug: instagramMetadata?.shortcode || title,
                         description: metadata?.description || '',
@@ -49,26 +48,12 @@ function App() {
                     }
                 }).sort((a, b) => a.title.localeCompare(b.title));
 
-                dispatch(setPhotos(loaded));
-            })
-            .catch((error) => console.error('Error loading images', error))
-            .finally(() => console.log('Images loaded'));
+        dispatch(setPhotos(loaded));
     }, [dispatch]);
 
     useEffect(() => {
-        Promise.all(canvaseImages.map((load) => load()))
-            .then((imgs) => {
-                const imagesLoaded = imgs.map((img: any) => {
-                    return {
-                        src: img.default,
-                        title: img.default.split('/').pop()?.split('.')[0],
-                    }
-                });
-                dispatch(setCanvasPhotos(imagesLoaded));
-            })
-            .catch((error) => console.error('Error loading images', error))
-            .finally(() => console.log('Canvas Images loaded'));
-    }, []);
+        dispatch(setCanvasPhotos(canvaseImages));
+    }, [dispatch]);
 
     useEffect(() => {
         const savedPreferences = loadThemePreferences();

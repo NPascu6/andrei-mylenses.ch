@@ -7,6 +7,7 @@ const CloseIcon = React.lazy(() => import('../../assets/icons/CloseIcon'));
 
 interface GalleryImage {
     src: string;
+    fullSrc?: string;
     title: string;
     slug?: string;
     description?: string;
@@ -101,7 +102,7 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                 <div className="relative flex min-h-[50vh] items-center justify-center overflow-hidden rounded-[1.5rem] bg-white/5">
                     <img
                         loading="lazy"
-                        src={selectedImage.src}
+                        src={selectedImage.fullSrc || selectedImage.src}
                         alt={selectedImage.title}
                         className="max-h-[78vh] w-full rounded-[1.5rem] object-contain"
                     />
