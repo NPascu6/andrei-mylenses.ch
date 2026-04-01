@@ -1,5 +1,6 @@
 import React, {useEffect, useRef} from "react";
 import {scrollToSection} from "../../utils/scrollToSection";
+import {getPrintRecommendation} from "../../utils/printRecommendations";
 
 const ChevronLeft = React.lazy(() => import('../../assets/icons/ChevronLeft'));
 const ChevronRight = React.lazy(() => import('../../assets/icons/ChevronRight'));
@@ -13,6 +14,9 @@ interface GalleryImage {
     description?: string;
     location?: string;
     category?: string;
+    featured?: boolean;
+    permalink?: string;
+    takenAt?: string;
 }
 
 interface SelectedPhotoProps {
@@ -56,6 +60,11 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
 
     const goPrev = () => setIndex((index - 1 + images.length) % images.length);
     const goNext = () => setIndex((index + 1) % images.length);
+    const recommendation = getPrintRecommendation({
+        title: selectedImage.title,
+        category: selectedImage.category,
+        location: selectedImage.location,
+    });
     const handleScrollToPrints = () => {
         onClose();
         window.setTimeout(() => scrollToSection('prints'), 20);
@@ -133,6 +142,11 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                             <h2 className="mt-3 font-display text-3xl md:text-4xl">
                                 {selectedImage.title}
                             </h2>
+                            {selectedImage.featured && (
+                                <div className="mt-3 inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/74">
+                                    Curated as a wall-ready canvas candidate
+                                </div>
+                            )}
                             {selectedImage.location && (
                                 <p className="mt-2 text-sm uppercase tracking-[0.2em] text-white/55">
                                     {selectedImage.location}
@@ -148,13 +162,32 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                     <div className="mt-8 space-y-4 border-t border-white/10 pt-5">
                         <div className="grid grid-cols-2 gap-3 text-sm text-white/72">
                             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                                <p className="uppercase tracking-[0.18em] text-white/45">Edition</p>
-                                <p className="mt-2 text-lg text-white">Fine art print</p>
+                                <p className="uppercase tracking-[0.18em] text-white/45">Best Format</p>
+                                <p className="mt-2 text-lg text-white">{recommendation.bestFit}</p>
                             </div>
                             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                                <p className="uppercase tracking-[0.18em] text-white/45">Inquiry</p>
-                                <p className="mt-2 text-lg text-white">Available</p>
+                                <p className="uppercase tracking-[0.18em] text-white/45">Recommended Size</p>
+                                <p className="mt-2 text-lg text-white">{recommendation.recommendedSize}</p>
                             </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 text-sm text-white/72">
+                            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                                <p className="uppercase tracking-[0.18em] text-white/45">Collector Fit</p>
+                                <p className="mt-2 text-white">
+                                    {selectedImage.featured ? 'High wall presence' : 'Available by inquiry'}
+                                </p>
+                            </div>
+                            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                                <p className="uppercase tracking-[0.18em] text-white/45">Inquiry Style</p>
+                                <p className="mt-2 text-white">Personal sizing and room guidance</p>
+                            </div>
+                        </div>
+
+                        <div className="rounded-[1.35rem] border border-white/10 bg-white/5 p-4 text-sm leading-6 text-white/78">
+                            <p className="text-[10px] uppercase tracking-[0.22em] text-white/45">Ideal Setting</p>
+                            <p className="mt-2 text-white/92">{recommendation.idealSetting}</p>
+                            <p className="mt-3">{recommendation.collectorNote}</p>
                         </div>
 
                         <div className="grid gap-3">
@@ -162,17 +195,34 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                                 href={`mailto:andrei.pascu86@yahoo.com?subject=${encodeURIComponent(`Print Inquiry - ${selectedImage.title}`)}`}
                                 className="theme-action inline-flex w-full items-center justify-center rounded-full px-5 py-4 text-sm uppercase tracking-[0.22em]"
                             >
-                                Request this image as a print
+                                Request this canvas
                             </a>
 
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-3 gap-3">
                                 <button
                                     type="button"
                                     onClick={handleScrollToPrints}
                                     className="theme-action-secondary inline-flex items-center justify-center rounded-full px-4 py-3 text-xs uppercase tracking-[0.2em]"
                                 >
-                                    Print details
+                                    Print options
                                 </button>
+                                {selectedImage.permalink ? (
+                                    <a
+                                        href={selectedImage.permalink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="theme-action-secondary inline-flex items-center justify-center rounded-full px-4 py-3 text-xs uppercase tracking-[0.2em]"
+                                    >
+                                        Original post
+                                    </a>
+                                ) : (
+                                    <a
+                                        href="mailto:andrei.pascu86@yahoo.com?subject=Artwork%20Availability"
+                                        className="theme-action-secondary inline-flex items-center justify-center rounded-full px-4 py-3 text-xs uppercase tracking-[0.2em]"
+                                    >
+                                        Availability
+                                    </a>
+                                )}
                                 <a
                                     href="https://www.instagram.com/andrei_mylenses/"
                                     target="_blank"

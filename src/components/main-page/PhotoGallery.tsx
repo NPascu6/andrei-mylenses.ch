@@ -8,13 +8,16 @@ interface GalleryImage {
     description?: string;
     location?: string;
     category?: string;
+    featured?: boolean;
+    permalink?: string;
+    takenAt?: string;
 }
 
 interface PhotoGalleryProps {
     images: GalleryImage[];
 }
 
-const categoryOrder = ['All', 'Instagram', 'Travel', 'Nature', 'Street', 'Wildlife', 'Portrait', 'Architecture'];
+const categoryOrder = ['All', 'Wall-ready', 'Instagram', 'Travel', 'Nature', 'Street', 'Wildlife', 'Portrait', 'Architecture'];
 
 const PhotoGallery = ({images}: PhotoGalleryProps) => {
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -31,14 +34,45 @@ const PhotoGallery = ({images}: PhotoGalleryProps) => {
 
     const filteredImages = useMemo(() => {
         if (activeCategory === 'All') {
-            return images;
+            return [...images].sort((left, right) => {
+                if (Boolean(left.featured) !== Boolean(right.featured)) {
+                    return left.featured ? -1 : 1;
+                }
+
+                return left.title.localeCompare(right.title);
+            });
+        }
+
+        if (activeCategory === 'Wall-ready') {
+            return images.filter((image) => image.featured);
         }
 
         return images.filter((image) => image.category === activeCategory);
     }, [activeCategory, images]);
 
+    const featuredCount = useMemo(
+        () => images.filter((image) => image.featured).length,
+        [images]
+    );
+
     return (
         <div className="space-y-8">
+            <div className="surface-panel-soft flex flex-col gap-3 rounded-[1.75rem] p-5 md:flex-row md:items-end md:justify-between">
+                <div className="max-w-2xl space-y-3">
+                    <p className="eyebrow-text text-sm uppercase">Collector curation</p>
+                    <h3 className="font-display text-3xl text-appText md:text-[2.5rem]">
+                        Explore the full archive or move directly into the images with the strongest wall presence.
+                    </h3>
+                    <p className="text-base leading-7 text-muted-token">
+                        The <span className="text-appText">Wall-ready</span> view highlights photographs that translate especially well into Giclee canvas, where scale, atmosphere, and tonal depth can fully open up.
+                    </p>
+                </div>
+                <div className="rounded-[1.25rem] border px-4 py-3 text-sm leading-6 text-muted-token" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
+                    <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Canvas-ready selection</p>
+                    <p className="mt-2 text-appText">{featuredCount} works currently highlighted for collectors and print inquiries.</p>
+                </div>
+            </div>
+
             <div className="flex flex-wrap gap-3">
                 {categories.map((category) => {
                     const active = activeCategory === category;
@@ -73,6 +107,11 @@ const PhotoGallery = ({images}: PhotoGalleryProps) => {
                                 className="w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/5 to-transparent opacity-85"/>
+                            {image.featured && (
+                                <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/45 px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/85 backdrop-blur-sm">
+                                    Best for canvas
+                                </div>
+                            )}
                             <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                                 <p className="text-[10px] uppercase tracking-[0.28em] text-white/60">
                                     {image.category} {image.location ? ` / ${image.location}` : ''}
