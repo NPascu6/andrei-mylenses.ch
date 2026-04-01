@@ -3,8 +3,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setCanvasPhotos, setPhotos, setThemePreset} from './store/appSlice';
 import {RootState} from './store/store';
 import {RoutesSwitch} from './Routes';
-import {canvaseImages, getPhotoMetadata, images} from "./config/images";
+import {canvaseImages, images} from "./config/images";
 import {importedInstagramPhotos} from "./config/instagram.generated";
+import {cmsPhotoEntriesByBaseName} from "./content/cmsPhotos";
 import BottomBar from "./components/common/BottomBar";
 import Loading from "./components/common/Loading";
 import {applyThemePreferences, getThemePreset, loadThemePreferences} from './utils/themePreferences';
@@ -30,21 +31,22 @@ function App() {
     useEffect(() => {
         const loaded = images.map((image) => {
                     const title = image.baseName;
-                    const portfolioMetadata = getPhotoMetadata(title);
+                    const cmsMetadata = cmsPhotoEntriesByBaseName.get(title);
                     const instagramMetadata = instagramMetadataByFile.get(`${title}.jpg`) || instagramMetadataByFile.get(`${title}.jpeg`) || instagramMetadataByFile.get(`${title}.png`) || instagramMetadataByFile.get(`${title}.webp`);
-                    const metadata = portfolioMetadata || instagramMetadata;
+                    const metadata = cmsMetadata || instagramMetadata;
 
                     return {
                         src: image.src,
                         fullSrc: image.fullSrc,
-                        title: portfolioMetadata?.displayTitle || instagramMetadata?.title || formatFallbackTitle(title),
+                        title: cmsMetadata?.title || instagramMetadata?.title || formatFallbackTitle(title),
                         slug: instagramMetadata?.shortcode || title,
                         description: metadata?.description || '',
                         location: metadata?.location || '',
                         category: metadata?.category || 'Travel',
-                        featured: Boolean(portfolioMetadata?.featured),
-                        permalink: instagramMetadata?.permalink || '',
-                        takenAt: instagramMetadata?.takenAt || '',
+                        featured: Boolean(cmsMetadata?.featured),
+                        printReady: Boolean(cmsMetadata?.printReady),
+                        permalink: cmsMetadata?.permalink || instagramMetadata?.permalink || '',
+                        takenAt: cmsMetadata?.takenAt || instagramMetadata?.takenAt || '',
                     }
                 }).sort((a, b) => a.title.localeCompare(b.title));
 

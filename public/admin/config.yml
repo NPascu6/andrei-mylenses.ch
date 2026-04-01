@@ -1,0 +1,47 @@
+backend:
+  name: github
+  repo: NPascu6/andrei-mylenses.ch
+  branch: master
+  base_url: https://andrei-mylenses-oauth.vercel.app
+  site_domain: andrei-mylenses.ch
+
+site_url: https://andrei-mylenses.ch
+display_url: https://andrei-mylenses.ch
+logo_url: /logo192.png
+publish_mode: editorial_workflow
+
+media_folder: "src/assets/photos"
+public_folder: "src/assets/photos"
+
+collections:
+  - name: "photos"
+    label: "Photos"
+    label_singular: "Photo"
+    folder: "src/content/photos"
+    create: true
+    slug: "{{slug}}"
+    extension: "json"
+    format: "json"
+    identifier_field: "title"
+    summary: "{{title}} - {{category}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Image", name: "image", widget: "image", allow_multiple: false }
+      - { label: "Description", name: "description", widget: "text", required: false }
+      - { label: "Location", name: "location", widget: "string", required: false }
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        required: false
+        options:
+          - "Travel"
+          - "Nature"
+          - "Street"
+          - "Wildlife"
+          - "Portrait"
+          - "Architecture"
+          - "Instagram"
+      - { label: "Featured", name: "featured", widget: "boolean", default: false, required: false }
+      - { label: "Print Ready", name: "printReady", widget: "boolean", default: false, required: false }
+      - { label: "Instagram / Source Link", name: "permalink", widget: "string", required: false }
+      - { label: "Date Taken", name: "takenAt", widget: "datetime", required: false, format: "YYYY-MM-DD", time_format: false, date_format: "YYYY-MM-DD" }
