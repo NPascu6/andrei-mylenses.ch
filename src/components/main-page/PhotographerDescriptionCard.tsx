@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useMemo, useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store/store";
+import SelectedPhoto from "./SelectedPhoto";
 
 interface PhotographerDescriptionCardProps {
     artistImage: string;
@@ -8,8 +9,10 @@ interface PhotographerDescriptionCardProps {
 
 const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = ({artistImage}) => {
     const photos = useSelector((state: RootState) => state.app.photos);
+    const [selectedShowcaseIndex, setSelectedShowcaseIndex] = useState<number | null>(null);
     const featuredPhotos = photos.filter((photo: {featured?: boolean}) => photo.featured).slice(0, 5);
     const heroPhoto = featuredPhotos[0] || photos[0];
+    const showcasePhotos = useMemo(() => featuredPhotos.slice(0, 5), [featuredPhotos]);
     const highlights = [
         {value: `${photos.length}+`, label: 'curated images'},
         {value: '25+', label: 'years of lived perspective'},
@@ -60,7 +63,11 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                     </div>
                 </article>
 
-                <article className="relative min-h-[560px] overflow-hidden rounded-[2rem] border border-white/10 bg-black shadow-2xl shadow-black/20">
+                <button
+                    type="button"
+                    onClick={() => showcasePhotos.length > 0 && setSelectedShowcaseIndex(0)}
+                    className="group relative min-h-[560px] overflow-hidden rounded-[2rem] border border-white/10 bg-black text-left shadow-2xl shadow-black/20"
+                >
                     {heroPhoto && (
                         <>
                             <img
@@ -71,6 +78,9 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/10"/>
                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.18),_transparent_30%)]"/>
+                            <div className="absolute right-4 top-4 rounded-full border border-white/15 bg-black/35 px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm transition-colors duration-300 group-hover:bg-black/55">
+                                Maximize
+                            </div>
                             <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-8">
                                 <p className="text-xs uppercase tracking-[0.28em] text-white/60">
                                     Featured work
@@ -85,7 +95,7 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                             </div>
                         </>
                     )}
-                </article>
+                </button>
             </div>
 
             <article
@@ -126,9 +136,11 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
             </article>
 
             <aside className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                {featuredPhotos.slice(1, 5).map((photo: any) => (
-                    <article
+                {showcasePhotos.slice(1, 5).map((photo: any, index: number) => (
+                    <button
+                        type="button"
                         key={photo.title}
+                        onClick={() => setSelectedShowcaseIndex(index + 1)}
                         className="group relative overflow-hidden rounded-[1.75rem] bg-black shadow-xl shadow-black/15"
                         style={{border: '1px solid var(--color-line)'}}
                     >
@@ -139,15 +151,27 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                             className="h-56 w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"/>
+                        <div className="absolute right-4 top-4 rounded-full border border-white/15 bg-black/35 px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm transition-colors duration-300 group-hover:bg-black/55">
+                            Maximize
+                        </div>
                         <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                             <p className="text-[10px] uppercase tracking-[0.26em] text-white/60">
                                 {photo.category} {photo.location ? ` / ${photo.location}` : ''}
                             </p>
                             <h3 className="mt-2 font-display text-2xl">{photo.title}</h3>
                         </div>
-                    </article>
+                    </button>
                 ))}
             </aside>
+
+            {selectedShowcaseIndex !== null && showcasePhotos.length > 0 && (
+                <SelectedPhoto
+                    images={showcasePhotos}
+                    index={selectedShowcaseIndex}
+                    setIndex={setSelectedShowcaseIndex}
+                    onClose={() => setSelectedShowcaseIndex(null)}
+                />
+            )}
         </section>
     );
 };

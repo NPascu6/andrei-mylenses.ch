@@ -1,14 +1,16 @@
-import React from "react";
+import React, {useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store/store";
 import GallerySection from "./GallerySection";
+import SelectedPhoto from "../main-page/SelectedPhoto";
 
 interface CanvasPrintSectionProps {
-    loadedCanvasImages: Array<{ src: string }>;
+    loadedCanvasImages: Array<{ src: string; title?: string; fullSrc?: string }>;
 }
 
 const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImages}) => {
     const photos = useSelector((state: RootState) => state.app.photos);
+    const [selectedCanvasIndex, setSelectedCanvasIndex] = useState<number | null>(null);
     const featuredTitles = photos.slice(0, 4).map((photo) => photo.title).join(', ');
     const canvasHero = loadedCanvasImages[0]?.src || photos[0]?.src;
 
@@ -37,7 +39,11 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                 id="prints"
                 className="surface-panel scroll-mt-24 grid gap-5 overflow-hidden rounded-[2rem] p-4 md:scroll-mt-28 lg:grid-cols-[0.95fr_1.05fr] lg:p-6"
             >
-                <div className="relative min-h-[420px] overflow-hidden rounded-[1.75rem] bg-black">
+                <button
+                    type="button"
+                    onClick={() => loadedCanvasImages.length > 0 && setSelectedCanvasIndex(0)}
+                    className="group relative min-h-[420px] overflow-hidden rounded-[1.75rem] bg-black text-left"
+                >
                     {canvasHero && (
                         <>
                             <img
@@ -50,6 +56,9 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                         </>
                     )}
 
+                    <div className="absolute right-4 top-4 rounded-full border border-white/15 bg-black/35 px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm transition-colors duration-300 group-hover:bg-black/55">
+                        Maximize
+                    </div>
                     <div className="absolute inset-x-0 bottom-0 p-6 text-white">
                         <p className="text-xs uppercase tracking-[0.3em] text-white/55">Fine art canvas prints</p>
                         <h3 className="mt-3 font-display text-4xl">Bring the work into your space.</h3>
@@ -57,7 +66,7 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                             Museum-quality Giclee canvas prints designed to preserve texture, atmosphere, and the emotional depth of each image.
                         </p>
                     </div>
-                </div>
+                </button>
 
                 <div className="grid gap-3">
                     <div className="grid gap-4 md:grid-cols-3">
@@ -116,6 +125,22 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                     </div>
                 </div>
             </section>
+
+            {selectedCanvasIndex !== null && loadedCanvasImages.length > 0 && (
+                <SelectedPhoto
+                    images={loadedCanvasImages.map((image, index) => ({
+                        src: image.src,
+                        fullSrc: image.fullSrc || image.src,
+                        title: image.title || `Canvas Preview ${index + 1}`,
+                        description: 'Canvas print preview.',
+                        category: 'Canvas',
+                        location: 'Print collection',
+                    }))}
+                    index={selectedCanvasIndex}
+                    setIndex={setSelectedCanvasIndex}
+                    onClose={() => setSelectedCanvasIndex(null)}
+                />
+            )}
         </div>
     );
 };
