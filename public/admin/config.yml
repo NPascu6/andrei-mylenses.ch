@@ -2,7 +2,7 @@ backend:
   name: github
   repo: NPascu6/andrei-mylenses.ch
   branch: master
-  base_url: https://andrei-mylenses-oauth.vercel.app
+  base_url: https://andrei-mylenses-cms-oauth.vercel.app
   site_domain: andrei-mylenses.ch
 
 site_url: https://andrei-mylenses.ch
