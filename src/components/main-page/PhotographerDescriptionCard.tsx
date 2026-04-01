@@ -21,11 +21,7 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
             <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
                 <article className="surface-panel relative overflow-hidden rounded-[2rem]">
                     <div className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top_left,_rgba(var(--accent-color),0.22),_transparent_60%)]"/>
-                    <div className="relative space-y-6">
-                        <div className="theme-chip inline-flex items-center gap-3 rounded-full px-4 py-2 text-xs uppercase tracking-[0.28em]">
-                            Fine art and travel photography
-                        </div>
-
+                    <div className="relative space-y-6 p-1">
                         <div className="grid gap-5 md:grid-cols-[auto_1fr] md:items-center">
                             <div className="relative mx-auto md:mx-0">
                                 <div className="absolute -inset-3 rounded-full blur-2xl" style={{backgroundColor: 'rgba(var(--accent-color), 0.16)'}}/>
@@ -39,9 +35,6 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                             </div>
 
                             <div className="space-y-4 text-center md:text-left">
-                                <p className="text-sm uppercase tracking-[0.28em]" style={{color: 'var(--color-nav)'}}>
-                                    My Lenses / Andrei Pascu
-                                </p>
                                 <h1 className="font-display text-4xl leading-none text-appText sm:text-5xl lg:text-[4.25rem]">
                                     Capturing life&apos;s unforgettable moments with calm, depth, and presence.
                                 </h1>
