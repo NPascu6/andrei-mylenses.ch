@@ -5,7 +5,10 @@ const Loading = () => {
             role="status"
             aria-label="Loading..."
         >
-            <div className="w-12 h-12 border-2 border-gray-700 border-t-transparent rounded-full animate-spin"></div>
+            <div
+                className="h-12 w-12 animate-spin rounded-full border-4"
+                style={{borderColor: 'rgba(var(--accent-color), 0.2)', borderTopColor: 'var(--color-nav)'}}
+            />
         </div>
     );
 };

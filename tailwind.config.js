@@ -12,7 +12,17 @@ module.exports = {
             'xs': '275px',
             ...defaultTheme.screens,
         },
-        extend: {},
+        extend: {
+            colors: {
+                accent: 'rgb(var(--accent-color) / <alpha-value>)',
+                appBg: 'var(--color-bg)',
+                appText: 'var(--color-text)',
+            },
+            fontFamily: {
+                display: ['var(--font-display-theme)', 'Georgia', 'serif'],
+                sans: ['var(--font-body)', ...defaultTheme.fontFamily.sans],
+            },
+        },
     },
     plugins: [],
 }

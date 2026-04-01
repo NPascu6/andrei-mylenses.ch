@@ -1,6 +1,4 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../store/store';
 import useFullScreenToggle from '../../hooks/useToggleFullscreen';
 
 const ChevronLeft = React.lazy(() => import('../../assets/icons/ChevronLeft'));
@@ -22,14 +20,6 @@ const ImageSlider: React.FC<ImageSliderProps> = ({images, autoSlideTimeout = 400
     // Refs for swipe support.
     const touchStartX = useRef<number | null>(null);
     const touchEndX = useRef<number | null>(null);
-
-    // Get dark theme flag from Redux.
-    const isDarkTheme = useSelector((state: RootState) => state.app.isDarkTheme);
-
-    // Define dynamic classes based on theme.
-    const containerBg = isDarkTheme ? 'bg-gray-800' : 'bg-white';
-    const iconColor = isDarkTheme ? 'text-gray-300' : 'text-gray-700';
-    const borderColor = isDarkTheme ? 'border-gray-600' : 'border-gray-300';
 
     // Helper functions for navigation (navigation works regardless of full-screen state).
     const goToPrevious = useCallback(() => {
@@ -87,17 +77,15 @@ const ImageSlider: React.FC<ImageSliderProps> = ({images, autoSlideTimeout = 400
 
     return (
         <div
-            className={`flex card items-center rounded-lg shadow-xl justify-center min-w-full ${containerBg} transition-colors duration-300`}
+            className="surface-panel flex min-w-full items-center justify-center rounded-lg transition-colors duration-300"
         >
-            {/* Previous Arrow */}
             <span
-                className={`transform -translate-y-1/2 cursor-pointer ${iconColor} p-2`}
+                className="theme-link flex -translate-y-1/2 cursor-pointer p-2"
                 onClick={handlePrevClick}
             >
         <ChevronLeft/>
       </span>
 
-            {/* Image Display */}
             <div
                 className="relative flex justify-center rounded-lg cursor-pointer"
                 style={{height: '15em', maxHeight: '15em', minHeight: '15em'}}
@@ -109,19 +97,18 @@ const ImageSlider: React.FC<ImageSliderProps> = ({images, autoSlideTimeout = 400
                     loading="lazy"
                     src={images[currentImageIndex]}
                     alt={`Slide ${currentImageIndex + 1}`}
-                    className={`w-full rounded-lg object-contain p-1 ${borderColor}`}
+                    className="w-full rounded-lg object-contain p-1"
+                    style={{border: '1px solid var(--color-line)'}}
                 />
             </div>
 
-            {/* Next Arrow */}
             <span
-                className={`transform -translate-y-1/2 cursor-pointer ${iconColor} p-2`}
+                className="theme-link flex -translate-y-1/2 cursor-pointer p-2"
                 onClick={handleNextClick}
             >
         <ChevronRight/>
       </span>
 
-            {/* Full-Screen Modal */}
             {isFullScreen && (
                 <FullScreenImage
                     handlePrevClick={handlePrevClick}

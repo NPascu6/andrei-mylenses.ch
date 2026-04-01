@@ -1,145 +1,192 @@
-import React, {useRef, useState} from "react";
-import useFullScreenToggle from "../../hooks/useToggleFullscreen";
+import React, {useEffect, useRef} from "react";
+import {scrollToSection} from "../../utils/scrollToSection";
 
 const ChevronLeft = React.lazy(() => import('../../assets/icons/ChevronLeft'));
 const ChevronRight = React.lazy(() => import('../../assets/icons/ChevronRight'));
 const CloseIcon = React.lazy(() => import('../../assets/icons/CloseIcon'));
-const FullScreenImage = React.lazy(() => import('../common/FullScreenImage'));
-const Contact = React.lazy(() => import('../common/Contact'));
 
-const SelectedPhoto = ({
-                           selectedImage,
-                           images,
-                           selectedImageDescription,
-                           selectedImageTitle,
-                           setSelectedImage,
-                           previouseSelectedImage,
-                           nextSelectedImage,
-                           index,
-                           setPreviousSelectedImage,
-                           setNextSelectedImage,
-                           setIndex
-                       }: any) => {
-    const [selectedSize, setSelectedSize] = useState('16x20');
-    const {isFullScreen, toggleFullScreen} = useFullScreenToggle();
-    const touchStartX = useRef(null);
-    const touchEndX = useRef(null);
+interface GalleryImage {
+    src: string;
+    title: string;
+    slug?: string;
+    description?: string;
+    location?: string;
+    category?: string;
+}
 
-    const handlePrevClick = (e: any) => {
-        e.stopPropagation();
-        e.preventDefault();
-        setIndex(index - 1);
-        setPreviousSelectedImage(images[index - 2]);
-        setNextSelectedImage(images[index + 2]);
-        setSelectedImage(previouseSelectedImage?.src)
+interface SelectedPhotoProps {
+    images: GalleryImage[];
+    index: number;
+    setIndex: React.Dispatch<React.SetStateAction<number | null>>;
+    onClose: () => void;
+}
+
+const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) => {
+    const touchStartX = useRef<number | null>(null);
+    const selectedImage = images[index];
+
+    useEffect(() => {
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                onClose();
+            }
+
+            if (event.key === 'ArrowLeft') {
+                setIndex((index - 1 + images.length) % images.length);
+            }
+
+            if (event.key === 'ArrowRight') {
+                setIndex((index + 1) % images.length);
+            }
+        };
+
+        document.body.style.overflow = 'hidden';
+        window.addEventListener('keydown', onKeyDown);
+
+        return () => {
+            document.body.style.overflow = '';
+            window.removeEventListener('keydown', onKeyDown);
+        };
+    }, [images.length, index, onClose, setIndex]);
+
+    if (!selectedImage) {
+        return null;
     }
 
-    const handleNextClick = (e: any) => {
-        e.stopPropagation();
-        e.preventDefault();
-        setIndex(index + 1);
-        setPreviousSelectedImage(images[index - 2]);
-        setNextSelectedImage(images[index + 2]);
-        setSelectedImage(nextSelectedImage?.src)
-    }
-
-    const handleTouchStart = (e: any) => {
-        touchStartX.current = e.touches[0].clientX;
+    const goPrev = () => setIndex((index - 1 + images.length) % images.length);
+    const goNext = () => setIndex((index + 1) % images.length);
+    const handleScrollToPrints = () => {
+        onClose();
+        window.setTimeout(() => scrollToSection('prints'), 20);
     };
 
-    const handleTouchEnd = (e: any) => {
-        touchEndX.current = e.changedTouches[0].clientX;
-        if (touchEndX.current === null || touchStartX.current === null) return;
+    const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+        touchStartX.current = event.touches[0].clientX;
+    };
 
-        const swipeDistance = touchEndX?.current - touchStartX?.current;
+    const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+        if (touchStartX.current === null) {
+            return;
+        }
 
-        if (swipeDistance > 0) {
-            // Swipe right, go to the previous image
-            handlePrevClick(e)
-        } else if (swipeDistance < 0) {
-            // Swipe left, go to the next image
-            handleNextClick(e)
+        const delta = event.changedTouches[0].clientX - touchStartX.current;
+        touchStartX.current = null;
+
+        if (delta > 40) {
+            goPrev();
+        } else if (delta < -40) {
+            goNext();
         }
     };
 
-    const handleSizeChange = (e: any) => {
-        setSelectedSize(e.target.value);
-    }
-
-    const PhotoCanvasDetails = ({description}: any) => {
-        return (
-            <div id='photo-canvas-details' className="rounded shadow-lg p-2" style={{minWidth: '7em'}}>
-
-                <div>
-                    <p className="text-sm">{description}</p>
-                </div>
-                <label className="text-sm font-medium mb-2">Size</label>
-                <select
-                    onChange={handleSizeChange}
-                    className="py-2 px-2 border rounded-md w-full"
-                    value={selectedSize}
-                >
-                    <option value="50x30">50x30cm</option>
-                    <option value="90x60">90x60cm</option>
-                </select>
-                <div className="mb-2 flex justify-center mt-2">
-                    <div>
-                        <label className="block text-sm font-medium">Price</label>
-                        <div className="text-lg font-semibold">{selectedSize === '90x60' ? '60' : '40'} CHF</div>
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
-    return <div id="selected-photo"
-                className={`fixed top-1 left-2 w-5/6 flex items-start justify-center bg-opacity-90 rounded`}>
-        <div className="rounded-lg shadow-lg flex flex-col md:flex-row select-none">
-            <div>
-                <div className="flex align-center justify-between">
-                    <div className="flex align-center justify-between w-full">
-                        <div className="p-3 cursor-pointer" onClick={handlePrevClick}>
-                            <ChevronLeft/>
-                        </div>
-                        <div className="flex align-center justify-between">
-                            <h2 className="text-md font-semibold text-center select-none pt-2">
-                                {selectedImageTitle}
-                            </h2>
-                        </div>
-                        <div className="p-3 cursor-pointer" onClick={handleNextClick}>
-                            <ChevronRight/>
-                        </div>
-                    </div>
-                    <div>
-                        <span className="flex justify-center align-center p-2" onClick={() => {
-                            setSelectedImage(null)
-                        }}>
-                            <CloseIcon/>
-                        </span>
-                    </div>
-                </div>
-                <img
-                    loading="lazy"
-                    onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}
-                    src={selectedImage}
-                    alt={selectedImage}
-                    onClick={toggleFullScreen}
-                    className="max-w-70% select-none p-1 rounded-lg"
-                />
-            </div>
-            <div className="rounded-lg shadow-lg">
-                <PhotoCanvasDetails description={selectedImageDescription}/>
-            </div>
-
-            {isFullScreen && <FullScreenImage
-                handlePrevClick={handlePrevClick}
-                handleNextClick={handleNextClick}
-                toggleFullScreen={toggleFullScreen}
-                selectedImage={selectedImage}
+    return (
+        <div
+            className="fixed inset-0 z-[80] flex items-center justify-center bg-black/88 px-4 py-6 backdrop-blur-md"
+            onClick={onClose}
+        >
+            <div
+                className="relative grid max-h-full w-full max-w-7xl gap-4 overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b0f13] p-3 shadow-2xl shadow-black/60 lg:grid-cols-[1.35fr_0.65fr] lg:p-5"
+                onClick={(event) => event.stopPropagation()}
                 onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}/>}
+                onTouchEnd={handleTouchEnd}
+            >
+                <button
+                    onClick={onClose}
+                    className="absolute right-3 top-3 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/40 text-white transition-colors hover:border-white/30 hover:bg-black/60"
+                    aria-label="Close image"
+                >
+                    <CloseIcon/>
+                </button>
+
+                <div className="relative flex min-h-[50vh] items-center justify-center overflow-hidden rounded-[1.5rem] bg-white/5">
+                    <img
+                        loading="lazy"
+                        src={selectedImage.src}
+                        alt={selectedImage.title}
+                        className="max-h-[78vh] w-full rounded-[1.5rem] object-contain"
+                    />
+
+                    <button
+                        onClick={goPrev}
+                        className="absolute left-3 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/45 text-white transition-colors hover:border-white/30 hover:bg-black/65"
+                        aria-label="Previous image"
+                    >
+                        <ChevronLeft/>
+                    </button>
+
+                    <button
+                        onClick={goNext}
+                        className="absolute right-3 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/45 text-white transition-colors hover:border-white/30 hover:bg-black/65"
+                        aria-label="Next image"
+                    >
+                        <ChevronRight/>
+                    </button>
+                </div>
+
+                <aside className="flex flex-col justify-between rounded-[1.5rem] border border-white/10 bg-white/5 p-6 text-white">
+                    <div className="space-y-5">
+                        <div>
+                            <p className="text-xs uppercase tracking-[0.3em] text-white/72">
+                                {selectedImage.category || 'Portfolio'} / {String(index + 1).padStart(2, '0')}
+                            </p>
+                            <h2 className="mt-3 font-display text-3xl md:text-4xl">
+                                {selectedImage.title}
+                            </h2>
+                            {selectedImage.location && (
+                                <p className="mt-2 text-sm uppercase tracking-[0.2em] text-white/55">
+                                    {selectedImage.location}
+                                </p>
+                            )}
+                        </div>
+
+                        <p className="text-base leading-7 text-white/78">
+                            {selectedImage.description || 'Selected portfolio work.'}
+                        </p>
+                    </div>
+
+                    <div className="mt-8 space-y-4 border-t border-white/10 pt-5">
+                        <div className="grid grid-cols-2 gap-3 text-sm text-white/72">
+                            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                                <p className="uppercase tracking-[0.18em] text-white/45">Edition</p>
+                                <p className="mt-2 text-lg text-white">Fine art print</p>
+                            </div>
+                            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                                <p className="uppercase tracking-[0.18em] text-white/45">Inquiry</p>
+                                <p className="mt-2 text-lg text-white">Available</p>
+                            </div>
+                        </div>
+
+                        <div className="grid gap-3">
+                            <a
+                                href={`mailto:andrei.pascu86@yahoo.com?subject=${encodeURIComponent(`Print Inquiry - ${selectedImage.title}`)}`}
+                                className="theme-action inline-flex w-full items-center justify-center rounded-full px-5 py-4 text-sm uppercase tracking-[0.22em]"
+                            >
+                                Request this image as a print
+                            </a>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    type="button"
+                                    onClick={handleScrollToPrints}
+                                    className="theme-action-secondary inline-flex items-center justify-center rounded-full px-4 py-3 text-xs uppercase tracking-[0.2em]"
+                                >
+                                    Print details
+                                </button>
+                                <a
+                                    href="https://www.instagram.com/andrei_mylenses/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="theme-action-secondary inline-flex items-center justify-center rounded-full px-4 py-3 text-xs uppercase tracking-[0.2em]"
+                                >
+                                    Instagram
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
         </div>
-    </div>;
-}
+    );
+};
 
 export default SelectedPhoto;

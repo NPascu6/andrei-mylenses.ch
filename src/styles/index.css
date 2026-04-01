@@ -1,10 +1,283 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-    input {
-        @apply text-black;
+    :root {
+        --font-body: 'Manrope', sans-serif;
+        --font-display-theme: 'Cormorant Garamond', serif;
+        --caps-spacing: 0.26em;
+        --title-weight: 500;
+        --color-bg: #11161c;
+        --color-text: #f4eee4;
+        --color-muted: rgba(229, 220, 210, 0.88);
+        --color-subtle: rgba(205, 193, 180, 0.72);
+        --color-nav: rgba(247, 240, 230, 0.92);
+        --color-line: rgba(245, 238, 229, 0.12);
+        --color-surface: rgba(23, 29, 36, 0.94);
+        --color-surface-soft: rgba(28, 35, 43, 0.84);
+        --color-surface-strong: rgba(34, 42, 50, 0.98);
+        --accent-color: 118 145 167;
+        --color-accent-text: rgb(118 145 167);
+        --page-glow:
+            radial-gradient(circle at top left, rgba(var(--accent-color), 0.14), transparent 28%),
+            radial-gradient(circle at top right, rgba(255, 255, 255, 0.05), transparent 20%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 24%);
+        --surface-gradient:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
+        --surface-tint: rgba(255, 255, 255, 0.03);
+        --grid-line: rgba(255, 255, 255, 0.035);
+        --grid-opacity: 0.22;
+        --card-shadow: 0 34px 90px rgba(2, 6, 12, 0.42);
+        --card-shadow-soft: 0 18px 55px rgba(2, 6, 12, 0.28);
+    }
+
+    [data-theme-preset='alabaster'] {
+        --font-body: 'Manrope', sans-serif;
+        --font-display-theme: 'Cormorant Garamond', serif;
+        --caps-spacing: 0.28em;
+        --title-weight: 500;
+        --color-bg: #f6f2eb;
+        --color-text: #211b17;
+        --color-muted: rgba(61, 50, 41, 0.84);
+        --color-subtle: rgba(101, 86, 74, 0.7);
+        --color-nav: rgba(56, 45, 36, 0.88);
+        --color-line: rgba(42, 32, 24, 0.12);
+        --color-surface: rgba(255, 251, 245, 0.95);
+        --color-surface-soft: rgba(252, 246, 239, 0.82);
+        --color-surface-strong: rgba(255, 253, 249, 0.98);
+        --accent-color: 109 141 124;
+        --color-accent-text: rgb(83 120 101);
+        --page-glow:
+            radial-gradient(circle at top left, rgba(var(--accent-color), 0.11), transparent 28%),
+            radial-gradient(circle at top right, rgba(255, 255, 255, 0.48), transparent 24%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 34%);
+        --surface-gradient:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.08));
+        --surface-tint: rgba(255, 255, 255, 0.14);
+        --grid-line: rgba(64, 52, 44, 0.05);
+        --grid-opacity: 0.08;
+        --card-shadow: 0 28px 80px rgba(34, 24, 18, 0.1);
+        --card-shadow-soft: 0 16px 42px rgba(34, 24, 18, 0.07);
+    }
+
+    [data-theme-preset='editorial'] {
+        --font-body: 'Source Sans 3', sans-serif;
+        --font-display-theme: 'DM Serif Display', serif;
+        --caps-spacing: 0.22em;
+        --title-weight: 400;
+        --color-bg: #f2f2ef;
+        --color-text: #1d2024;
+        --color-muted: rgba(47, 54, 61, 0.84);
+        --color-subtle: rgba(91, 98, 106, 0.72);
+        --color-nav: rgba(35, 42, 49, 0.86);
+        --color-line: rgba(39, 47, 56, 0.12);
+        --color-surface: rgba(255, 255, 255, 0.94);
+        --color-surface-soft: rgba(247, 248, 250, 0.82);
+        --color-surface-strong: rgba(255, 255, 255, 0.98);
+        --accent-color: 88 111 140;
+        --color-accent-text: rgb(64 87 116);
+        --page-glow:
+            radial-gradient(circle at top left, rgba(var(--accent-color), 0.1), transparent 25%),
+            radial-gradient(circle at top right, rgba(255, 255, 255, 0.46), transparent 22%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.15), transparent 28%);
+        --surface-gradient:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(245, 246, 248, 0.1));
+        --surface-tint: rgba(255, 255, 255, 0.1);
+        --grid-line: rgba(29, 35, 42, 0.045);
+        --grid-opacity: 0.08;
+        --card-shadow: 0 24px 70px rgba(26, 32, 39, 0.1);
+        --card-shadow-soft: 0 14px 38px rgba(26, 32, 39, 0.07);
+    }
+
+    [data-theme-preset='solstice'] {
+        --font-body: 'Manrope', sans-serif;
+        --font-display-theme: 'Fraunces', serif;
+        --caps-spacing: 0.24em;
+        --title-weight: 500;
+        --color-bg: #f7f1e5;
+        --color-text: #241c13;
+        --color-muted: rgba(75, 59, 41, 0.84);
+        --color-subtle: rgba(109, 91, 68, 0.72);
+        --color-nav: rgba(56, 42, 27, 0.86);
+        --color-line: rgba(62, 45, 26, 0.13);
+        --color-surface: rgba(255, 249, 239, 0.95);
+        --color-surface-soft: rgba(251, 243, 229, 0.84);
+        --color-surface-strong: rgba(255, 251, 244, 0.98);
+        --accent-color: 146 111 57;
+        --color-accent-text: rgb(120 89 41);
+        --page-glow:
+            radial-gradient(circle at top left, rgba(var(--accent-color), 0.13), transparent 26%),
+            radial-gradient(circle at top right, rgba(255, 255, 255, 0.44), transparent 22%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 28%);
+        --surface-gradient:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 247, 236, 0.1));
+        --surface-tint: rgba(255, 255, 255, 0.12);
+        --grid-line: rgba(70, 53, 32, 0.045);
+        --grid-opacity: 0.08;
+        --card-shadow: 0 28px 76px rgba(48, 34, 16, 0.1);
+        --card-shadow-soft: 0 16px 42px rgba(48, 34, 16, 0.07);
+    }
+
+    [data-theme-preset='noir'] {
+        --font-body: 'Manrope', sans-serif;
+        --font-display-theme: 'Cormorant Garamond', serif;
+        --caps-spacing: 0.28em;
+        --title-weight: 500;
+        --color-bg: #10151c;
+        --color-text: #f3eee5;
+        --color-muted: rgba(229, 220, 210, 0.88);
+        --color-subtle: rgba(205, 193, 180, 0.72);
+        --color-nav: rgba(247, 240, 230, 0.92);
+        --color-line: rgba(245, 238, 229, 0.12);
+        --color-surface: rgba(23, 29, 36, 0.94);
+        --color-surface-soft: rgba(28, 35, 43, 0.84);
+        --color-surface-strong: rgba(34, 42, 50, 0.98);
+        --accent-color: 118 145 167;
+        --color-accent-text: rgb(151 183 210);
+        --page-glow:
+            radial-gradient(circle at top left, rgba(var(--accent-color), 0.14), transparent 28%),
+            radial-gradient(circle at top right, rgba(255, 255, 255, 0.05), transparent 20%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 24%);
+        --surface-gradient:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
+        --surface-tint: rgba(255, 255, 255, 0.03);
+        --grid-line: rgba(255, 255, 255, 0.035);
+        --grid-opacity: 0.22;
+        --card-shadow: 0 34px 90px rgba(2, 6, 12, 0.42);
+        --card-shadow-soft: 0 18px 55px rgba(2, 6, 12, 0.28);
+    }
+
+    [data-theme-preset='ember'] {
+        --font-body: 'Source Sans 3', sans-serif;
+        --font-display-theme: 'Fraunces', serif;
+        --caps-spacing: 0.24em;
+        --title-weight: 500;
+        --color-bg: #17110f;
+        --color-text: #f5ece3;
+        --color-muted: rgba(236, 218, 203, 0.88);
+        --color-subtle: rgba(205, 183, 166, 0.72);
+        --color-nav: rgba(248, 235, 223, 0.92);
+        --color-line: rgba(249, 231, 215, 0.12);
+        --color-surface: rgba(32, 24, 21, 0.94);
+        --color-surface-soft: rgba(43, 31, 28, 0.84);
+        --color-surface-strong: rgba(52, 38, 34, 0.98);
+        --accent-color: 193 113 76;
+        --color-accent-text: rgb(228 158 123);
+        --page-glow:
+            radial-gradient(circle at top left, rgba(var(--accent-color), 0.16), transparent 28%),
+            radial-gradient(circle at top right, rgba(255, 213, 188, 0.05), transparent 20%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 24%);
+        --surface-gradient:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+        --surface-tint: rgba(255, 255, 255, 0.025);
+        --grid-line: rgba(255, 255, 255, 0.03);
+        --grid-opacity: 0.22;
+        --card-shadow: 0 34px 90px rgba(14, 7, 5, 0.46);
+        --card-shadow-soft: 0 18px 55px rgba(14, 7, 5, 0.28);
+    }
+
+    [data-theme-preset='cyanotype'] {
+        --font-body: 'Manrope', sans-serif;
+        --font-display-theme: 'DM Serif Display', serif;
+        --caps-spacing: 0.22em;
+        --title-weight: 400;
+        --color-bg: #0c1820;
+        --color-text: #eef5f4;
+        --color-muted: rgba(215, 231, 229, 0.88);
+        --color-subtle: rgba(184, 205, 203, 0.72);
+        --color-nav: rgba(231, 243, 242, 0.92);
+        --color-line: rgba(226, 241, 239, 0.12);
+        --color-surface: rgba(17, 33, 40, 0.94);
+        --color-surface-soft: rgba(24, 44, 52, 0.84);
+        --color-surface-strong: rgba(30, 53, 62, 0.98);
+        --accent-color: 93 163 168;
+        --color-accent-text: rgb(128 208 214);
+        --page-glow:
+            radial-gradient(circle at top left, rgba(var(--accent-color), 0.16), transparent 28%),
+            radial-gradient(circle at top right, rgba(255, 255, 255, 0.045), transparent 20%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 24%);
+        --surface-gradient:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+        --surface-tint: rgba(255, 255, 255, 0.025);
+        --grid-line: rgba(255, 255, 255, 0.03);
+        --grid-opacity: 0.22;
+        --card-shadow: 0 34px 90px rgba(2, 11, 15, 0.46);
+        --card-shadow-soft: 0 18px 55px rgba(2, 11, 15, 0.28);
+    }
+
+    [data-theme='light'] {
+        color-scheme: light;
+    }
+
+    [data-theme='dark'] {
+        color-scheme: dark;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100dvh;
+        background: var(--page-glow), var(--color-bg);
+        color: var(--color-text);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        transition: background 280ms ease, color 280ms ease;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+            linear-gradient(var(--grid-line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.38), transparent 85%);
+        opacity: var(--grid-opacity);
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
+    }
+
+    ::selection {
+        background: rgba(var(--accent-color), 0.24);
+    }
+
+    ::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(var(--accent-color), 0.3);
+        border-radius: 999px;
+        border: 3px solid transparent;
+        background-clip: padding-box;
+    }
+
+    input,
+    select,
+    textarea {
+        color: var(--color-text);
+        background-color: var(--color-surface-strong);
     }
 }
 
@@ -14,28 +287,122 @@
     flex-direction: column;
 }
 
-body {
-    padding: 0;
-    margin: 0;
-    height: 100dvh;
-    /* fallback for Js load */
-    height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-/* Default styles for larger screens */
 .content-container {
     display: flex;
+    flex: 1;
     flex-direction: column;
-    overflow-y: auto;
-    max-height: calc(100dvh - 120px);
+}
+
+.theme-light .content-container,
+.theme-dark .content-container {
+    color: var(--color-text);
+}
+
+@layer components {
+    .font-display {
+        font-family: var(--font-display-theme);
+        font-weight: var(--title-weight);
+    }
+
+    .surface-panel {
+        background: var(--surface-gradient), var(--color-surface);
+        border: 1px solid var(--color-line);
+        box-shadow: var(--card-shadow);
+        backdrop-filter: blur(24px);
+    }
+
+    .surface-panel-soft {
+        background: linear-gradient(180deg, var(--surface-tint), transparent 100%), var(--color-surface-soft);
+        border: 1px solid var(--color-line);
+        box-shadow: var(--card-shadow-soft);
+        backdrop-filter: blur(22px);
+    }
+
+    .theme-chip {
+        border: 1px solid var(--color-line);
+        background: var(--color-surface-soft);
+        color: var(--color-nav);
+        transition: transform 220ms ease, border-color 220ms ease, background 220ms ease, color 220ms ease;
+    }
+
+    .theme-chip:hover {
+        transform: translateY(-1px);
+        border-color: rgba(var(--accent-color), 0.44);
+        background: var(--color-surface-strong);
+        color: var(--color-text);
+    }
+
+    .theme-chip-active {
+        border-color: rgba(var(--accent-color), 0.48);
+        background: color-mix(in srgb, var(--color-surface-strong) 84%, rgba(var(--accent-color), 0.16));
+        color: var(--color-text);
+        box-shadow: inset 0 0 0 1px rgba(var(--accent-color), 0.2);
+    }
+
+    .theme-link {
+        color: var(--color-nav);
+        transition: color 220ms ease, opacity 220ms ease;
+    }
+
+    .theme-link:hover {
+        color: var(--color-text);
+    }
+
+    .theme-link-subtle {
+        color: var(--color-muted);
+        transition: color 220ms ease, opacity 220ms ease;
+    }
+
+    .theme-link-subtle:hover {
+        color: var(--color-text);
+    }
+
+    .theme-action {
+        border: 1px solid rgba(var(--accent-color), 0.36);
+        background: color-mix(in srgb, var(--color-surface-strong) 76%, rgba(var(--accent-color), 0.18));
+        color: var(--color-text);
+        box-shadow: inset 0 0 0 1px rgba(var(--accent-color), 0.1);
+        transition: transform 220ms ease, border-color 220ms ease, background 220ms ease, color 220ms ease;
+    }
+
+    .theme-action:hover {
+        transform: translateY(-1px);
+        border-color: rgba(var(--accent-color), 0.52);
+        background: color-mix(in srgb, var(--color-surface-strong) 66%, rgba(var(--accent-color), 0.24));
+    }
+
+    .theme-action-secondary {
+        border: 1px solid var(--color-line);
+        background: var(--color-surface);
+        color: var(--color-muted);
+        transition: transform 220ms ease, border-color 220ms ease, background 220ms ease, color 220ms ease;
+    }
+
+    .theme-action-secondary:hover {
+        transform: translateY(-1px);
+        border-color: rgba(var(--accent-color), 0.32);
+        background: var(--color-surface-strong);
+        color: var(--color-text);
+    }
+
+    .text-muted-token {
+        color: var(--color-muted);
+    }
+
+    .text-subtle-token {
+        color: var(--color-subtle);
+    }
+
+    .text-nav-token {
+        color: var(--color-nav);
+    }
+
+    .text-accent-strong {
+        color: var(--color-accent-text);
+    }
+
+    .eyebrow-text {
+        color: var(--color-nav);
+        letter-spacing: var(--caps-spacing);
+    }
 }
