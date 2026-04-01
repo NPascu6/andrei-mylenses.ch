@@ -91,11 +91,11 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
 
     return (
         <div
-            className="fixed inset-0 z-[80] flex items-center justify-center bg-black/88 px-4 py-6 backdrop-blur-md"
+            className="fixed inset-0 z-[80] flex items-center justify-center overflow-y-auto bg-black/88 px-4 py-4 backdrop-blur-md md:px-5 md:py-6"
             onClick={onClose}
         >
             <div
-                className="relative grid max-h-full w-full max-w-7xl gap-4 overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b0f13] p-3 shadow-2xl shadow-black/60 lg:grid-cols-[1.35fr_0.65fr] lg:p-5"
+                className="relative grid w-full max-w-7xl gap-4 rounded-[2rem] border border-white/10 bg-[#0b0f13] p-3 shadow-2xl shadow-black/60 lg:max-h-[min(92vh,980px)] lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)] lg:p-5"
                 onClick={(event) => event.stopPropagation()}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
@@ -108,12 +108,12 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                     <CloseIcon/>
                 </button>
 
-                <div className="relative flex min-h-[50vh] items-center justify-center overflow-hidden rounded-[1.5rem] bg-white/5">
+                <div className="relative flex min-h-[44vh] items-center justify-center overflow-hidden rounded-[1.5rem] bg-white/5 lg:min-h-0">
                     <img
                         loading="lazy"
                         src={selectedImage.fullSrc || selectedImage.src}
                         alt={selectedImage.title}
-                        className="max-h-[78vh] w-full rounded-[1.5rem] object-contain"
+                        className="max-h-[70vh] w-full rounded-[1.5rem] object-contain lg:max-h-[calc(92vh-3rem)]"
                     />
 
                     <button
@@ -133,8 +133,8 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                     </button>
                 </div>
 
-                <aside className="flex flex-col justify-between rounded-[1.5rem] border border-white/10 bg-white/5 p-6 text-white">
-                    <div className="space-y-5">
+                <aside className="flex min-h-0 flex-col rounded-[1.5rem] border border-white/10 bg-white/5 p-5 text-white md:p-6 lg:max-h-[calc(92vh-2.5rem)]">
+                    <div className="min-h-0 flex-1 space-y-5 overflow-y-auto pr-1 lg:pr-2">
                         <div>
                             <p className="text-xs uppercase tracking-[0.3em] text-white/72">
                                 {selectedImage.category || 'Portfolio'} / {String(index + 1).padStart(2, '0')}
@@ -159,7 +159,7 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                         </p>
                     </div>
 
-                    <div className="mt-8 space-y-4 border-t border-white/10 pt-5">
+                    <div className="mt-6 space-y-4 border-t border-white/10 pt-5">
                         <div className="grid grid-cols-2 gap-3 text-sm text-white/72">
                             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                                 <p className="uppercase tracking-[0.18em] text-white/45">Best Format</p>
@@ -198,7 +198,7 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                                 Request this canvas
                             </a>
 
-                            <div className="grid grid-cols-3 gap-3">
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                                 <button
                                     type="button"
                                     onClick={handleScrollToPrints}
