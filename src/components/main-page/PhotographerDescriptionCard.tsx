@@ -25,7 +25,7 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                 <article className="surface-panel relative overflow-hidden rounded-[2rem]">
                     <div className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top_left,_rgba(var(--accent-color),0.22),_transparent_60%)]"/>
                     <div className="relative space-y-7 p-6 md:p-8">
-                        <div className="grid gap-6 md:grid-cols-[auto_minmax(0,1fr)] md:items-center">
+                        <div className="grid gap-5 md:grid-cols-[auto_minmax(0,1fr)] md:items-center">
                             <div className="relative mx-auto md:mx-0">
                                 <div className="absolute -inset-3 rounded-full blur-2xl" style={{backgroundColor: 'rgba(var(--accent-color), 0.16)'}}/>
                                 <img
@@ -37,11 +37,11 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                                 />
                             </div>
 
-                            <div className="min-w-0 space-y-5 text-center md:text-left">
+                            <div className="min-w-0 space-y-4 text-center md:space-y-5 md:text-left">
                                 <p className="text-[10px] uppercase tracking-[0.28em] md:text-xs" style={{color: 'var(--color-nav)'}}>
                                     Fine art and travel photography
                                 </p>
-                                <h1 className="font-display max-w-[9ch] text-[clamp(2.95rem,5.4vw,4.65rem)] leading-[0.94] tracking-[-0.02em] text-appText [overflow-wrap:anywhere] md:max-w-[8.6ch] xl:max-w-[8.9ch]">
+                                <h1 className="font-display mx-auto max-w-[7.1ch] text-[clamp(2.35rem,12vw,4.65rem)] leading-[0.9] tracking-[-0.03em] text-appText [overflow-wrap:anywhere] [text-wrap:balance] sm:max-w-[7.8ch] md:mx-0 md:max-w-[8.3ch] md:text-[clamp(3.15rem,5.1vw,4.65rem)] xl:max-w-[8.8ch]">
                                     Capturing life&apos;s unforgettable moments with calm, depth, and presence.
                                 </h1>
                                 <p className="max-w-2xl text-base leading-8 md:text-[1.05rem]" style={{color: 'var(--color-muted)'}}>
@@ -56,7 +56,9 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                                     key={item.label}
                                     className="surface-panel-soft rounded-[1.5rem] p-4"
                                 >
-                                    <p className="font-display text-3xl text-appText">{item.value}</p>
+                                    <p className={`font-display text-appText ${item.value.length > 12 ? 'text-[2.2rem] leading-[0.95] sm:text-[2.45rem]' : 'text-3xl'}`}>
+                                        {item.value}
+                                    </p>
                                     <p className="mt-2 text-xs uppercase tracking-[0.22em]" style={{color: 'var(--color-nav)'}}>
                                         {item.label}
                                     </p>
