@@ -1,0 +1,5 @@
+Contact: mailto:andrei.pascu86@yahoo.com
+Expires: 2027-04-02T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://andrei-mylenses.ch/.well-known/security.txt
+Policy: https://andrei-mylenses.ch/security.txt

@@ -1,7 +1,20 @@
+<IfModule mod_headers.c>
+
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; connect-src 'self' https://andrei-mylenses-cms-oauth.vercel.app https://api.github.com; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com data:; img-src 'self' data: blob: https:; manifest-src 'self'; media-src 'self' blob:; object-src 'none'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; worker-src 'self' blob:; frame-ancestors 'self'; form-action 'self' https://github.com mailto:;"
+
+</IfModule>
+
 <IfModule mod_rewrite.c>
 
   RewriteEngine On
   RewriteBase /
+  RewriteRule ^\.well-known/security\.txt$ - [L]
+  RewriteRule ^security\.txt$ - [L]
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
