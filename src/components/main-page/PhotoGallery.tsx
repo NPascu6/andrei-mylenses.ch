@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import SelectedPhoto from './SelectedPhoto';
 
 interface GalleryImage {
@@ -18,10 +18,13 @@ interface PhotoGalleryProps {
 }
 
 const categoryOrder = ['All', 'Wall-ready', 'Instagram', 'Travel', 'Nature', 'Street', 'Wildlife', 'Portrait', 'Architecture'];
+const INITIAL_VISIBLE_COUNT = 12;
+const LOAD_MORE_COUNT = 12;
 
 const PhotoGallery = ({images}: PhotoGalleryProps) => {
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const [activeCategory, setActiveCategory] = useState<string>('All');
+    const [visibleCount, setVisibleCount] = useState<number>(INITIAL_VISIBLE_COUNT);
 
     const categories = useMemo(() => {
         const discovered = Array.from(
@@ -54,6 +57,19 @@ const PhotoGallery = ({images}: PhotoGalleryProps) => {
         () => images.filter((image) => image.featured).length,
         [images]
     );
+
+    useEffect(() => {
+        setVisibleCount(INITIAL_VISIBLE_COUNT);
+        setSelectedIndex(null);
+    }, [activeCategory]);
+
+    const visibleImages = useMemo(
+        () => filteredImages.slice(0, visibleCount),
+        [filteredImages, visibleCount]
+    );
+
+    const hasMoreImages = visibleImages.length < filteredImages.length;
+    const nextBatchCount = Math.min(filteredImages.length - visibleImages.length, LOAD_MORE_COUNT);
 
     return (
         <div className="space-y-8">
@@ -91,44 +107,86 @@ const PhotoGallery = ({images}: PhotoGalleryProps) => {
                 })}
             </div>
 
-            <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 xl:columns-4">
-                {filteredImages.map((image, idx) => (
-                    <button
-                        key={`${image.title}-${idx}`}
-                        onClick={() => setSelectedIndex(idx)}
-                        className="group mb-4 block w-full break-inside-avoid overflow-hidden rounded-[1.55rem] text-left shadow-xl shadow-black/5 transition-transform duration-500 hover:-translate-y-1"
-                        style={{border: '1px solid var(--color-line)', backgroundColor: 'var(--color-surface)'}}
-                    >
-                        <div className="relative overflow-hidden">
-                            <img
-                                loading="lazy"
-                                src={image.src}
-                                alt={image.title}
-                                className="w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/5 to-transparent opacity-85"/>
-                            {image.featured && (
-                                <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/45 px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/85 backdrop-blur-sm">
-                                    Best for canvas
+            <div className="surface-panel relative overflow-hidden rounded-[2rem] px-4 py-5 md:px-5 md:py-6">
+                <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                    <div className="space-y-2">
+                        <p className="eyebrow-text text-[11px] uppercase">Archive flow</p>
+                        <h4 className="font-display text-2xl text-appText md:text-[2.2rem]">
+                            A quieter way to move through the collection.
+                        </h4>
+                    </div>
+                    <p className="text-sm leading-6 text-muted-token">
+                        Showing <span className="text-appText">{visibleImages.length}</span> of{' '}
+                        <span className="text-appText">{filteredImages.length}</span> works in this view.
+                    </p>
+                </div>
+
+                <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5">
+                    {visibleImages.map((image, idx) => (
+                        <button
+                            key={`${image.title}-${idx}`}
+                            onClick={() => setSelectedIndex(idx)}
+                            className="group mb-4 block w-full break-inside-avoid overflow-hidden rounded-[1.4rem] text-left shadow-xl shadow-black/5 transition-transform duration-500 hover:-translate-y-1"
+                            style={{border: '1px solid var(--color-line)', backgroundColor: 'var(--color-surface)'}}
+                        >
+                            <div className="relative overflow-hidden">
+                                <img
+                                    loading="lazy"
+                                    src={image.src}
+                                    alt={image.title}
+                                    className="w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-90"/>
+                                {image.featured && (
+                                    <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/45 px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/85 backdrop-blur-sm">
+                                        Best for canvas
+                                    </div>
+                                )}
+                                <div className="absolute inset-x-0 bottom-0 p-4 text-white md:p-5">
+                                    <p className="text-[10px] uppercase tracking-[0.28em] text-white/60">
+                                        {image.category} {image.location ? ` / ${image.location}` : ''}
+                                    </p>
+                                    <h3 className="mt-2 font-display text-[1.65rem] leading-none md:text-[1.8rem]">
+                                        {image.title}
+                                    </h3>
+                                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-white/74">
+                                        {image.description}
+                                    </p>
                                 </div>
-                            )}
-                            <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                                <p className="text-[10px] uppercase tracking-[0.28em] text-white/60">
-                                    {image.category} {image.location ? ` / ${image.location}` : ''}
-                                </p>
-                                <h3 className="mt-2 font-display text-2xl">{image.title}</h3>
-                                <p className="mt-2 line-clamp-3 text-sm leading-6 text-white/74">
-                                    {image.description}
-                                </p>
                             </div>
-                        </div>
-                    </button>
-                ))}
+                        </button>
+                    ))}
+                </div>
+
+                {hasMoreImages && (
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[var(--color-appBackground)] via-[color-mix(in_srgb,var(--color-appBackground)_76%,transparent)] to-transparent" />
+                )}
             </div>
 
-            {selectedIndex !== null && filteredImages.length > 0 && (
+            {hasMoreImages && (
+                <div className="flex flex-col items-center gap-4">
+                    <div
+                        className="pointer-events-none h-14 w-full max-w-4xl rounded-full blur-3xl"
+                        style={{background: 'color-mix(in srgb, var(--color-accent) 16%, transparent)'}}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setVisibleCount((current) => current + LOAD_MORE_COUNT)}
+                        className="theme-action inline-flex items-center justify-center rounded-full px-6 py-4 text-sm uppercase tracking-[0.24em]"
+                    >
+                        Show {nextBatchCount} more
+                    </button>
+                    <p className="text-sm text-muted-token">
+                        {filteredImages.length - visibleImages.length - nextBatchCount > 0
+                            ? `${filteredImages.length - visibleImages.length - nextBatchCount} more remain after this batch.`
+                            : 'This next reveal completes the current selection.'}
+                    </p>
+                </div>
+            )}
+
+            {selectedIndex !== null && visibleImages.length > 0 && (
                 <SelectedPhoto
-                    images={filteredImages}
+                    images={visibleImages}
                     index={selectedIndex}
                     setIndex={setSelectedIndex}
                     onClose={() => setSelectedIndex(null)}
