@@ -1,5 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import SelectedPhoto from './SelectedPhoto';
+import {curationContent, portfolioExperienceContent} from '../../content/siteContent';
 
 interface GalleryImage {
     src: string;
@@ -36,18 +37,46 @@ const PhotoGallery = ({images}: PhotoGalleryProps) => {
     }, [images]);
 
     const filteredImages = useMemo(() => {
-        if (activeCategory === 'All') {
-            return [...images].sort((left, right) => {
+        const orderByCuratedTitles = (items: GalleryImage[], curatedTitles: string[]) => {
+            if (!curatedTitles.length) {
+                return items;
+            }
+
+            const orderIndex = new Map(curatedTitles.map((title, idx) => [title, idx]));
+
+            return [...items].sort((left, right) => {
+                const leftOrder = orderIndex.get(left.title);
+                const rightOrder = orderIndex.get(right.title);
+
+                if (leftOrder !== undefined && rightOrder !== undefined) {
+                    return leftOrder - rightOrder;
+                }
+
+                if (leftOrder !== undefined) {
+                    return -1;
+                }
+
+                if (rightOrder !== undefined) {
+                    return 1;
+                }
+
                 if (Boolean(left.featured) !== Boolean(right.featured)) {
                     return left.featured ? -1 : 1;
                 }
 
                 return left.title.localeCompare(right.title);
             });
+        };
+
+        if (activeCategory === 'All') {
+            return orderByCuratedTitles(images, curationContent.featuredArchiveTitles);
         }
 
         if (activeCategory === 'Wall-ready') {
-            return images.filter((image) => image.featured);
+            return orderByCuratedTitles(
+                images.filter((image) => image.featured),
+                curationContent.featuredPrintTitles
+            );
         }
 
         return images.filter((image) => image.category === activeCategory);
@@ -75,12 +104,12 @@ const PhotoGallery = ({images}: PhotoGalleryProps) => {
         <div className="space-y-8">
             <div className="surface-panel-soft flex flex-col gap-3 rounded-[1.75rem] p-5 md:flex-row md:items-end md:justify-between">
                 <div className="max-w-2xl space-y-3">
-                    <p className="eyebrow-text text-sm uppercase">Collector curation</p>
+                    <p className="eyebrow-text text-sm uppercase">{portfolioExperienceContent.eyebrow}</p>
                     <h3 className="font-display text-3xl text-appText md:text-[2.5rem]">
-                        Explore the full archive or move directly into the images with the strongest wall presence.
+                        {portfolioExperienceContent.title}
                     </h3>
                     <p className="text-base leading-7 text-muted-token">
-                        The <span className="text-appText">Wall-ready</span> view highlights photographs that translate especially well into Giclee canvas, where scale, atmosphere, and tonal depth can fully open up.
+                        {portfolioExperienceContent.description}
                     </p>
                 </div>
                 <div className="rounded-[1.25rem] border px-4 py-3 text-sm leading-6 text-muted-token" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
@@ -110,9 +139,9 @@ const PhotoGallery = ({images}: PhotoGalleryProps) => {
             <div className="surface-panel relative overflow-hidden rounded-[2rem] px-4 py-5 md:px-5 md:py-6">
                 <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                     <div className="space-y-2">
-                        <p className="eyebrow-text text-[11px] uppercase">Archive flow</p>
+                        <p className="eyebrow-text text-[11px] uppercase">{portfolioExperienceContent.archiveEyebrow}</p>
                         <h4 className="font-display text-2xl text-appText md:text-[2.2rem]">
-                            A quieter way to move through the collection.
+                            {portfolioExperienceContent.archiveTitle}
                         </h4>
                     </div>
                     <p className="text-sm leading-6 text-muted-token">

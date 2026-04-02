@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../store/store';
 import {setThemePreset} from '../../store/appSlice';
@@ -14,6 +14,7 @@ const toolLinks = [
 const QuickSidebar = () => {
     const dispatch = useDispatch();
     const themePreset = useSelector((state: RootState) => state.app.themePreset);
+    const [activeSection, setActiveSection] = useState<string>('top');
 
     const switchTheme = () => {
         const nextThemePreset = getNextThemePreset(themePreset);
@@ -23,6 +24,36 @@ const QuickSidebar = () => {
         persistThemePreferences(nextPreferences);
         dispatch(setThemePreset(nextThemePreset));
     };
+
+    useEffect(() => {
+        const sections = sectionNavigationItems
+            .map((item) => document.getElementById(item.sectionId))
+            .filter((section): section is HTMLElement => Boolean(section));
+
+        if (!sections.length) {
+            return;
+        }
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const visibleEntries = entries
+                    .filter((entry) => entry.isIntersecting)
+                    .sort((left, right) => right.intersectionRatio - left.intersectionRatio);
+
+                if (visibleEntries[0]?.target?.id) {
+                    setActiveSection(visibleEntries[0].target.id);
+                }
+            },
+            {
+                rootMargin: '-20% 0px -55% 0px',
+                threshold: [0.15, 0.35, 0.55, 0.75],
+            }
+        );
+
+        sections.forEach((section) => observer.observe(section));
+
+        return () => observer.disconnect();
+    }, []);
 
     return (
         <>
@@ -36,7 +67,9 @@ const QuickSidebar = () => {
                                     key={item.sectionId}
                                     type="button"
                                     onClick={() => scrollToSection(item.sectionId)}
-                                    className="theme-chip rounded-full px-3 py-2 text-center text-[11px] uppercase tracking-[0.18em]"
+                                    className={`rounded-full px-3 py-2 text-center text-[11px] uppercase tracking-[0.18em] ${
+                                        activeSection === item.sectionId ? 'theme-chip theme-chip-active text-appText' : 'theme-chip'
+                                    }`}
                                 >
                                     {item.label}
                                 </button>
@@ -88,7 +121,9 @@ const QuickSidebar = () => {
                                 key={item.sectionId}
                                 type="button"
                                 onClick={() => scrollToSection(item.sectionId)}
-                                className="theme-chip shrink-0 rounded-full px-3 py-2 text-[10px] uppercase tracking-[0.18em]"
+                                className={`shrink-0 rounded-full px-3 py-2 text-[10px] uppercase tracking-[0.18em] ${
+                                    activeSection === item.sectionId ? 'theme-chip theme-chip-active text-appText' : 'theme-chip'
+                                }`}
                             >
                                 {item.label}
                             </button>

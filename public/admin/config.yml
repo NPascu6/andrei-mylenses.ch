@@ -99,3 +99,62 @@ collections:
         time_format: false
         date_format: "YYYY-MM-DD"
         hint: "Optional capture date shown in metadata when available."
+  - name: "siteContent"
+    label: "Site Content"
+    delete: false
+    editor:
+      preview: false
+    files:
+      - label: "Portfolio Experience"
+        name: "portfolioExperience"
+        file: "src/content/site/portfolioExperience.json"
+        format: "json"
+        fields:
+          - { label: "Eyebrow", name: "eyebrow", widget: "string" }
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Description", name: "description", widget: "text" }
+          - { label: "Archive Eyebrow", name: "archiveEyebrow", widget: "string" }
+          - { label: "Archive Title", name: "archiveTitle", widget: "string" }
+      - label: "Inquiry Guide"
+        name: "inquiryGuide"
+        file: "src/content/site/inquiryGuide.json"
+        format: "json"
+        fields:
+          - { label: "Eyebrow", name: "eyebrow", widget: "string" }
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Description", name: "description", widget: "text" }
+          - { label: "Guided Title", name: "guidedTitle", widget: "string" }
+          - { label: "Guided Description", name: "guidedDescription", widget: "text" }
+      - label: "Curation"
+        name: "curation"
+        file: "src/content/site/curation.json"
+        format: "json"
+        fields:
+          - label: "Featured Print Titles"
+            name: "featuredPrintTitles"
+            widget: "list"
+            required: false
+            hint: "Choose and reorder the works that should appear in the featured print strip."
+            summary: "{{fields.artworkTitle}}"
+            field:
+              label: "Artwork"
+              name: "artworkTitle"
+              widget: "relation"
+              collection: "photos"
+              search_fields: ["title", "location", "category"]
+              value_field: "{{title}}"
+              display_fields: ["title", "location", "category"]
+          - label: "Featured Archive Titles"
+            name: "featuredArchiveTitles"
+            widget: "list"
+            required: false
+            hint: "Optional ordered works for the top of the main archive view. The list order becomes the gallery order."
+            summary: "{{fields.artworkTitle}}"
+            field:
+              label: "Artwork"
+              name: "artworkTitle"
+              widget: "relation"
+              collection: "photos"
+              search_fields: ["title", "location", "category"]
+              value_field: "{{title}}"
+              display_fields: ["title", "location", "category"]
