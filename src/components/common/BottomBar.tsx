@@ -4,7 +4,10 @@ import Instagram from "../../assets/icons/Instagram";
 import WhatsApp from "../../assets/icons/WhatsApp";
 import Email from "../../assets/icons/Email";
 import {RootState} from "../../store/store";
-import {inquiryGuideContent} from "../../content/siteContent";
+import {
+    consultationExperienceContent,
+    inquiryGuideContent,
+} from "../../content/siteContent";
 
 const contactLinks = [
     {
@@ -29,10 +32,13 @@ const BottomBar = () => {
     const [selectedArtwork, setSelectedArtwork] = useState<string>('');
     const [roomType, setRoomType] = useState<string>('Living room');
     const [inquiryType, setInquiryType] = useState<string>('Print consultation');
+    const [budgetRange, setBudgetRange] = useState<string>('Open to guidance');
+    const [timeline, setTimeline] = useState<string>('Within the next month');
+    const [city, setCity] = useState<string>('');
     const [details, setDetails] = useState<string>('');
 
     const artworkOptions = useMemo(
-        () => photos.slice(0, 40).map((photo) => photo.title),
+        () => photos.slice(0, 60).map((photo) => photo.title),
         [photos]
     );
 
@@ -45,6 +51,9 @@ const BottomBar = () => {
             `Inquiry type: ${inquiryType}`,
             `Artwork: ${selectedArtwork || 'Still deciding'}`,
             `Room or setting: ${roomType}`,
+            `Budget comfort: ${budgetRange}`,
+            `Timeline: ${timeline}`,
+            city ? `Location: ${city}` : '',
             details ? `Notes: ${details}` : '',
             '',
             'Hello Andrei,',
@@ -52,55 +61,63 @@ const BottomBar = () => {
         ].filter(Boolean);
 
         return `mailto:andrei.pascu86@yahoo.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
-    }, [details, inquiryType, roomType, selectedArtwork]);
+    }, [budgetRange, city, details, inquiryType, roomType, selectedArtwork, timeline]);
 
     return (
         <footer id="contact" className="relative mt-2 scroll-mt-24 px-4 pb-10 pt-0 md:scroll-mt-28 md:px-6">
             <div className="mx-auto grid max-w-7xl gap-6">
                 <div className="surface-panel rounded-[2rem] px-6 py-7 md:px-8">
-                    <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                    <div className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
                         <div className="max-w-3xl space-y-4">
-                            <p className="eyebrow-text text-sm uppercase tracking-[0.32em]">{inquiryGuideContent.eyebrow}</p>
+                            <p className="eyebrow-text text-sm uppercase tracking-[0.32em]">{consultationExperienceContent.eyebrow}</p>
                             <h2 className="font-display text-3xl text-appText md:text-4xl">
-                                {inquiryGuideContent.title}
+                                {consultationExperienceContent.title}
                             </h2>
-                            <p className="max-w-2xl text-base leading-7" style={{color: 'var(--color-muted)'}}>
-                                {inquiryGuideContent.description}
+                            <p className="max-w-2xl text-base leading-7 text-muted-token">
+                                {consultationExperienceContent.description}
                             </p>
                         </div>
 
-                        <div className="surface-panel-soft rounded-[1.35rem] px-4 py-3 text-sm leading-6 text-muted-token">
-                            <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Based in Switzerland</p>
-                            <p className="mt-2 text-appText">
-                                Available for curated print guidance, room-fit recommendations, and selected commissioned work.
-                            </p>
+                        <div className="surface-panel-soft rounded-[1.5rem] p-5">
+                            <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Why this feels more premium</p>
+                            <div className="mt-4 grid gap-3">
+                                {consultationExperienceContent.assurancePoints.map((point) => (
+                                    <div
+                                        key={point}
+                                        className="rounded-[1.1rem] border px-4 py-3 text-sm leading-6 text-muted-token"
+                                        style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}
+                                    >
+                                        <span className="text-appText">{point}</span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
                     <div className="mt-6 grid gap-3 md:grid-cols-3">
                         <div className="surface-panel-soft rounded-[1.35rem] p-4">
                             <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Print consultation</p>
-                            <p className="mt-2 text-sm leading-6 text-muted-token">Talk through image choice, room mood, and the format that will carry the work best.</p>
+                            <p className="mt-2 text-sm leading-6 text-muted-token">Talk through image choice, room mood, likely scale, and which piece will hold the strongest presence.</p>
                         </div>
                         <div className="surface-panel-soft rounded-[1.35rem] p-4">
-                            <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Custom direction</p>
-                            <p className="mt-2 text-sm leading-6 text-muted-token">Ideal when you want a more personal piece, a travel memory, or a commissioned conversation.</p>
+                            <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Interior-led guidance</p>
+                            <p className="mt-2 text-sm leading-6 text-muted-token">Helpful when you already know the room and want a more confident recommendation instead of browsing endlessly.</p>
                         </div>
                         <div className="surface-panel-soft rounded-[1.35rem] p-4">
                             <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Direct artist contact</p>
-                            <p className="mt-2 text-sm leading-6 text-muted-token">No marketplace noise, just a clear and personal discussion about the work and your space.</p>
+                            <p className="mt-2 text-sm leading-6 text-muted-token">A personal conversation around the work, the atmosphere you want, and whether a custom direction makes sense.</p>
                         </div>
                     </div>
                 </div>
 
-                <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+                <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
                     <div className="surface-panel rounded-[2rem] px-6 py-7 md:px-8">
-                        <p className="eyebrow-text text-sm uppercase tracking-[0.32em]">{inquiryGuideContent.guidedTitle}</p>
+                        <p className="eyebrow-text text-sm uppercase tracking-[0.32em]">{consultationExperienceContent.guidedTitle}</p>
                         <h3 className="mt-3 font-display text-3xl text-appText md:text-4xl">
-                            Build a more thoughtful inquiry in under a minute.
+                            Build a more complete print inquiry in under a minute.
                         </h3>
                         <p className="mt-4 max-w-2xl text-base leading-7 text-muted-token">
-                            {inquiryGuideContent.guidedDescription}
+                            {consultationExperienceContent.guidedDescription}
                         </p>
 
                         <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -116,6 +133,7 @@ const BottomBar = () => {
                                     <option>Curated selection</option>
                                     <option>Commission request</option>
                                     <option>Artwork availability</option>
+                                    <option>Gift guidance</option>
                                 </select>
                             </label>
 
@@ -133,6 +151,37 @@ const BottomBar = () => {
                                     <option>Hospitality space</option>
                                     <option>Gift</option>
                                     <option>Still deciding</option>
+                                </select>
+                            </label>
+
+                            <label className="grid gap-2">
+                                <span className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Budget comfort</span>
+                                <select
+                                    value={budgetRange}
+                                    onChange={(event) => setBudgetRange(event.target.value)}
+                                    className="rounded-[1rem] border px-4 py-3 text-sm text-appText"
+                                    style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}
+                                >
+                                    <option>Open to guidance</option>
+                                    <option>Under 150 CHF</option>
+                                    <option>150-350 CHF</option>
+                                    <option>350-700 CHF</option>
+                                    <option>700 CHF+</option>
+                                </select>
+                            </label>
+
+                            <label className="grid gap-2">
+                                <span className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Timeline</span>
+                                <select
+                                    value={timeline}
+                                    onChange={(event) => setTimeline(event.target.value)}
+                                    className="rounded-[1rem] border px-4 py-3 text-sm text-appText"
+                                    style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}
+                                >
+                                    <option>Within the next month</option>
+                                    <option>Within the next three months</option>
+                                    <option>Just exploring</option>
+                                    <option>For a gift or special date</option>
                                 </select>
                             </label>
 
@@ -154,6 +203,17 @@ const BottomBar = () => {
                             </label>
 
                             <label className="grid gap-2 md:col-span-2">
+                                <span className="text-nav-token text-[10px] uppercase tracking-[0.22em]">City or country</span>
+                                <input
+                                    value={city}
+                                    onChange={(event) => setCity(event.target.value)}
+                                    placeholder="Zurich, Switzerland"
+                                    className="rounded-[1rem] border px-4 py-3 text-sm text-appText"
+                                    style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}
+                                />
+                            </label>
+
+                            <label className="grid gap-2 md:col-span-2">
                                 <span className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Notes</span>
                                 <textarea
                                     value={details}
@@ -166,28 +226,48 @@ const BottomBar = () => {
                             </label>
                         </div>
 
-                        <div className="mt-6 flex flex-wrap gap-3">
-                            <a
-                                href={guidedInquiryHref}
-                                className="theme-action inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.18em]"
-                            >
-                                Open guided email
-                            </a>
-                            <a
-                                href="mailto:andrei.pascu86@yahoo.com?subject=Curated%20Selection"
-                                className="theme-action-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.18em]"
-                            >
-                                Quick curated request
-                            </a>
+                        <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+                            <div className="rounded-[1.35rem] border p-4 text-sm leading-6 text-muted-token" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
+                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">{consultationExperienceContent.assuranceTitle}</p>
+                                <p className="mt-2 text-appText">
+                                    {selectedArtwork || 'A curated recommendation'}
+                                </p>
+                                <p className="mt-1">
+                                    {roomType} · {budgetRange} · {timeline}
+                                </p>
+                                {city && <p className="mt-1">For {city}</p>}
+                            </div>
+
+                            <div className="flex flex-wrap gap-3">
+                                <a
+                                    href={guidedInquiryHref}
+                                    className="theme-action inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.18em]"
+                                >
+                                    Open guided email
+                                </a>
+                                <a
+                                    href="mailto:andrei.pascu86@yahoo.com?subject=Curated%20Selection"
+                                    className="theme-action-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.18em]"
+                                >
+                                    Quick curated request
+                                </a>
+                            </div>
                         </div>
                     </div>
 
                     <div className="surface-panel rounded-[2rem] px-6 py-7 md:px-8">
                         <div>
                             <p className="text-xs uppercase tracking-[0.26em]" style={{color: 'var(--color-nav)'}}>Direct contact</p>
-                            <p className="mt-2 text-lg text-appText">Reach out for available works, print guidance, collaborations, or a shortlist that fits your interior.</p>
+                            <p className="mt-2 text-lg text-appText">{inquiryGuideContent.title}</p>
                             <p className="mt-3 text-sm leading-6 text-muted-token">
-                                The guided inquiry helps structure the first message, but you can also contact directly through Instagram, WhatsApp, or email.
+                                {inquiryGuideContent.description}
+                            </p>
+                        </div>
+
+                        <div className="mt-6 rounded-[1.35rem] border p-4" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
+                            <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Based in Switzerland</p>
+                            <p className="mt-2 text-appText">
+                                Available for curated print guidance, room-fit recommendations, and selected commissioned work.
                             </p>
                         </div>
 

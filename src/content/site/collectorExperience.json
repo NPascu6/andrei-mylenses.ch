@@ -1,0 +1,32 @@
+{
+  "featuredEyebrow": "Featured prints",
+  "featuredTitle": "Begin with the works that feel most natural as collector-led canvas pieces.",
+  "featuredDescription": "Lead with a smaller, more resolved selection before moving into the full archive. These photographs were chosen for tonal depth, atmosphere, and the kind of presence that holds up beautifully at print scale.",
+  "featuredCtaLabel": "Start a consultation",
+  "featuredSecondaryCtaLabel": "See print details",
+  "assuranceEyebrow": "Why collectors begin here",
+  "assuranceTitle": "A quieter shortlist before the wider archive.",
+  "assuranceDescription": "This first edit is designed to reduce decision fatigue and make the print conversation easier. Instead of asking you to browse everything at once, the site brings forward the works that translate most confidently into wall pieces.",
+  "assurancePoints": [
+    "Selected for scale, atmosphere, and tonal clarity.",
+    "Suitable for interiors, gifts, and slower collector purchases.",
+    "Easy to discuss by room, mood, and preferred presentation."
+  ],
+  "journeyEyebrow": "Collector journey",
+  "journeyTitle": "Move from discovery to a more confident print decision.",
+  "journeyDescription": "The site now follows a more professional rhythm: discover a focused selection, understand what makes the prints special, then move into the full archive only when you are ready to browse more deeply.",
+  "journeySteps": [
+    {
+      "title": "Start with a shortlist",
+      "description": "The strongest print-ready works surface first, so your first impression feels curated instead of overwhelming."
+    },
+    {
+      "title": "Understand the print fit",
+      "description": "Materials, room guidance, and presentation cues help you picture how the work can live beyond the screen."
+    },
+    {
+      "title": "Browse the full archive",
+      "description": "Once you know the mood and direction you want, the larger collection becomes much easier to navigate."
+    }
+  ]
+}

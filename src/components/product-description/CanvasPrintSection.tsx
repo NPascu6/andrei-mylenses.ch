@@ -1,31 +1,69 @@
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store/store";
 import GallerySection from "./GallerySection";
 import SelectedPhoto from "../main-page/SelectedPhoto";
 import {scrollToSection} from "../../utils/scrollToSection";
-import {curationContent} from "../../content/siteContent";
+import {
+    collectorExperienceContent,
+    curationContent,
+} from "../../content/siteContent";
+
+interface CanvasImage {
+    src: string;
+    title?: string;
+    fullSrc?: string;
+}
+
+interface PortfolioPhoto {
+    src: string;
+    fullSrc?: string;
+    title: string;
+    description?: string;
+    location?: string;
+    category?: string;
+    featured?: boolean;
+    printReady?: boolean;
+}
 
 interface CanvasPrintSectionProps {
-    loadedCanvasImages: Array<{ src: string; title?: string; fullSrc?: string }>;
+    loadedCanvasImages: CanvasImage[];
 }
 
 const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImages}) => {
-    const photos = useSelector((state: RootState) => state.app.photos);
+    const photos = useSelector((state: RootState) => state.app.photos as PortfolioPhoto[]);
     const [selectedCanvasIndex, setSelectedCanvasIndex] = useState<number | null>(null);
     const [selectedPortfolioIndex, setSelectedPortfolioIndex] = useState<number | null>(null);
-    const featuredTitles = photos.slice(0, 4).map((photo) => photo.title).join(', ');
+
+    const featuredTitles = useMemo(
+        () => photos.slice(0, 4).map((photo) => photo.title).join(', '),
+        [photos]
+    );
+
     const canvasHero = loadedCanvasImages[0]?.src || photos[0]?.src;
-    const curatedFeaturedPrints = curationContent.featuredPrintTitles.length > 0
-        ? curationContent.featuredPrintTitles
-            .map((title) => photos.find((photo: {title: string}) => photo.title === title))
-            .filter(Boolean)
-        : [];
-    const wallReadySelections = (
-        curatedFeaturedPrints.length > 0
-            ? curatedFeaturedPrints
-            : photos.filter((photo: {featured?: boolean; printReady?: boolean}) => photo.featured || photo.printReady)
-    ).slice(0, 6);
+
+    const curatedFeaturedPrints = useMemo(
+        () => curationContent.featuredPrintTitles
+            .map((title) => photos.find((photo) => photo.title === title))
+            .filter((photo): photo is PortfolioPhoto => Boolean(photo)),
+        [photos]
+    );
+
+    const wallReadySelections = useMemo(
+        () => (
+            curatedFeaturedPrints.length > 0
+                ? curatedFeaturedPrints
+                : photos.filter((photo) => photo.featured || photo.printReady)
+        ).slice(0, 6),
+        [curatedFeaturedPrints, photos]
+    );
+
+    const openPortfolioImage = (title: string) => {
+        const nextIndex = photos.findIndex((item) => item.title === title);
+        if (nextIndex >= 0) {
+            setSelectedPortfolioIndex(nextIndex);
+        }
+    };
 
     return (
         <div className="mx-auto max-w-7xl space-y-7 px-4 py-4 md:px-6 md:py-6">
@@ -46,132 +84,115 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                 </div>
 
                 {wallReadySelections.length > 0 && (
-                    <div className="surface-panel rounded-[1.9rem] p-5 md:p-6">
-                        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                            <div className="max-w-2xl space-y-3">
-                                <p className="eyebrow-text text-sm uppercase">Featured prints</p>
-                                <h3 className="font-display text-3xl text-appText md:text-4xl">
-                                    Start with the works most ready to become physical pieces.
+                    <>
+                        <div className="surface-panel rounded-[1.9rem] p-5 md:p-6">
+                            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                                <div className="max-w-2xl space-y-3">
+                                    <p className="eyebrow-text text-sm uppercase">{collectorExperienceContent.featuredEyebrow}</p>
+                                    <h3 className="font-display text-3xl text-appText md:text-4xl">
+                                        {collectorExperienceContent.featuredTitle}
+                                    </h3>
+                                    <p className="text-base leading-8 text-muted-token">
+                                        {collectorExperienceContent.featuredDescription}
+                                    </p>
+                                </div>
+                                <div className="flex flex-wrap gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => scrollToSection('contact')}
+                                        className="theme-action inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"
+                                    >
+                                        {collectorExperienceContent.featuredCtaLabel}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => scrollToSection('prints')}
+                                        className="theme-action-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"
+                                    >
+                                        {collectorExperienceContent.featuredSecondaryCtaLabel}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                                {wallReadySelections.map((photo) => (
+                                    <button
+                                        key={`featured-print-${photo.title}`}
+                                        type="button"
+                                        onClick={() => openPortfolioImage(photo.title)}
+                                        className="group relative overflow-hidden rounded-[1.6rem] bg-black text-left shadow-xl shadow-black/10"
+                                        style={{border: '1px solid var(--color-line)'}}
+                                    >
+                                        <img
+                                            loading="lazy"
+                                            src={photo.src}
+                                            alt={photo.title}
+                                            className="h-72 w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"/>
+                                        <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/40 px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/85 backdrop-blur-sm">
+                                            Featured print
+                                        </div>
+                                        <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                                            <p className="text-[10px] uppercase tracking-[0.28em] text-white/60">
+                                                {photo.location || 'Collector selection'}
+                                            </p>
+                                            <h4 className="mt-2 font-display text-[2rem] leading-none">{photo.title}</h4>
+                                            <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/74">
+                                                {photo.description || 'Selected for strong print presence and atmosphere.'}
+                                            </p>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+                            <div className="surface-panel-soft rounded-[1.75rem] p-5 md:p-6">
+                                <p className="eyebrow-text text-sm uppercase">{collectorExperienceContent.assuranceEyebrow}</p>
+                                <h3 className="mt-3 font-display text-3xl text-appText md:text-4xl">
+                                    {collectorExperienceContent.assuranceTitle}
                                 </h3>
-                                <p className="text-base leading-8 text-muted-token">
-                                    These photographs lead with atmosphere, tonal depth, and wall presence, making them the strongest entry point for collectors, interior-led selections, and thoughtful gifts.
+                                <p className="mt-4 text-base leading-8 text-muted-token">
+                                    {collectorExperienceContent.assuranceDescription}
                                 </p>
+                                <div className="mt-6 grid gap-3">
+                                    {collectorExperienceContent.assurancePoints.map((point) => (
+                                        <div
+                                            key={point}
+                                            className="rounded-[1.25rem] border px-4 py-4 text-sm leading-6 text-muted-token"
+                                            style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}
+                                        >
+                                            <span className="text-appText">{point}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <div className="flex flex-wrap gap-3">
-                                <button
-                                    type="button"
-                                    onClick={() => scrollToSection('contact')}
-                                    className="theme-action inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"
-                                >
-                                    Start an inquiry
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => scrollToSection('prints')}
-                                    className="theme-action-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"
-                                >
-                                    See print details
-                                </button>
-                            </div>
-                        </div>
 
-                        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                            {wallReadySelections.map((photo: any) => (
-                                <button
-                                    key={`featured-print-${photo.title}`}
-                                    type="button"
-                                    onClick={() => {
-                                        const nextIndex = photos.findIndex((item: {title: string}) => item.title === photo.title);
-                                        if (nextIndex >= 0) {
-                                            setSelectedPortfolioIndex(nextIndex);
-                                        }
-                                    }}
-                                    className="group relative overflow-hidden rounded-[1.6rem] bg-black text-left shadow-xl shadow-black/10"
-                                    style={{border: '1px solid var(--color-line)'}}
-                                >
-                                    <img
-                                        loading="lazy"
-                                        src={photo.src}
-                                        alt={photo.title}
-                                        className="h-72 w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"/>
-                                    <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/40 px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/85 backdrop-blur-sm">
-                                        Featured print
-                                    </div>
-                                    <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                                        <p className="text-[10px] uppercase tracking-[0.28em] text-white/60">
-                                            {photo.location || 'Collector selection'}
-                                        </p>
-                                        <h4 className="mt-2 font-display text-[2rem] leading-none">{photo.title}</h4>
-                                        <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/74">
-                                            {photo.description || 'Selected for strong print presence and atmosphere.'}
-                                        </p>
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {wallReadySelections.length > 0 && (
-                    <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
-                        <div className="surface-panel-soft rounded-[1.75rem] p-5 md:p-6">
-                            <p className="eyebrow-text text-sm uppercase">Wall-ready favorites</p>
-                            <h3 className="mt-3 font-display text-3xl text-appText md:text-4xl">
-                                Curated works with the strongest presence as Giclee canvas pieces.
-                            </h3>
-                            <p className="mt-4 text-base leading-8 text-muted-token">
-                                These selections are especially suited for larger presentation, where light, texture, and atmosphere can unfold with more depth. They work beautifully in living spaces, offices, boutique interiors, and collector-led settings.
-                            </p>
-                            <div className="mt-5 flex flex-wrap gap-3">
-                                <button
-                                    type="button"
-                                    onClick={() => scrollToSection('prints')}
-                                    className="theme-action inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"
-                                >
-                                    Explore print options
-                                </button>
-                                <a
-                                    href="mailto:andrei.pascu86@yahoo.com?subject=Curated%20Print%20Selection"
-                                    className="theme-action-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"
-                                >
-                                    Request a curated selection
-                                </a>
+                            <div className="surface-panel rounded-[1.75rem] p-5 md:p-6">
+                                <p className="eyebrow-text text-sm uppercase">{collectorExperienceContent.journeyEyebrow}</p>
+                                <h3 className="mt-3 font-display text-3xl text-appText md:text-4xl">
+                                    {collectorExperienceContent.journeyTitle}
+                                </h3>
+                                <p className="mt-4 text-base leading-8 text-muted-token">
+                                    {collectorExperienceContent.journeyDescription}
+                                </p>
+                                <div className="mt-6 grid gap-3">
+                                    {collectorExperienceContent.journeySteps.map((step, index) => (
+                                        <article
+                                            key={step.title}
+                                            className="rounded-[1.35rem] border p-4"
+                                            style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}
+                                        >
+                                            <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Step {index + 1}</p>
+                                            <h4 className="mt-2 font-display text-2xl text-appText">{step.title}</h4>
+                                            <p className="mt-2 text-sm leading-6 text-muted-token">{step.description}</p>
+                                        </article>
+                                    ))}
+                                </div>
                             </div>
                         </div>
-
-                        <div className="grid gap-3 md:grid-cols-3">
-                            {wallReadySelections.slice(0, 3).map((photo: any) => (
-                                <button
-                                    key={photo.title}
-                                    type="button"
-                                    onClick={() => {
-                                        const nextIndex = photos.findIndex((item: {title: string}) => item.title === photo.title);
-                                        if (nextIndex >= 0) {
-                                            setSelectedPortfolioIndex(nextIndex);
-                                        }
-                                    }}
-                                    className="group relative overflow-hidden rounded-[1.5rem] bg-black text-left"
-                                    style={{border: '1px solid var(--color-line)'}}
-                                >
-                                    <img
-                                        loading="lazy"
-                                        src={photo.src}
-                                        alt={photo.title}
-                                        className="h-60 w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/15 to-transparent"/>
-                                    <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-                                        <p className="text-[10px] uppercase tracking-[0.24em] text-white/60">
-                                            Recommended for canvas
-                                        </p>
-                                        <h4 className="mt-2 font-display text-2xl">{photo.title}</h4>
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                    </>
                 )}
 
                 <GallerySection/>
@@ -263,28 +284,14 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                             </div>
                         </div>
 
-                        <div className="mt-6 grid gap-3 md:grid-cols-3">
-                            <div className="surface-panel rounded-[1.35rem] p-4">
-                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">For collectors</p>
-                                <p className="mt-3 text-sm leading-6 text-muted-token">Ideal if you want one atmospheric statement piece with strong emotional calm and visual depth.</p>
-                            </div>
-                            <div className="surface-panel rounded-[1.35rem] p-4">
-                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">For interiors</p>
-                                <p className="mt-3 text-sm leading-6 text-muted-token">Helpful for homes, offices, and hospitality spaces that need a quieter, more refined focal point.</p>
-                            </div>
-                            <div className="surface-panel rounded-[1.35rem] p-4">
-                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">For gifts</p>
-                                <p className="mt-3 text-sm leading-6 text-muted-token">A meaningful option when you want a travel memory, a place-led story, or a personal commissioned gesture.</p>
-                            </div>
-                        </div>
-
                         <div className="mt-6 flex flex-wrap gap-3">
-                            <a
-                                href="mailto:andrei.pascu86@yahoo.com?subject=Canvas%20Print%20Inquiry"
+                            <button
+                                type="button"
+                                onClick={() => scrollToSection('contact')}
                                 className="theme-action inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"
                             >
                                 Request a print consultation
-                            </a>
+                            </button>
                             <a
                                 href="https://www.instagram.com/andrei_mylenses/"
                                 target="_blank"

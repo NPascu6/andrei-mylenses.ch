@@ -125,6 +125,50 @@ collections:
           - { label: "Description", name: "description", widget: "text" }
           - { label: "Guided Title", name: "guidedTitle", widget: "string" }
           - { label: "Guided Description", name: "guidedDescription", widget: "text" }
+      - label: "Collector Experience"
+        name: "collectorExperience"
+        file: "src/content/site/collectorExperience.json"
+        format: "json"
+        fields:
+          - { label: "Featured Eyebrow", name: "featuredEyebrow", widget: "string" }
+          - { label: "Featured Title", name: "featuredTitle", widget: "string" }
+          - { label: "Featured Description", name: "featuredDescription", widget: "text" }
+          - { label: "Featured CTA Label", name: "featuredCtaLabel", widget: "string" }
+          - { label: "Featured Secondary CTA Label", name: "featuredSecondaryCtaLabel", widget: "string" }
+          - { label: "Assurance Eyebrow", name: "assuranceEyebrow", widget: "string" }
+          - { label: "Assurance Title", name: "assuranceTitle", widget: "string" }
+          - { label: "Assurance Description", name: "assuranceDescription", widget: "text" }
+          - label: "Assurance Points"
+            name: "assurancePoints"
+            widget: "list"
+            allow_add: true
+            field: { label: "Point", name: "point", widget: "string" }
+          - { label: "Journey Eyebrow", name: "journeyEyebrow", widget: "string" }
+          - { label: "Journey Title", name: "journeyTitle", widget: "string" }
+          - { label: "Journey Description", name: "journeyDescription", widget: "text" }
+          - label: "Journey Steps"
+            name: "journeySteps"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+      - label: "Consultation Experience"
+        name: "consultationExperience"
+        file: "src/content/site/consultationExperience.json"
+        format: "json"
+        fields:
+          - { label: "Eyebrow", name: "eyebrow", widget: "string" }
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Description", name: "description", widget: "text" }
+          - { label: "Guided Title", name: "guidedTitle", widget: "string" }
+          - { label: "Guided Description", name: "guidedDescription", widget: "text" }
+          - { label: "Assurance Title", name: "assuranceTitle", widget: "string" }
+          - label: "Assurance Points"
+            name: "assurancePoints"
+            widget: "list"
+            allow_add: true
+            field: { label: "Point", name: "point", widget: "string" }
       - label: "Curation"
         name: "curation"
         file: "src/content/site/curation.json"
