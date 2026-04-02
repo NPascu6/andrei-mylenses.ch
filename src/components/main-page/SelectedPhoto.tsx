@@ -91,11 +91,11 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
 
     return (
         <div
-            className="fixed inset-0 z-[80] flex items-center justify-center overflow-y-auto bg-black/88 px-4 py-4 backdrop-blur-md md:px-5 md:py-6"
+            className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-black/88 px-4 py-4 backdrop-blur-md md:px-5 md:py-6 lg:items-center"
             onClick={onClose}
         >
             <div
-                className="relative grid w-full max-w-7xl gap-4 rounded-[2rem] border border-white/10 bg-[#0b0f13] p-3 shadow-2xl shadow-black/60 lg:max-h-[min(92vh,980px)] lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)] lg:p-5"
+                className="relative grid w-full max-w-7xl gap-4 overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b0f13] p-3 shadow-2xl shadow-black/60 max-lg:min-h-[min(100%,calc(100vh-2rem))] lg:h-[min(92vh,980px)] lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)] lg:p-5"
                 onClick={(event) => event.stopPropagation()}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
@@ -113,7 +113,7 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                         loading="lazy"
                         src={selectedImage.fullSrc || selectedImage.src}
                         alt={selectedImage.title}
-                        className="max-h-[70vh] w-full rounded-[1.5rem] object-contain lg:max-h-[calc(92vh-3rem)]"
+                        className="max-h-[60vh] w-full rounded-[1.5rem] object-contain lg:h-full lg:max-h-[calc(92vh-3rem)]"
                     />
 
                     <button
@@ -133,8 +133,8 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                     </button>
                 </div>
 
-                <aside className="flex min-h-0 flex-col rounded-[1.5rem] border border-white/10 bg-white/5 p-5 text-white md:p-6 lg:max-h-[calc(92vh-2.5rem)]">
-                    <div className="min-h-0 flex-1 space-y-5 overflow-y-auto pr-1 lg:pr-2">
+                <aside className="flex min-h-0 flex-col overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/5 p-5 text-white md:p-6 lg:h-full">
+                    <div className="min-h-0 flex-1 space-y-5 overflow-y-auto pr-1 pb-1 lg:pr-2">
                         <div>
                             <p className="text-xs uppercase tracking-[0.3em] text-white/72">
                                 {selectedImage.category || 'Portfolio'} / {String(index + 1).padStart(2, '0')}

@@ -25,7 +25,7 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                 <article className="surface-panel relative overflow-hidden rounded-[2rem]">
                     <div className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top_left,_rgba(var(--accent-color),0.22),_transparent_60%)]"/>
                     <div className="relative space-y-7 p-6 md:p-8">
-                        <div className="grid gap-6 md:grid-cols-[auto_1fr] md:items-center">
+                        <div className="grid gap-6 md:grid-cols-[auto_minmax(0,1fr)] md:items-center">
                             <div className="relative mx-auto md:mx-0">
                                 <div className="absolute -inset-3 rounded-full blur-2xl" style={{backgroundColor: 'rgba(var(--accent-color), 0.16)'}}/>
                                 <img
@@ -37,11 +37,11 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                                 />
                             </div>
 
-                            <div className="space-y-5 text-center md:text-left">
+                            <div className="min-w-0 space-y-5 text-center md:text-left">
                                 <p className="text-[10px] uppercase tracking-[0.28em] md:text-xs" style={{color: 'var(--color-nav)'}}>
                                     Fine art and travel photography
                                 </p>
-                                <h1 className="font-display max-w-[11ch] text-[3.15rem] leading-[0.92] text-appText sm:text-[3.7rem] lg:text-[5rem]">
+                                <h1 className="font-display max-w-[9ch] text-[clamp(2.95rem,5.4vw,4.65rem)] leading-[0.94] tracking-[-0.02em] text-appText [overflow-wrap:anywhere] md:max-w-[8.6ch] xl:max-w-[8.9ch]">
                                     Capturing life&apos;s unforgettable moments with calm, depth, and presence.
                                 </h1>
                                 <p className="max-w-2xl text-base leading-8 md:text-[1.05rem]" style={{color: 'var(--color-muted)'}}>
