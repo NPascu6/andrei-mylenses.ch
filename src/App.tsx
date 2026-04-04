@@ -3,6 +3,7 @@ import {useLocation} from 'react-router-dom';
 import {RoutesSwitch} from './Routes';
 import BottomBar from "./components/common/BottomBar";
 import Loading from "./components/common/Loading";
+import PwaPrompt from './components/common/PwaPrompt';
 import {
     applyThemePreferences,
     getThemePreset,
@@ -111,6 +112,7 @@ function App() {
             <React.Suspense fallback={<Loading/>}>
                 <BottomBar/>
             </React.Suspense>
+            <PwaPrompt/>
         </div>
     );
 }
