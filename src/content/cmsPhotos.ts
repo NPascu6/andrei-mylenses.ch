@@ -29,6 +29,9 @@ export interface CmsPhotoEntry {
     hero?: boolean;
     seoTitle?: string;
     seoDescription?: string;
+    focusX?: number;
+    focusY?: number;
+    collectionTags?: string[];
 }
 
 const cmsPhotoModules = import.meta.glob('./photos/*.json', {

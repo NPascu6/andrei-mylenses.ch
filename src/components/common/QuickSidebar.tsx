@@ -16,6 +16,11 @@ const toolLinks = [
     {label: 'WhatsApp', href: whatsappHref, external: true},
 ] as const;
 
+const getSidebarPillClasses = (active: boolean, emphasize = false) =>
+    `sidebar-pill rounded-full px-3.5 py-2 text-[10px] uppercase tracking-[0.2em] ${
+        active ? 'sidebar-pill-active' : ''
+    } ${emphasize ? 'text-appText' : ''}`;
+
 const QuickSidebar = () => {
     const location = useLocation();
     const [activeSection, setActiveSection] = useState<string>('');
@@ -120,24 +125,20 @@ const QuickSidebar = () => {
             <aside className="fixed right-4 top-24 z-40 hidden xl:block 2xl:right-6">
                 <nav
                     aria-label="Site navigation"
-                    className="surface-panel flex max-h-[calc(100vh-7rem)] w-[220px] flex-col gap-4 overflow-y-auto rounded-[1.75rem] p-4"
+                    className="sidebar-shell surface-panel flex max-h-[calc(100vh-7rem)] w-[216px] flex-col gap-4 overflow-y-auto rounded-[1.75rem] p-4"
                 >
                     <div>
                         <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">Navigation</p>
-                        <p className="mt-2 font-display text-2xl text-appText">{activePageLabel}</p>
+                        <p className="mt-2 font-display text-[1.9rem] leading-none text-appText">{activePageLabel}</p>
                         <div className="mt-3 grid gap-2">
                             {pageNavigationItems.map((item) => (
                                 <NavLink
                                     key={item.to}
                                     to={item.to}
                                     end={item.to === '/'}
-                                    className={({isActive}) =>
-                                        `rounded-full px-3 py-2 text-center text-[11px] uppercase tracking-[0.18em] ${
-                                            isActive ? 'theme-chip theme-chip-active text-appText' : 'theme-chip'
-                                        }`
-                                    }
+                                    className={({isActive}) => getSidebarPillClasses(isActive)}
                                 >
-                                    {item.label}
+                                    <span>{item.label}</span>
                                 </NavLink>
                             ))}
                         </div>
@@ -153,11 +154,9 @@ const QuickSidebar = () => {
                                     key={item.sectionId}
                                     type="button"
                                     onClick={() => scrollToSection(item.sectionId)}
-                                    className={`rounded-full px-3 py-2 text-center text-[11px] uppercase tracking-[0.18em] ${
-                                        activeSection === item.sectionId ? 'theme-chip theme-chip-active text-appText' : 'theme-chip'
-                                    }`}
+                                    className={getSidebarPillClasses(activeSection === item.sectionId)}
                                 >
-                                    {item.label}
+                                    <span>{item.label}</span>
                                 </button>
                             ))}
                         </div>
@@ -170,16 +169,16 @@ const QuickSidebar = () => {
                         <div className="mt-3 grid gap-2">
                             <Link
                                 to="/prints"
-                                className="theme-chip rounded-full px-3 py-2 text-center text-[11px] uppercase tracking-[0.18em]"
+                                className={getSidebarPillClasses(location.pathname === '/prints', true)}
                             >
-                                Print inquiry
+                                <span>Print inquiry</span>
                             </Link>
                             <button
                                 type="button"
                                 onClick={() => scrollToSection('contact')}
-                                className="theme-chip rounded-full px-3 py-2 text-center text-[11px] uppercase tracking-[0.18em]"
+                                className={getSidebarPillClasses(activeSection === 'contact')}
                             >
-                                Contact footer
+                                <span>Contact footer</span>
                             </button>
                         </div>
                     </div>

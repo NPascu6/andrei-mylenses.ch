@@ -5,5 +5,19 @@
   "location": "Liguria, Italy",
   "category": "Nature",
   "featured": true,
-  "printReady": true
+  "printReady": true,
+  "sizes": [
+    "80 x 120 cm",
+    "100 x 150 cm"
+  ],
+  "priceFrom": "From 170 CHF",
+  "edition": "Open edition",
+  "availability": "Selected sizes available",
+  "roomMood": "Quiet interiors, lighter living spaces, and rooms that need a horizon-led sense of calm.",
+  "focusX": 50,
+  "focusY": 55,
+  "collectionTags": [
+    "Best for large walls",
+    "Quiet interiors"
+  ]
 }

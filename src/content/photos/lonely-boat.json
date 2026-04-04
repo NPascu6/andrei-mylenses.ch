@@ -5,5 +5,19 @@
   "location": "Hue, Vietnam",
   "category": "Travel",
   "featured": true,
-  "printReady": true
+  "printReady": true,
+  "sizes": [
+    "60 x 90 cm",
+    "80 x 120 cm"
+  ],
+  "priceFrom": "From 160 CHF",
+  "edition": "Open edition",
+  "availability": "Available by inquiry",
+  "roomMood": "Collected living spaces, studies, and rooms that suit a softer travel narrative.",
+  "focusX": 46,
+  "focusY": 60,
+  "collectionTags": [
+    "Giftable prints",
+    "Collector starters"
+  ]
 }

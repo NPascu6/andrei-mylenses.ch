@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import {getPhotoObjectPosition} from '../../content/portfolioLibrary';
 import type {PortfolioPhoto} from '../../types/portfolio';
 
 interface ArtworkTileProps {
@@ -10,6 +11,7 @@ interface ArtworkTileProps {
     badge?: string;
     showDescription?: boolean;
     imageStyle?: React.CSSProperties;
+    responsiveSizes?: string;
 }
 
 const ArtworkTile: React.FC<ArtworkTileProps> = ({
@@ -20,21 +22,25 @@ const ArtworkTile: React.FC<ArtworkTileProps> = ({
     badge,
     showDescription = true,
     imageStyle,
+    responsiveSizes = '(min-width: 1536px) 22vw, (min-width: 1280px) 28vw, (min-width: 768px) 45vw, 100vw',
 }) => (
     <Link
         to={`/artwork/${photo.slug}`}
-        className={`group relative block overflow-hidden rounded-[1.75rem] bg-black shadow-2xl shadow-black/20 ${className}`}
+        className={`group relative block overflow-hidden rounded-[1.75rem] bg-black shadow-2xl shadow-black/20 transition-transform duration-500 hover:-translate-y-0.5 ${className}`}
         style={{border: '1px solid var(--color-line)'}}
     >
         <img
             loading={priority ? 'eager' : 'lazy'}
-            src={photo.fullSrc || photo.src}
+            decoding="async"
+            src={photo.src}
+            srcSet={photo.srcSet}
+            sizes={responsiveSizes}
             alt={photo.title}
             className={`w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] ${imageClassName}`}
-            style={imageStyle}
+            style={{objectPosition: getPhotoObjectPosition(photo), ...imageStyle}}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/18 to-transparent"/>
-        <div className="absolute left-4 top-4 rounded-full border border-white/12 bg-black/40 px-3 py-2 text-[10px] uppercase tracking-[0.24em] text-white/78 backdrop-blur-sm">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/20 to-transparent"/>
+        <div className="absolute left-4 top-4 rounded-full border border-white/12 bg-black/42 px-3 py-2 text-[10px] uppercase tracking-[0.24em] text-white/78 backdrop-blur-sm">
             {badge || (photo.printReady ? 'Collector print' : photo.category)}
         </div>
         <div className="absolute inset-x-0 bottom-0 p-5 text-white">
@@ -49,6 +55,9 @@ const ArtworkTile: React.FC<ArtworkTileProps> = ({
                     {photo.description}
                 </p>
             ) : null}
+            <p className="mt-4 text-[10px] uppercase tracking-[0.24em] text-white/56 transition-colors duration-300 group-hover:text-white/82">
+                View artwork
+            </p>
         </div>
     </Link>
 );

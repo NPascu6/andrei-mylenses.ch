@@ -3,5 +3,20 @@
   "image": "src/assets/photos/Busy winter in Zurich.jpg",
   "description": "People are in a hurry in front of Tram 13, during Christmas shopping spree.",
   "location": "Zurich, Switzerland",
-  "category": "Street"
+  "category": "Street",
+  "printReady": true,
+  "sizes": [
+    "50 x 75 cm",
+    "70 x 105 cm"
+  ],
+  "priceFrom": "From 135 CHF",
+  "edition": "Open edition",
+  "availability": "Available by inquiry",
+  "roomMood": "Modern urban interiors, offices, and collectors looking for a Swiss city-led piece.",
+  "focusX": 54,
+  "focusY": 52,
+  "collectionTags": [
+    "Zurich",
+    "Giftable prints"
+  ]
 }

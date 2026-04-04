@@ -5,5 +5,19 @@
   "location": "Phu Quoc, Vietnam",
   "category": "Nature",
   "featured": true,
-  "printReady": true
+  "printReady": true,
+  "sizes": [
+    "70 x 105 cm",
+    "90 x 135 cm"
+  ],
+  "priceFrom": "From 165 CHF",
+  "edition": "Open edition",
+  "availability": "Available by inquiry",
+  "roomMood": "Quiet bedrooms, calmer hospitality spaces, and warmer interiors with sunset tones.",
+  "focusX": 52,
+  "focusY": 46,
+  "collectionTags": [
+    "Quiet interiors",
+    "Giftable prints"
+  ]
 }

@@ -142,6 +142,28 @@ collections:
         widget: "text"
         required: false
         hint: "Optional note describing the kind of space or atmosphere where the work fits best."
+      - label: "Focus X"
+        name: "focusX"
+        widget: "number"
+        value_type: "int"
+        required: false
+        min: 0
+        max: 100
+        hint: "Optional horizontal focal point for crops on the public site, from 0 to 100."
+      - label: "Focus Y"
+        name: "focusY"
+        widget: "number"
+        value_type: "int"
+        required: false
+        min: 0
+        max: 100
+        hint: "Optional vertical focal point for crops on the public site, from 0 to 100."
+      - label: "Collection tags"
+        name: "collectionTags"
+        widget: "list"
+        required: false
+        hint: "Optional curated tags such as Best for large walls, Quiet interiors, Zurich, Romania, or Black and white."
+        field: { label: "Tag", name: "tag", widget: "string" }
       - label: "Instagram or source link"
         name: "permalink"
         widget: "string"

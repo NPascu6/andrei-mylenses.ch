@@ -14,7 +14,9 @@ export interface PortfolioPhoto {
     id: string;
     baseName: string;
     src: string;
+    mediumSrc: string;
     fullSrc: string;
+    srcSet: string;
     title: string;
     slug: string;
     description: string;
@@ -35,6 +37,9 @@ export interface PortfolioPhoto {
     hero?: boolean;
     seoTitle?: string;
     seoDescription?: string;
+    focusX?: number;
+    focusY?: number;
+    collectionTags: string[];
 }
 
 export interface CanvasPreviewImage {
@@ -42,4 +47,11 @@ export interface CanvasPreviewImage {
     title: string;
     src: string;
     fullSrc?: string;
+}
+
+export interface PortfolioCollectionView {
+    label: string;
+    slug: string;
+    description: string;
+    photos: PortfolioPhoto[];
 }

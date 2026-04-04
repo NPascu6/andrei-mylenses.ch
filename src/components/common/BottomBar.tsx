@@ -36,6 +36,14 @@ const BottomBar = () => {
                                 <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Best next step</p>
                                 <p className="mt-2 text-appText">Start with the print page if you want sizing, collector guidance, or a more complete inquiry flow.</p>
                             </div>
+                            <div className="grid gap-3 md:grid-cols-2">
+                                <div className="rounded-[1.2rem] border px-4 py-4 text-sm leading-6 text-muted-token" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
+                                    Archival canvas output, made to order, with presentation discussed directly.
+                                </div>
+                                <div className="rounded-[1.2rem] border px-4 py-4 text-sm leading-6 text-muted-token" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
+                                    Switzerland-based artist, private inquiries, and calmer reply-led guidance.
+                                </div>
+                            </div>
                             <div className="flex flex-wrap gap-3">
                                 <Link
                                     to="/prints"
@@ -44,10 +52,10 @@ const BottomBar = () => {
                                     Start print inquiry
                                 </Link>
                                 <Link
-                                    to="/collection"
+                                    to="/collection?filter=Collector%20starters"
                                     className="theme-action-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.18em]"
                                 >
-                                    Browse collection
+                                    Browse curated picks
                                 </Link>
                             </div>
                             <div className="flex flex-wrap gap-3">

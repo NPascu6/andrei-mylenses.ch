@@ -5,5 +5,19 @@
   "location": "Oradea, Romania",
   "category": "Street",
   "featured": true,
-  "printReady": true
+  "printReady": true,
+  "sizes": [
+    "50 x 75 cm",
+    "70 x 105 cm"
+  ],
+  "priceFrom": "From 145 CHF",
+  "edition": "Edition of 25",
+  "availability": "Available by inquiry",
+  "roomMood": "Entry halls, urban interiors, and rooms that can take a stronger evening-city accent.",
+  "focusX": 51,
+  "focusY": 48,
+  "collectionTags": [
+    "Romania",
+    "Collector starters"
+  ]
 }

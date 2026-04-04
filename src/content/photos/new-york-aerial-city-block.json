@@ -6,5 +6,21 @@
   "category": "Architecture",
   "featured": true,
   "printReady": true,
+  "hero": true,
+  "sizes": [
+    "70 x 100 cm",
+    "90 x 130 cm",
+    "110 x 160 cm"
+  ],
+  "priceFrom": "From 180 CHF",
+  "edition": "Edition of 15",
+  "availability": "Selected sizes available",
+  "roomMood": "Design-led interiors, offices, and taller walls with architectural rhythm.",
+  "focusX": 59,
+  "focusY": 50,
+  "collectionTags": [
+    "Best for large walls",
+    "Collector starters"
+  ],
   "permalink": "https://www.instagram.com/p/DF6rQv6KXwL/"
 }
