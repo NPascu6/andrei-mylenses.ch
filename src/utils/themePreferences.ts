@@ -32,6 +32,12 @@ const DEFAULT_THEME_PREFERENCES: ThemePreferences = {
 export const getThemePreset = (themePreset: ThemePresetId) =>
     themePresets.find((preset) => preset.value === themePreset) || themePresets[0];
 
+export const isThemePresetId = (value: string | null): value is ThemePresetId =>
+    Boolean(value && themePresets.some((preset) => preset.value === value));
+
+export const getThemePresetForMode = (mode: 'light' | 'dark'): ThemePresetId =>
+    themePresets.find((preset) => preset.mode === mode)?.value || DEFAULT_THEME_PREFERENCES.themePreset;
+
 export const applyThemePreferences = (preferences: ThemePreferences) => {
     const preset = getThemePreset(preferences.themePreset);
     document.documentElement.setAttribute('data-theme', preset.mode);
@@ -45,6 +51,21 @@ export const persistThemePreferences = (preferences: ThemePreferences) => {
 export const loadThemePreferences = (): ThemePreferences => ({
     themePreset: (localStorage.getItem('themePreset') as ThemePresetId) || DEFAULT_THEME_PREFERENCES.themePreset,
 });
+
+export const loadThemePreferencesFromLocation = (search: string): ThemePreferences => {
+    const params = new URLSearchParams(search);
+    const themePreset = params.get('themePreset');
+    if (isThemePresetId(themePreset)) {
+        return {themePreset};
+    }
+
+    const previewTheme = params.get('previewTheme');
+    if (previewTheme === 'light' || previewTheme === 'dark') {
+        return {themePreset: getThemePresetForMode(previewTheme)};
+    }
+
+    return loadThemePreferences();
+};
 
 export const getNextThemePreset = (currentThemePreset: ThemePresetId): ThemePresetId => {
     const currentIndex = themePresets.findIndex((preset) => preset.value === currentThemePreset);

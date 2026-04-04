@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import html2canvas from 'html2canvas';
 import {setCanvasPhotos, setPhotos, setThemePreset} from './store/appSlice';
 import {RootState} from './store/store';
 import {RoutesSwitch} from './Routes';
@@ -8,10 +9,16 @@ import {importedInstagramPhotos} from "./config/instagram.generated";
 import {cmsPhotoEntriesByBaseName} from "./content/cmsPhotos";
 import BottomBar from "./components/common/BottomBar";
 import Loading from "./components/common/Loading";
-import {applyThemePreferences, getThemePreset, loadThemePreferences} from './utils/themePreferences';
+import {applyThemePreferences, getThemePreset, loadThemePreferencesFromLocation} from './utils/themePreferences';
 
 const TopBar = React.lazy(() => import('./components/common/TopBar'));
 const Toaster = React.lazy(() => import('./components/common/Toaster'));
+const ALLOWED_PREVIEW_ORIGINS = new Set([
+    'https://pascu.io',
+    'https://www.pascu.io',
+    'http://localhost:3000',
+    'http://localhost:5173',
+]);
 
 function App() {
     const dispatch = useDispatch()
@@ -58,11 +65,56 @@ function App() {
     }, [dispatch]);
 
     useEffect(() => {
-        const savedPreferences = loadThemePreferences();
+        const savedPreferences = loadThemePreferencesFromLocation(window.location.search);
         applyThemePreferences(savedPreferences);
         
         dispatch(setThemePreset(savedPreferences.themePreset));
     }, [dispatch])
+
+    useEffect(() => {
+        const handleMessage = async (event: MessageEvent) => {
+            if (!ALLOWED_PREVIEW_ORIGINS.has(event.origin)) {
+                return;
+            }
+
+            if (event.data?.type !== 'pascu-preview:capture' || typeof event.data?.requestId !== 'string') {
+                return;
+            }
+
+            try {
+                const canvas = await html2canvas(document.body, {
+                    backgroundColor: null,
+                    useCORS: true,
+                    windowWidth: window.innerWidth,
+                    windowHeight: window.innerHeight,
+                    scrollX: window.scrollX,
+                    scrollY: window.scrollY,
+                });
+
+                event.source?.postMessage(
+                    {
+                        type: 'pascu-preview:screenshot',
+                        requestId: event.data.requestId,
+                        dataUrl: canvas.toDataURL('image/png'),
+                    },
+                    {targetOrigin: event.origin},
+                );
+            } catch (error) {
+                event.source?.postMessage(
+                    {
+                        type: 'pascu-preview:screenshot-error',
+                        requestId: event.data.requestId,
+                    },
+                    {targetOrigin: event.origin},
+                );
+            }
+        };
+
+        window.addEventListener('message', handleMessage);
+        return () => {
+            window.removeEventListener('message', handleMessage);
+        };
+    }, []);
 
     const activeThemePreset = getThemePreset(themePreset);
 
