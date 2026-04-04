@@ -27,7 +27,7 @@ collections:
     format: "json"
     identifier_field: "title"
     summary: "{{title}} · {{category}} · {{location}}"
-    sortable_fields: ["title", "category", "location", "takenAt", "featured", "printReady"]
+    sortable_fields: ["title", "category", "location", "takenAt", "featured", "printReady", "hero"]
     view_filters:
       - label: "Featured only"
         field: "featured"
@@ -80,12 +80,68 @@ collections:
         default: false
         required: false
         hint: "Turn this on if the image should be highlighted more prominently across the site."
+      - label: "Use as hero candidate"
+        name: "hero"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "Use this only for a very small number of images that should be eligible for the home hero."
       - label: "Available as print-ready work"
         name: "printReady"
         widget: "boolean"
         default: false
         required: false
         hint: "Turn this on for images that should support stronger print-focused messaging."
+      - label: "Series"
+        name: "series"
+        widget: "string"
+        required: false
+        hint: "Optional grouping label for related works or travel chapters."
+      - label: "Orientation"
+        name: "orientation"
+        widget: "select"
+        required: false
+        hint: "Helps with presentation and print guidance on the public site."
+        options:
+          - { label: "Landscape", value: "landscape" }
+          - { label: "Portrait", value: "portrait" }
+          - { label: "Square", value: "square" }
+          - { label: "Panoramic", value: "panoramic" }
+      - label: "Aspect ratio"
+        name: "aspectRatio"
+        widget: "string"
+        required: false
+        hint: "Optional note such as 3:2, 4:5, or panoramic."
+      - label: "Suggested sizes"
+        name: "sizes"
+        widget: "list"
+        required: false
+        hint: "Optional public-facing size suggestions for this artwork."
+        field: { label: "Size", name: "size", widget: "string" }
+      - label: "Price guidance"
+        name: "priceFrom"
+        widget: "string"
+        required: false
+        hint: "Example: From 40 CHF or From 180 CHF."
+      - label: "Edition"
+        name: "edition"
+        widget: "string"
+        required: false
+        hint: "Optional edition note, for example Open edition or Edition of 12."
+      - label: "Availability"
+        name: "availability"
+        widget: "select"
+        required: false
+        default: "Available by inquiry"
+        options:
+          - { label: "Available by inquiry", value: "Available by inquiry" }
+          - { label: "Selected sizes available", value: "Selected sizes available" }
+          - { label: "Reserved", value: "Reserved" }
+      - label: "Room mood"
+        name: "roomMood"
+        widget: "text"
+        required: false
+        hint: "Optional note describing the kind of space or atmosphere where the work fits best."
       - label: "Instagram or source link"
         name: "permalink"
         widget: "string"
@@ -99,6 +155,16 @@ collections:
         time_format: false
         date_format: "YYYY-MM-DD"
         hint: "Optional capture date shown in metadata when available."
+      - label: "SEO title"
+        name: "seoTitle"
+        widget: "string"
+        required: false
+        hint: "Optional metadata for the artwork detail page."
+      - label: "SEO description"
+        name: "seoDescription"
+        widget: "text"
+        required: false
+        hint: "Optional metadata description for the artwork detail page."
   - name: "siteContent"
     label: "Site Content"
     delete: false

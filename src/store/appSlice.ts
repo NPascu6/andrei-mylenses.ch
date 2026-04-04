@@ -1,8 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {ThemePresetId} from '../utils/themePreferences';
 
 interface AppState {
-    themePreset: ThemePresetId;
     toaster: {
         isVisible: boolean;
         message: string;
@@ -12,7 +10,6 @@ interface AppState {
 }
 
 const initialState: AppState = {
-    themePreset: 'noir',
     toaster: {
         isVisible: false,
         message: ''
@@ -25,9 +22,6 @@ const appSlice = createSlice({
     name: 'app',
     initialState,
     reducers: {
-        setThemePreset: (state, action) => {
-            state.themePreset = action.payload;
-        },
         showToaster: (state, action) => {
             state.toaster.isVisible = action.payload;
         },
@@ -40,5 +34,5 @@ const appSlice = createSlice({
     },
 });
 
-export const {setThemePreset, showToaster, setPhotos, setCanvasPhotos} = appSlice.actions;
+export const {showToaster, setPhotos, setCanvasPhotos} = appSlice.actions;
 export default appSlice.reducer;

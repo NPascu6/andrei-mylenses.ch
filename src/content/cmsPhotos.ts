@@ -18,6 +18,17 @@ export interface CmsPhotoEntry {
     printReady?: boolean;
     permalink?: string;
     takenAt?: string;
+    series?: string;
+    orientation?: 'landscape' | 'portrait' | 'square' | 'panoramic';
+    aspectRatio?: string;
+    sizes?: string[];
+    priceFrom?: string;
+    edition?: string;
+    availability?: string;
+    roomMood?: string;
+    hero?: boolean;
+    seoTitle?: string;
+    seoDescription?: string;
 }
 
 const cmsPhotoModules = import.meta.glob('./photos/*.json', {

@@ -1,29 +1,89 @@
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../store/store';
-import {setThemePreset} from '../../store/appSlice';
-import {applyThemePreferences, getNextThemePreset, persistThemePreferences} from '../../utils/themePreferences';
+import React, {useEffect, useMemo, useState} from 'react';
+import {Link, NavLink, useLocation} from 'react-router-dom';
+import {contactEmailHref, instagramUrl, whatsappHref} from '../../config/site';
 import {scrollToSection} from '../../utils/scrollToSection';
-import {sectionNavigationItems} from '../../utils/sectionNavigation';
+
+const pageNavigationItems = [
+    {label: 'Home', to: '/'},
+    {label: 'Collection', to: '/collection'},
+    {label: 'Prints', to: '/prints'},
+    {label: 'About', to: '/about'},
+] as const;
 
 const toolLinks = [
-    {label: 'Instagram', href: 'https://www.instagram.com/andrei_mylenses/', external: true},
-    {label: 'Email', href: 'mailto:andrei.pascu86@yahoo.com', external: false},
-];
+    {label: 'Instagram', href: instagramUrl, external: true},
+    {label: 'Email', href: contactEmailHref, external: false},
+    {label: 'WhatsApp', href: whatsappHref, external: true},
+] as const;
 
 const QuickSidebar = () => {
-    const dispatch = useDispatch();
-    const themePreset = useSelector((state: RootState) => state.app.themePreset);
-    const [activeSection, setActiveSection] = useState<string>('top');
+    const location = useLocation();
+    const [activeSection, setActiveSection] = useState<string>('');
 
-    const switchTheme = () => {
-        const nextThemePreset = getNextThemePreset(themePreset);
-        const nextPreferences = {themePreset: nextThemePreset};
+    const sectionNavigationItems = useMemo(() => {
+        if (location.pathname === '/') {
+            return [
+                {label: 'Hero', sectionId: 'top'},
+                {label: 'Selection', sectionId: 'collector-selection'},
+                {label: 'Prints', sectionId: 'print-experience'},
+                {label: 'Story', sectionId: 'artist-story'},
+                {label: 'Contact', sectionId: 'contact'},
+            ];
+        }
 
-        applyThemePreferences(nextPreferences);
-        persistThemePreferences(nextPreferences);
-        dispatch(setThemePreset(nextThemePreset));
-    };
+        if (location.pathname === '/collection') {
+            return [
+                {label: 'Intro', sectionId: 'collection-intro'},
+                {label: 'Archive', sectionId: 'collection-archive'},
+                {label: 'Contact', sectionId: 'contact'},
+            ];
+        }
+
+        if (location.pathname === '/prints') {
+            return [
+                {label: 'Intro', sectionId: 'prints-intro'},
+                {label: 'Process', sectionId: 'print-journey'},
+                {label: 'Highlights', sectionId: 'print-highlights'},
+                {label: 'Inquiry', sectionId: 'print-consultation'},
+                {label: 'Contact', sectionId: 'contact'},
+            ];
+        }
+
+        if (location.pathname === '/about') {
+            return [
+                {label: 'Story', sectionId: 'about-intro'},
+                {label: 'Works', sectionId: 'about-selected-works'},
+                {label: 'Contact', sectionId: 'contact'},
+            ];
+        }
+
+        if (location.pathname.startsWith('/artwork/')) {
+            return [
+                {label: 'Artwork', sectionId: 'artwork-top'},
+                {label: 'Inquiry', sectionId: 'artwork-inquiry'},
+                {label: 'Related', sectionId: 'artwork-related'},
+                {label: 'Contact', sectionId: 'contact'},
+            ];
+        }
+
+        return [{label: 'Contact', sectionId: 'contact'}];
+    }, [location.pathname]);
+
+    const activePageLabel = useMemo(() => {
+        if (location.pathname.startsWith('/artwork/')) {
+            return 'Artwork';
+        }
+
+        return pageNavigationItems.find((item) =>
+            item.to === '/'
+                ? location.pathname === item.to
+                : location.pathname.startsWith(item.to)
+        )?.label || 'Navigate';
+    }, [location.pathname]);
+
+    useEffect(() => {
+        setActiveSection(sectionNavigationItems[0]?.sectionId || '');
+    }, [sectionNavigationItems]);
 
     useEffect(() => {
         const sections = sectionNavigationItems
@@ -53,16 +113,42 @@ const QuickSidebar = () => {
         sections.forEach((section) => observer.observe(section));
 
         return () => observer.disconnect();
-    }, []);
+    }, [sectionNavigationItems]);
 
     return (
         <>
-            <aside className="fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 xl:block">
-                <div className="surface-panel flex w-[168px] flex-col gap-4 rounded-[1.6rem] p-4">
+            <aside className="fixed right-4 top-24 z-40 hidden xl:block 2xl:right-6">
+                <nav
+                    aria-label="Site navigation"
+                    className="surface-panel flex max-h-[calc(100vh-7rem)] w-[220px] flex-col gap-4 overflow-y-auto rounded-[1.75rem] p-4"
+                >
                     <div>
-                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">Quick Nav</p>
+                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">Navigation</p>
+                        <p className="mt-2 font-display text-2xl text-appText">{activePageLabel}</p>
                         <div className="mt-3 grid gap-2">
-                            {sectionNavigationItems.slice(1).map((item) => (
+                            {pageNavigationItems.map((item) => (
+                                <NavLink
+                                    key={item.to}
+                                    to={item.to}
+                                    end={item.to === '/'}
+                                    className={({isActive}) =>
+                                        `rounded-full px-3 py-2 text-center text-[11px] uppercase tracking-[0.18em] ${
+                                            isActive ? 'theme-chip theme-chip-active text-appText' : 'theme-chip'
+                                        }`
+                                    }
+                                >
+                                    {item.label}
+                                </NavLink>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="h-px" style={{backgroundColor: 'var(--color-line)'}}/>
+
+                    <div>
+                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">On this page</p>
+                        <div className="mt-3 grid gap-2">
+                            {sectionNavigationItems.map((item) => (
                                 <button
                                     key={item.sectionId}
                                     type="button"
@@ -80,43 +166,63 @@ const QuickSidebar = () => {
                     <div className="h-px" style={{backgroundColor: 'var(--color-line)'}}/>
 
                     <div>
-                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">Quick Tools</p>
+                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">Inquiry</p>
                         <div className="mt-3 grid gap-2">
-                            <button
-                                onClick={switchTheme}
-                                className="theme-chip theme-chip-active rounded-full px-3 py-2 text-[11px] uppercase tracking-[0.18em]"
-                            >
-                                Next Theme
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={() => scrollToSection('top')}
+                            <Link
+                                to="/prints"
                                 className="theme-chip rounded-full px-3 py-2 text-center text-[11px] uppercase tracking-[0.18em]"
                             >
-                                Back to Top
+                                Print inquiry
+                            </Link>
+                            <button
+                                type="button"
+                                onClick={() => scrollToSection('contact')}
+                                className="theme-chip rounded-full px-3 py-2 text-center text-[11px] uppercase tracking-[0.18em]"
+                            >
+                                Contact footer
                             </button>
+                        </div>
+                    </div>
 
+                    <div className="h-px" style={{backgroundColor: 'var(--color-line)'}}/>
+
+                    <div>
+                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">Elsewhere</p>
+                        <div className="mt-3 flex flex-wrap gap-2">
                             {toolLinks.map((item) => (
                                 <a
                                     key={item.label}
                                     href={item.href}
                                     target={item.external ? '_blank' : undefined}
                                     rel={item.external ? 'noopener noreferrer' : undefined}
-                                    className="theme-chip rounded-full px-3 py-2 text-center text-[11px] uppercase tracking-[0.18em]"
+                                    className="theme-chip rounded-full px-3 py-2 text-center text-[10px] uppercase tracking-[0.18em]"
                                 >
                                     {item.label}
                                 </a>
                             ))}
                         </div>
                     </div>
-                </div>
+                </nav>
             </aside>
 
             <div className="fixed inset-x-3 bottom-3 z-40 xl:hidden">
                 <div className="surface-panel rounded-[1.5rem] px-3 py-3">
                     <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                        {sectionNavigationItems.map((item) => (
+                        {pageNavigationItems.map((item) => (
+                            <NavLink
+                                key={item.to}
+                                to={item.to}
+                                end={item.to === '/'}
+                                className={({isActive}) =>
+                                    `shrink-0 rounded-full px-3 py-2 text-[10px] uppercase tracking-[0.18em] ${
+                                        isActive ? 'theme-chip theme-chip-active text-appText' : 'theme-chip'
+                                    }`
+                                }
+                            >
+                                {item.label}
+                            </NavLink>
+                        ))}
+                        {sectionNavigationItems.slice(0, 2).map((item) => (
                             <button
                                 key={item.sectionId}
                                 type="button"
@@ -128,13 +234,12 @@ const QuickSidebar = () => {
                                 {item.label}
                             </button>
                         ))}
-                        <button
-                            type="button"
-                            onClick={switchTheme}
-                            className="theme-chip theme-chip-active shrink-0 rounded-full px-3 py-2 text-[10px] uppercase tracking-[0.18em]"
+                        <Link
+                            to="/prints"
+                            className="theme-chip theme-chip-active shrink-0 rounded-full px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-appText"
                         >
-                            Theme
-                        </button>
+                            Inquire
+                        </Link>
                     </div>
                 </div>
             </div>
