@@ -6,16 +6,19 @@ import App from './App';
 import {Provider} from 'react-redux';
 import store from './store/store';
 import {HashRouter} from 'react-router-dom';
+import {I18nProvider} from './i18n/I18nProvider';
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 root.render(
     <React.StrictMode>
-        <Provider store={store}>
-            <HashRouter>
-                <App/>
-            </HashRouter>
-        </Provider>
+        <I18nProvider>
+            <Provider store={store}>
+                <HashRouter future={{v7_relativeSplatPath: true}}>
+                    <App/>
+                </HashRouter>
+            </Provider>
+        </I18nProvider>
     </React.StrictMode>
 );

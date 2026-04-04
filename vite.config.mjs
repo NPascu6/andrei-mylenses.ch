@@ -7,7 +7,7 @@ import {imagetools} from 'vite-imagetools';
 export default defineConfig({
     base: './',
     build: {
-        outDir: './build',
+        outDir: 'build',
         emptyOutDir: true,
     },
     test: {

@@ -1,4 +1,5 @@
 import React, {useEffect, useRef} from "react";
+import {useI18n} from "../../i18n/I18nProvider";
 import {scrollToSection} from "../../utils/scrollToSection";
 import {getPrintRecommendation} from "../../utils/printRecommendations";
 
@@ -28,6 +29,7 @@ interface SelectedPhotoProps {
 
 const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) => {
     const touchStartX = useRef<number | null>(null);
+    const {locale} = useI18n();
     const selectedImage = images[index];
 
     useEffect(() => {
@@ -64,6 +66,7 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
         title: selectedImage.title,
         category: selectedImage.category,
         location: selectedImage.location,
+        locale,
     });
     const handleScrollToPrints = () => {
         onClose();

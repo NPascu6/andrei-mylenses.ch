@@ -1,47 +1,48 @@
 import React from "react";
 import {Link} from 'react-router-dom';
 import {
-    artistBase,
-    artistShortBio,
     contactEmailHref,
     instagramUrl,
     siteTitle,
     whatsappHref,
 } from "../../config/site";
+import {useI18n} from '../../i18n/I18nProvider';
 
 const BottomBar = () => {
+    const {copy} = useI18n();
+
     return (
         <footer id="contact" className="relative mt-2 scroll-mt-24 px-4 pb-10 pt-0 md:scroll-mt-28 md:px-6">
             <div className="mx-auto max-w-7xl">
                 <div className="surface-panel rounded-[2rem] px-6 py-7 md:px-8">
                     <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
                         <div className="space-y-4">
-                            <p className="eyebrow-text text-sm uppercase tracking-[0.32em]">Private inquiries</p>
+                            <p className="eyebrow-text text-sm uppercase tracking-[0.32em]">{copy.bottomBar.eyebrow}</p>
                             <h2 className="font-display text-3xl text-appText md:text-4xl">
-                                Built for calmer, more confident decisions around the work.
+                                {copy.bottomBar.title}
                             </h2>
                             <p className="max-w-2xl text-base leading-7 text-muted-token">
-                                {siteTitle} presents the collection with a stronger editorial rhythm, clearer print direction, and a more direct path into conversation.
+                                {copy.bottomBar.description.replace('My Lenses', siteTitle)}
                             </p>
                             <p className="text-sm uppercase tracking-[0.22em] text-nav-token">
-                                {artistBase}
+                                {copy.bottomBar.artistBase}
                             </p>
                             <p className="max-w-2xl text-sm leading-6 text-muted-token">
-                                {artistShortBio}
+                                {copy.bottomBar.artistShortBio}
                             </p>
                         </div>
 
                         <div className="grid gap-3">
                             <div className="surface-panel-soft rounded-[1.35rem] p-4">
-                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Best next step</p>
-                                <p className="mt-2 text-appText">Start with the print page if you want sizing, collector guidance, or a more complete inquiry flow.</p>
+                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">{copy.bottomBar.nextStepLabel}</p>
+                                <p className="mt-2 text-appText">{copy.bottomBar.nextStepDescription}</p>
                             </div>
                             <div className="grid gap-3 md:grid-cols-2">
                                 <div className="rounded-[1.2rem] border px-4 py-4 text-sm leading-6 text-muted-token" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
-                                    Archival canvas output, made to order, with presentation discussed directly.
+                                    {copy.bottomBar.supportCards[0]}
                                 </div>
                                 <div className="rounded-[1.2rem] border px-4 py-4 text-sm leading-6 text-muted-token" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
-                                    Switzerland-based artist, private inquiries, and calmer reply-led guidance.
+                                    {copy.bottomBar.supportCards[1]}
                                 </div>
                             </div>
                             <div className="flex flex-wrap gap-3">
@@ -49,24 +50,24 @@ const BottomBar = () => {
                                     to="/prints"
                                     className="theme-action inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.18em]"
                                 >
-                                    Start print inquiry
+                                    {copy.bottomBar.primaryCta}
                                 </Link>
                                 <Link
                                     to="/collection?filter=Collector%20starters"
                                     className="theme-action-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.18em]"
                                 >
-                                    Browse curated picks
+                                    {copy.bottomBar.secondaryCta}
                                 </Link>
                             </div>
                             <div className="flex flex-wrap gap-3">
                                 <a href={contactEmailHref} className="theme-chip rounded-full px-4 py-3 text-sm uppercase tracking-[0.18em]">
-                                    Email
+                                    {copy.bottomBar.email}
                                 </a>
                                 <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="theme-chip rounded-full px-4 py-3 text-sm uppercase tracking-[0.18em]">
-                                    WhatsApp
+                                    {copy.bottomBar.whatsapp}
                                 </a>
                                 <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="theme-chip rounded-full px-4 py-3 text-sm uppercase tracking-[0.18em]">
-                                    Instagram
+                                    {copy.bottomBar.instagram}
                                 </a>
                             </div>
                         </div>

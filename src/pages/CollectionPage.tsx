@@ -1,63 +1,42 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {Link, useSearchParams} from 'react-router-dom';
 import ArtworkTile from '../components/site/ArtworkTile';
+import PageShell from '../components/site/PageShell';
 import SectionHeading from '../components/site/SectionHeading';
 import {
     curatedCollectionViews,
-    featuredPortfolioPhotos,
-    findCuratedCollectionView,
     heroPortfolioPhoto,
-    portfolioCategories,
-    portfolioPhotos,
-    printReadyPortfolioPhotos,
-    recentPortfolioPhotos,
 } from '../content/portfolioLibrary';
-
-const defaultFilters = ['All', 'Collector starters', 'Print-ready', 'Recent'] as const;
+import {usePageTitle} from '../hooks/usePageTitle';
+import {useI18n} from '../i18n/I18nProvider';
+import {
+    localizePortfolioPhoto,
+    translateCollectionDescription,
+    translateCollectionLabel,
+} from '../i18n/portfolio';
+import {
+    availableCollectionFilters,
+    getActiveCollectionFilter,
+    getCollectionView,
+    getVisiblePortfolioPhotos,
+} from '../utils/collectionFilters';
 
 const CollectionPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-
-    useEffect(() => {
-        document.title = 'Collection | My Lenses';
-    }, []);
-
-    const availableFilters = useMemo(
-        () => [
-            ...defaultFilters,
-            ...curatedCollectionViews.map((view) => view.label).filter((label) => !defaultFilters.includes(label as typeof defaultFilters[number])),
-            ...portfolioCategories,
-        ],
-        []
-    );
+    const {copy, locale} = useI18n();
+    usePageTitle(copy.collectionPage.pageTitle);
 
     const requestedFilter = searchParams.get('filter') || 'All';
-    const activeFilter = availableFilters.includes(requestedFilter) ? requestedFilter : 'All';
-    const activeCollectionView = findCuratedCollectionView(activeFilter);
-
-    const visiblePhotos = useMemo(() => {
-        if (activeFilter === 'Collector starters') {
-            return featuredPortfolioPhotos;
-        }
-
-        if (activeFilter === 'Print-ready') {
-            return printReadyPortfolioPhotos;
-        }
-
-        if (activeFilter === 'Recent') {
-            return recentPortfolioPhotos;
-        }
-
-        if (activeCollectionView) {
-            return activeCollectionView.photos;
-        }
-
-        if (activeFilter !== 'All') {
-            return portfolioPhotos.filter((photo) => photo.category === activeFilter);
-        }
-
-        return portfolioPhotos;
-    }, [activeCollectionView, activeFilter]);
+    const activeFilter = getActiveCollectionFilter(requestedFilter);
+    const activeCollectionView = getCollectionView(activeFilter);
+    const visiblePhotos = useMemo(
+        () => getVisiblePortfolioPhotos(activeFilter, activeCollectionView).map((photo) => localizePortfolioPhoto(photo, locale)),
+        [activeCollectionView, activeFilter, locale]
+    );
+    const localizedHeroPhoto = useMemo(
+        () => (heroPortfolioPhoto ? localizePortfolioPhoto(heroPortfolioPhoto, locale) : null),
+        [locale]
+    );
 
     const setActiveFilter = (filter: string) => {
         if (filter === 'All') {
@@ -69,32 +48,34 @@ const CollectionPage = () => {
     };
 
     return (
-        <main className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 pb-16 pt-5 md:gap-6 md:px-6">
+        <PageShell>
             <section id="collection-intro" className="surface-panel scroll-mt-24 rounded-[2rem] p-6 md:scroll-mt-28 md:p-8">
                 <SectionHeading
-                    eyebrow="Collection"
-                    title="The full archive, with clearer entry points for walls, moods, and collector intent."
-                    description="Move by curated collection first, then by category if you want a wider browse. Every photograph now leads into a dedicated artwork page with print fit, presentation guidance, and direct inquiry."
+                    eyebrow={copy.collectionPage.eyebrow}
+                    title={copy.collectionPage.title}
+                    description={copy.collectionPage.description}
                     action={(
                         <Link
                             to="/prints"
                             className="theme-action inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"
                         >
-                            Start with prints
+                            {copy.collectionPage.action}
                         </Link>
                     )}
                 />
 
-                {heroPortfolioPhoto ? (
+                {localizedHeroPhoto ? (
                     <div className="mt-6 grid gap-4 lg:grid-cols-[1.08fr_0.92fr]">
                         <ArtworkTile
-                            photo={heroPortfolioPhoto}
-                            badge="Featured entry"
+                            photo={localizedHeroPhoto}
+                            badge={copy.collectionPage.featuredEntryBadge}
                             imageClassName="h-[24rem] md:h-[30rem]"
                             responsiveSizes="(min-width: 1280px) 44vw, 100vw"
                         />
                         <div className="surface-panel-soft rounded-[1.75rem] p-5 md:p-6">
-                            <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">Curated routes</p>
+                            <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">
+                                {copy.collectionPage.curatedRoutesLabel}
+                            </p>
                             <div className="mt-4 grid gap-3">
                                 {curatedCollectionViews.slice(0, 4).map((view) => (
                                     <button
@@ -109,9 +90,15 @@ const CollectionPage = () => {
                                             backgroundColor: activeFilter === view.label ? 'var(--color-surface-strong)' : 'var(--color-surface)',
                                         }}
                                     >
-                                        <p className="text-[10px] uppercase tracking-[0.22em] text-nav-token">{view.photos.length} works</p>
-                                        <p className="mt-2 text-appText">{view.label}</p>
-                                        <p className="mt-2 text-sm leading-6 text-muted-token">{view.description}</p>
+                                        <p className="text-[10px] uppercase tracking-[0.22em] text-nav-token">
+                                            {view.photos.length} {copy.collectionPage.worksLabel}
+                                        </p>
+                                        <p className="mt-2 text-appText">
+                                            {translateCollectionLabel(view.label, locale)}
+                                        </p>
+                                        <p className="mt-2 text-sm leading-6 text-muted-token">
+                                            {translateCollectionDescription(view.label, view.description, locale)}
+                                        </p>
                                     </button>
                                 ))}
                             </div>
@@ -122,7 +109,7 @@ const CollectionPage = () => {
 
             <section id="collection-archive" className="scroll-mt-24 space-y-4 md:scroll-mt-28">
                 <div className="flex flex-wrap gap-3">
-                    {availableFilters.map((filter) => (
+                    {availableCollectionFilters.map((filter) => (
                         <button
                             key={filter}
                             type="button"
@@ -131,7 +118,7 @@ const CollectionPage = () => {
                                 activeFilter === filter ? 'theme-chip theme-chip-active text-appText' : 'theme-chip'
                             }`}
                         >
-                            {filter}
+                            {translateCollectionLabel(filter, locale)}
                         </button>
                     ))}
                 </div>
@@ -139,15 +126,17 @@ const CollectionPage = () => {
                 <div className="surface-panel rounded-[2rem] px-4 py-5 md:px-5 md:py-6">
                     <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                         <div className="space-y-2">
-                            <p className="eyebrow-text text-[11px] uppercase">{activeFilter}</p>
+                            <p className="eyebrow-text text-[11px] uppercase">
+                                {translateCollectionLabel(activeFilter, locale)}
+                            </p>
                             <h2 className="font-display text-3xl text-appText md:text-4xl">
-                                {visiblePhotos.length} works in this view
+                                {visiblePhotos.length} {copy.collectionPage.worksInView}
                             </h2>
                         </div>
                         <p className="max-w-xl text-sm leading-6 text-muted-token">
                             {activeCollectionView
-                                ? activeCollectionView.description
-                                : 'Click any photograph to enter a dedicated artwork page with print fit, collector notes, and a guided inquiry path.'}
+                                ? translateCollectionDescription(activeCollectionView.label, activeCollectionView.description, locale)
+                                : copy.collectionPage.fallbackDescription}
                         </p>
                     </div>
 
@@ -165,7 +154,7 @@ const CollectionPage = () => {
                     </div>
                 </div>
             </section>
-        </main>
+        </PageShell>
     );
 };
 

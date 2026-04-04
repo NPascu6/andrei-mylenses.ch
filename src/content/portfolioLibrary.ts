@@ -1,4 +1,4 @@
-import {canvaseImages, images} from '../config/images';
+import {canvasImages, images} from '../config/images';
 import {importedInstagramPhotos} from '../config/instagram.generated';
 import type {
     CanvasPreviewImage,
@@ -308,7 +308,7 @@ export const portfolioPhotos: PortfolioPhoto[] = images
     })
     .sort(sortByCuration);
 
-export const canvasPreviewImages: CanvasPreviewImage[] = canvaseImages.map((image) => ({
+export const canvasPreviewImages: CanvasPreviewImage[] = canvasImages.map((image) => ({
     ...image,
     fullSrc: image.src,
 }));

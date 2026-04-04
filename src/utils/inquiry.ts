@@ -1,4 +1,5 @@
 import {contactEmail} from '../config/site';
+import type {AppCopy} from '../i18n/messages';
 
 export interface InquiryDraft {
     inquiryType: string;
@@ -10,6 +11,13 @@ export interface InquiryDraft {
     notes?: string;
 }
 
+export interface InquiryCopy {
+    labels: AppCopy['inquiryEmail']['labels'];
+    fallbacks: AppCopy['inquiryEmail']['fallbacks'];
+    greeting: string;
+    intro: string;
+}
+
 export const buildGuidedInquiryHref = ({
     inquiryType,
     artwork,
@@ -18,19 +26,19 @@ export const buildGuidedInquiryHref = ({
     timeline,
     location,
     notes,
-}: InquiryDraft) => {
+}: InquiryDraft, copy: InquiryCopy) => {
     const subject = artwork ? `${inquiryType} - ${artwork}` : inquiryType;
     const lines = [
-        `Inquiry type: ${inquiryType}`,
-        `Artwork: ${artwork || 'Still deciding'}`,
-        `Room or setting: ${roomType || 'Still deciding'}`,
-        `Budget comfort: ${budgetRange || 'Open to guidance'}`,
-        `Timeline: ${timeline || 'Just exploring'}`,
-        location ? `Location: ${location}` : '',
-        notes ? `Notes: ${notes}` : '',
+        `${copy.labels.inquiryType}: ${inquiryType}`,
+        `${copy.labels.artwork}: ${artwork || copy.fallbacks.stillDeciding}`,
+        `${copy.labels.roomOrSetting}: ${roomType || copy.fallbacks.stillDeciding}`,
+        `${copy.labels.budgetComfort}: ${budgetRange || copy.fallbacks.openToGuidance}`,
+        `${copy.labels.timeline}: ${timeline || copy.fallbacks.justExploring}`,
+        location ? `${copy.labels.location}: ${location}` : '',
+        notes ? `${copy.labels.notes}: ${notes}` : '',
         '',
-        'Hello Andrei,',
-        'I would like to discuss a possible photographic piece for my space.',
+        copy.greeting,
+        copy.intro,
     ].filter(Boolean);
 
     return `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;

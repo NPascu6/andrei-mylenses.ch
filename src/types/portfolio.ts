@@ -42,6 +42,10 @@ export interface PortfolioPhoto {
     collectionTags: string[];
 }
 
+export interface LocalizedPortfolioPhoto extends Omit<PortfolioPhoto, 'category'> {
+    category: string;
+}
+
 export interface CanvasPreviewImage {
     fileName: string;
     title: string;

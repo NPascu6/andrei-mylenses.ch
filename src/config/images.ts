@@ -74,7 +74,7 @@ const buildImageAssets = (
 
 export const images = buildImageAssets(photoThumbModules, photoMediumModules, photoDisplayModules);
 
-export const canvaseImages = Object.keys(canvasDisplayModules)
+export const canvasImages = Object.keys(canvasDisplayModules)
     .sort((left, right) => getBaseName(left).localeCompare(getBaseName(right)))
     .map((path) => ({
         fileName: getFileName(path),

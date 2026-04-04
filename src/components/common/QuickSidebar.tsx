@@ -1,20 +1,8 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {Link, NavLink, useLocation} from 'react-router-dom';
 import {contactEmailHref, instagramUrl, whatsappHref} from '../../config/site';
+import {useI18n} from '../../i18n/I18nProvider';
 import {scrollToSection} from '../../utils/scrollToSection';
-
-const pageNavigationItems = [
-    {label: 'Home', to: '/'},
-    {label: 'Collection', to: '/collection'},
-    {label: 'Prints', to: '/prints'},
-    {label: 'About', to: '/about'},
-] as const;
-
-const toolLinks = [
-    {label: 'Instagram', href: instagramUrl, external: true},
-    {label: 'Email', href: contactEmailHref, external: false},
-    {label: 'WhatsApp', href: whatsappHref, external: true},
-] as const;
 
 const getSidebarPillClasses = (active: boolean, emphasize = false) =>
     `sidebar-pill rounded-full px-3.5 py-2 text-[10px] uppercase tracking-[0.2em] ${
@@ -24,67 +12,87 @@ const getSidebarPillClasses = (active: boolean, emphasize = false) =>
 const QuickSidebar = () => {
     const location = useLocation();
     const [activeSection, setActiveSection] = useState<string>('');
+    const {copy} = useI18n();
+
+    const pageNavigationItems = useMemo(
+        () => [
+            {label: copy.quickSidebar.pageLabels.home, to: '/'},
+            {label: copy.quickSidebar.pageLabels.collection, to: '/collection'},
+            {label: copy.quickSidebar.pageLabels.prints, to: '/prints'},
+            {label: copy.quickSidebar.pageLabels.about, to: '/about'},
+        ],
+        [copy]
+    );
+
+    const toolLinks = useMemo(
+        () => [
+            {label: copy.bottomBar.instagram, href: instagramUrl, external: true},
+            {label: copy.bottomBar.email, href: contactEmailHref, external: false},
+            {label: copy.bottomBar.whatsapp, href: whatsappHref, external: true},
+        ],
+        [copy]
+    );
 
     const sectionNavigationItems = useMemo(() => {
         if (location.pathname === '/') {
             return [
-                {label: 'Hero', sectionId: 'top'},
-                {label: 'Selection', sectionId: 'collector-selection'},
-                {label: 'Prints', sectionId: 'print-experience'},
-                {label: 'Story', sectionId: 'artist-story'},
-                {label: 'Contact', sectionId: 'contact'},
+                {label: copy.quickSidebar.sections.home.top, sectionId: 'top'},
+                {label: copy.quickSidebar.sections.home.collection, sectionId: 'collector-selection'},
+                {label: copy.quickSidebar.sections.home.prints, sectionId: 'print-experience'},
+                {label: copy.quickSidebar.sections.home.story, sectionId: 'artist-story'},
+                {label: copy.quickSidebar.sections.home.contact, sectionId: 'contact'},
             ];
         }
 
         if (location.pathname === '/collection') {
             return [
-                {label: 'Intro', sectionId: 'collection-intro'},
-                {label: 'Archive', sectionId: 'collection-archive'},
-                {label: 'Contact', sectionId: 'contact'},
+                {label: copy.quickSidebar.sections.collection.intro, sectionId: 'collection-intro'},
+                {label: copy.quickSidebar.sections.collection.archive, sectionId: 'collection-archive'},
+                {label: copy.quickSidebar.sections.collection.contact, sectionId: 'contact'},
             ];
         }
 
         if (location.pathname === '/prints') {
             return [
-                {label: 'Intro', sectionId: 'prints-intro'},
-                {label: 'Process', sectionId: 'print-journey'},
-                {label: 'Highlights', sectionId: 'print-highlights'},
-                {label: 'Inquiry', sectionId: 'print-consultation'},
-                {label: 'Contact', sectionId: 'contact'},
+                {label: copy.quickSidebar.sections.prints.intro, sectionId: 'prints-intro'},
+                {label: copy.quickSidebar.sections.prints.process, sectionId: 'print-journey'},
+                {label: copy.quickSidebar.sections.prints.highlights, sectionId: 'print-highlights'},
+                {label: copy.quickSidebar.sections.prints.inquiry, sectionId: 'print-consultation'},
+                {label: copy.quickSidebar.sections.prints.contact, sectionId: 'contact'},
             ];
         }
 
         if (location.pathname === '/about') {
             return [
-                {label: 'Story', sectionId: 'about-intro'},
-                {label: 'Works', sectionId: 'about-selected-works'},
-                {label: 'Contact', sectionId: 'contact'},
+                {label: copy.quickSidebar.sections.about.intro, sectionId: 'about-intro'},
+                {label: copy.quickSidebar.sections.about.works, sectionId: 'about-selected-works'},
+                {label: copy.quickSidebar.sections.about.contact, sectionId: 'contact'},
             ];
         }
 
         if (location.pathname.startsWith('/artwork/')) {
             return [
-                {label: 'Artwork', sectionId: 'artwork-top'},
-                {label: 'Inquiry', sectionId: 'artwork-inquiry'},
-                {label: 'Related', sectionId: 'artwork-related'},
-                {label: 'Contact', sectionId: 'contact'},
+                {label: copy.quickSidebar.sections.artwork.top, sectionId: 'artwork-top'},
+                {label: copy.quickSidebar.sections.artwork.inquiry, sectionId: 'artwork-inquiry'},
+                {label: copy.quickSidebar.sections.artwork.related, sectionId: 'artwork-related'},
+                {label: copy.quickSidebar.sections.artwork.contact, sectionId: 'contact'},
             ];
         }
 
-        return [{label: 'Contact', sectionId: 'contact'}];
-    }, [location.pathname]);
+        return [{label: copy.quickSidebar.sections.home.contact, sectionId: 'contact'}];
+    }, [copy, location.pathname]);
 
     const activePageLabel = useMemo(() => {
         if (location.pathname.startsWith('/artwork/')) {
-            return 'Artwork';
+            return copy.quickSidebar.pageLabels.artwork;
         }
 
         return pageNavigationItems.find((item) =>
             item.to === '/'
                 ? location.pathname === item.to
                 : location.pathname.startsWith(item.to)
-        )?.label || 'Navigate';
-    }, [location.pathname]);
+        )?.label || copy.quickSidebar.navigate;
+    }, [copy.quickSidebar.navigate, copy.quickSidebar.pageLabels.artwork, location.pathname, pageNavigationItems]);
 
     useEffect(() => {
         setActiveSection(sectionNavigationItems[0]?.sectionId || '');
@@ -124,11 +132,11 @@ const QuickSidebar = () => {
         <>
             <aside className="fixed right-4 top-24 z-40 hidden xl:block 2xl:right-6">
                 <nav
-                    aria-label="Site navigation"
+                    aria-label={copy.quickSidebar.navigation}
                     className="sidebar-shell surface-panel flex max-h-[calc(100vh-7rem)] w-[216px] flex-col gap-4 overflow-y-auto rounded-[1.75rem] p-4"
                 >
                     <div>
-                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">Navigation</p>
+                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">{copy.quickSidebar.navigation}</p>
                         <p className="mt-2 font-display text-[1.9rem] leading-none text-appText">{activePageLabel}</p>
                         <div className="mt-3 grid gap-2">
                             {pageNavigationItems.map((item) => (
@@ -147,7 +155,7 @@ const QuickSidebar = () => {
                     <div className="h-px" style={{backgroundColor: 'var(--color-line)'}}/>
 
                     <div>
-                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">On this page</p>
+                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">{copy.quickSidebar.onThisPage}</p>
                         <div className="mt-3 grid gap-2">
                             {sectionNavigationItems.map((item) => (
                                 <button
@@ -165,20 +173,20 @@ const QuickSidebar = () => {
                     <div className="h-px" style={{backgroundColor: 'var(--color-line)'}}/>
 
                     <div>
-                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">Inquiry</p>
+                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">{copy.quickSidebar.inquiry}</p>
                         <div className="mt-3 grid gap-2">
                             <Link
                                 to="/prints"
                                 className={getSidebarPillClasses(location.pathname === '/prints', true)}
                             >
-                                <span>Print inquiry</span>
+                                <span>{copy.quickSidebar.printInquiry}</span>
                             </Link>
                             <button
                                 type="button"
                                 onClick={() => scrollToSection('contact')}
                                 className={getSidebarPillClasses(activeSection === 'contact')}
                             >
-                                <span>Contact footer</span>
+                                <span>{copy.quickSidebar.contactFooter}</span>
                             </button>
                         </div>
                     </div>
@@ -186,7 +194,7 @@ const QuickSidebar = () => {
                     <div className="h-px" style={{backgroundColor: 'var(--color-line)'}}/>
 
                     <div>
-                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">Elsewhere</p>
+                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">{copy.quickSidebar.elsewhere}</p>
                         <div className="mt-3 flex flex-wrap gap-2">
                             {toolLinks.map((item) => (
                                 <a
@@ -237,7 +245,7 @@ const QuickSidebar = () => {
                             to="/prints"
                             className="theme-chip theme-chip-active shrink-0 rounded-full px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-appText"
                         >
-                            Inquire
+                            {copy.quickSidebar.inquire}
                         </Link>
                     </div>
                 </div>

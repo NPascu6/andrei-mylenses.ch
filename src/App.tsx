@@ -1,14 +1,19 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useLocation} from 'react-router-dom';
 import {RoutesSwitch} from './Routes';
 import BottomBar from "./components/common/BottomBar";
 import Loading from "./components/common/Loading";
-import {applyThemePreferences} from './utils/themePreferences';
+import {
+    applyThemePreferences,
+    getThemePreset,
+    loadThemePreferencesFromLocation,
+    persistThemePreferences,
+    type ThemePresetId,
+} from './utils/themePreferences';
 
 const TopBar = React.lazy(() => import('./components/common/TopBar'));
 const QuickSidebar = React.lazy(() => import('./components/common/QuickSidebar'));
 const Toaster = React.lazy(() => import('./components/common/Toaster'));
-const FIXED_THEME = {themePreset: 'noir' as const};
 const ALLOWED_PREVIEW_ORIGINS = new Set([
     'https://pascu.io',
     'https://www.pascu.io',
@@ -16,12 +21,21 @@ const ALLOWED_PREVIEW_ORIGINS = new Set([
     'http://localhost:5173',
 ]);
 
+const getInitialThemePreset = (): ThemePresetId => {
+    if (typeof window === 'undefined') {
+        return 'noir';
+    }
+
+    return loadThemePreferencesFromLocation(window.location.search).themePreset;
+};
+
 function App() {
     const location = useLocation();
+    const [themePreset, setThemePreset] = useState<ThemePresetId>(getInitialThemePreset);
 
     useEffect(() => {
-        applyThemePreferences(FIXED_THEME);
-    }, []);
+        applyThemePreferences({themePreset});
+    }, [themePreset]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -73,10 +87,17 @@ function App() {
         };
     }, []);
 
+    const activeThemePreset = getThemePreset(themePreset);
+
+    const handleThemePresetChange = (nextThemePreset: ThemePresetId) => {
+        persistThemePreferences({themePreset: nextThemePreset});
+        setThemePreset(nextThemePreset);
+    };
+
     return (
-        <div className="app select-none min-h-screen theme-dark">
+        <div className={`app select-none min-h-screen transition-colors duration-300 ${activeThemePreset.mode === 'dark' ? 'theme-dark' : 'theme-light'}`}>
             <React.Suspense fallback={<Loading/>}>
-                <TopBar/>
+                <TopBar themePreset={themePreset} onThemePresetChange={handleThemePresetChange}/>
             </React.Suspense>
             <React.Suspense fallback={null}>
                 <QuickSidebar/>

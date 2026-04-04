@@ -1,7 +1,8 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {Link, Navigate, useParams} from 'react-router-dom';
 import GuidedInquiryPanel from '../components/common/GuidedInquiryPanel';
 import ArtworkTile from '../components/site/ArtworkTile';
+import PageShell from '../components/site/PageShell';
 import SectionHeading from '../components/site/SectionHeading';
 import {
     findPortfolioPhotoBySlug,
@@ -9,71 +10,25 @@ import {
     getRelatedPortfolioPhotos,
 } from '../content/portfolioLibrary';
 import {instagramUrl} from '../config/site';
+import {usePageTitle} from '../hooks/usePageTitle';
+import {useI18n} from '../i18n/I18nProvider';
+import {localizePortfolioPhoto} from '../i18n/portfolio';
+import {
+    buildArtworkSizeGuidance,
+    formatTakenAt,
+    getPresentationGuidance,
+} from '../utils/artworkDetails';
 import {buildGuidedInquiryHref} from '../utils/inquiry';
 import {getPrintRecommendation} from '../utils/printRecommendations';
 
-const formatTakenAt = (takenAt?: string) => {
-    if (!takenAt) {
-        return null;
-    }
-
-    const next = new Date(takenAt);
-    if (Number.isNaN(next.getTime())) {
-        return null;
-    }
-
-    return new Intl.DateTimeFormat('en', {year: 'numeric', month: 'long'}).format(next);
-};
-
-const getPresentationGuidance = (category: string, orientation?: string) => {
-    if (orientation === 'portrait') {
-        return {
-            title: 'Slim float frame or clean canvas wrap',
-            note: 'Portrait-led works usually benefit from a little more breathing room and a restrained frame profile.',
-        };
-    }
-
-    if (category === 'Architecture') {
-        return {
-            title: 'Black or natural oak float frame',
-            note: 'Architectural images feel strongest with sharper edges and a cleaner presentation language.',
-        };
-    }
-
-    if (category === 'Nature') {
-        return {
-            title: 'Warm oak float frame or gallery wrap',
-            note: 'Nature work often opens beautifully when the presentation stays warm, simple, and unobtrusive.',
-        };
-    }
-
-    return {
-        title: 'Framed or unframed by room fit',
-        note: 'The right presentation depends on wall scale, surrounding materials, and how calm or graphic the room already is.',
-    };
-};
-
-const buildSizeGuidance = (sizes: string[], recommendedSize: string, priceFrom?: string) => {
-    const inferredSizes = recommendedSize.includes(' or ')
-        ? recommendedSize.split(' or ').map((entry) => entry.trim())
-        : [recommendedSize];
-    const uniqueSizes = Array.from(new Set([...sizes, ...inferredSizes, 'Custom consultation'])).slice(0, 3);
-
-    return uniqueSizes.map((size, index) => ({
-        size,
-        note:
-            index === 0
-                ? 'A versatile starting point for most homes and studies.'
-                : index === 1
-                    ? 'Best when the work needs more wall presence or distance.'
-                    : 'Use the room and wall dimensions to tailor the final format.',
-        priceLabel: index === 0 ? priceFrom || 'From 140 CHF' : 'Price on request',
-    }));
-};
-
 const ArtworkPage = () => {
     const {slug} = useParams();
+    const {copy, locale} = useI18n();
     const photo = findPortfolioPhotoBySlug(slug);
+    const localizedPhoto = useMemo(
+        () => (photo ? localizePortfolioPhoto(photo, locale) : null),
+        [locale, photo]
+    );
 
     const recommendation = useMemo(
         () =>
@@ -82,47 +37,46 @@ const ArtworkPage = () => {
                     title: photo.title,
                     category: photo.category,
                     location: photo.location,
+                    locale,
                 })
                 : null,
-        [photo]
+        [locale, photo]
     );
 
     const relatedPhotos = useMemo(
-        () => (photo ? getRelatedPortfolioPhotos(photo, 4) : []),
-        [photo]
+        () => (photo ? getRelatedPortfolioPhotos(photo, 4).map((entry) => localizePortfolioPhoto(entry, locale)) : []),
+        [locale, photo]
     );
 
-    useEffect(() => {
-        if (!photo) {
-            return;
-        }
+    usePageTitle(localizedPhoto ? `${localizedPhoto.title} | My Lenses` : undefined);
 
-        document.title = `${photo.seoTitle || photo.title} | My Lenses`;
-    }, [photo]);
-
-    if (!photo || !recommendation) {
+    if (!photo || !localizedPhoto || !recommendation) {
         return <Navigate to="/collection" replace/>;
     }
 
-    const inquiryHref = buildGuidedInquiryHref({
-        inquiryType: 'Artwork availability',
-        artwork: photo.title,
-        roomType: 'Still deciding',
-        budgetRange: photo.priceFrom ? `Starting around ${photo.priceFrom}` : 'Open to guidance',
-        timeline: 'Within the next month',
-        location: photo.location,
-        notes: photo.description,
-    });
+    const inquiryHref = buildGuidedInquiryHref(
+        {
+            inquiryType: copy.guidedInquiry.inquiryOptions.artworkAvailability.label,
+            artwork: localizedPhoto.title,
+            roomType: copy.guidedInquiry.roomOptions.stillDeciding,
+            budgetRange: localizedPhoto.priceFrom || copy.guidedInquiry.budget.openToGuidance,
+            timeline: copy.guidedInquiry.timeline.nextMonth,
+            location: localizedPhoto.location,
+            notes: localizedPhoto.description,
+        },
+        copy.inquiryEmail
+    );
 
-    const takenAtLabel = formatTakenAt(photo.takenAt);
-    const availabilityLabel = photo.availability || 'Available by inquiry';
-    const editionLabel = photo.edition || 'Open edition by inquiry';
-    const presentationGuidance = getPresentationGuidance(photo.category, photo.orientation);
-    const sizeGuidance = buildSizeGuidance(photo.sizes, recommendation.recommendedSize, photo.priceFrom);
-    const collectorMood = photo.roomMood || recommendation.idealSetting;
+    const takenAtLabel = formatTakenAt(photo.takenAt, locale);
+    const availabilityLabel = localizedPhoto.availability || copy.artworkPage.availabilityFallback;
+    const editionLabel = localizedPhoto.edition || copy.artworkPage.editionFallback;
+    const priceLabel = localizedPhoto.priceFrom || copy.artworkPage.priceFallback;
+    const presentationGuidance = getPresentationGuidance(photo.category, photo.orientation, locale);
+    const sizeGuidance = buildArtworkSizeGuidance(photo.sizes, recommendation.recommendedSize, priceLabel, locale);
+    const collectorMood = localizedPhoto.roomMood || recommendation.idealSetting;
 
     return (
-        <main className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 pb-16 pt-4 md:px-6">
+        <PageShell className="gap-4 pt-4">
             <section id="artwork-top" className="scroll-mt-24 grid gap-4 xl:grid-cols-[minmax(0,1.08fr)_24rem] md:scroll-mt-28">
                 <div className="grid gap-4">
                     <div className="surface-panel overflow-hidden rounded-[2rem] p-3 md:p-4">
@@ -133,7 +87,7 @@ const ArtworkPage = () => {
                                 src={photo.mediumSrc}
                                 srcSet={photo.srcSet}
                                 sizes="(min-width: 1280px) 58vw, 100vw"
-                                alt={photo.title}
+                                alt={localizedPhoto.title}
                                 className="h-full min-h-[26rem] w-full object-cover"
                                 style={{objectPosition: getPhotoObjectPosition(photo)}}
                             />
@@ -143,7 +97,9 @@ const ArtworkPage = () => {
                     <div className="grid gap-4 md:grid-cols-3">
                         {sizeGuidance.map((entry) => (
                             <div key={entry.size} className="surface-panel rounded-[1.6rem] p-5">
-                                <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">Suggested size</p>
+                                <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">
+                                    {copy.artworkPage.labels.suggestedSize}
+                                </p>
                                 <h2 className="mt-3 font-display text-3xl text-appText">{entry.size}</h2>
                                 <p className="mt-3 text-sm leading-6 text-muted-token">{entry.note}</p>
                                 <p className="mt-4 text-sm uppercase tracking-[0.18em] text-appText">{entry.priceLabel}</p>
@@ -153,14 +109,22 @@ const ArtworkPage = () => {
 
                     <div className="grid gap-4 md:grid-cols-2">
                         <div className="surface-panel rounded-[1.75rem] p-6">
-                            <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">Collector fit</p>
+                            <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">
+                                {copy.artworkPage.labels.collectorFit}
+                            </p>
                             <h2 className="mt-3 font-display text-3xl text-appText">{collectorMood}</h2>
                             <p className="mt-4 text-base leading-7 text-muted-token">{recommendation.collectorNote}</p>
-                            {takenAtLabel ? <p className="mt-4 text-sm uppercase tracking-[0.18em] text-subtle-token">Captured {takenAtLabel}</p> : null}
+                            {takenAtLabel ? (
+                                <p className="mt-4 text-sm uppercase tracking-[0.18em] text-subtle-token">
+                                    {copy.artworkPage.capturedPrefix} {takenAtLabel}
+                                </p>
+                            ) : null}
                         </div>
 
                         <div className="surface-panel rounded-[1.75rem] p-6">
-                            <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">Presentation</p>
+                            <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">
+                                {copy.artworkPage.labels.presentation}
+                            </p>
                             <h2 className="mt-3 font-display text-3xl text-appText">{presentationGuidance.title}</h2>
                             <p className="mt-4 text-base leading-7 text-muted-token">{presentationGuidance.note}</p>
                             <div className="mt-5 flex flex-wrap gap-2">
@@ -178,27 +142,35 @@ const ArtworkPage = () => {
                 <aside className="space-y-4 xl:sticky xl:top-28 xl:h-fit">
                     <div className="surface-panel rounded-[2rem] p-6 md:p-8">
                         <p className="eyebrow-text text-[11px] uppercase tracking-[0.3em]">
-                            {photo.category} {photo.location ? ` / ${photo.location}` : ''}
+                            {localizedPhoto.category} {localizedPhoto.location ? ` / ${localizedPhoto.location}` : ''}
                         </p>
-                        <h1 className="mt-3 font-display text-4xl text-appText md:text-5xl">{photo.title}</h1>
-                        <p className="mt-4 text-base leading-8 text-muted-token">{photo.description}</p>
+                        <h1 className="mt-3 font-display text-4xl text-appText md:text-5xl">{localizedPhoto.title}</h1>
+                        <p className="mt-4 text-base leading-8 text-muted-token">{localizedPhoto.description}</p>
 
                         <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
                             <div className="surface-panel-soft rounded-[1.25rem] p-4">
-                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Availability</p>
+                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">
+                                    {copy.artworkPage.labels.availability}
+                                </p>
                                 <p className="mt-2 text-appText">{availabilityLabel}</p>
                             </div>
                             <div className="surface-panel-soft rounded-[1.25rem] p-4">
-                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Edition</p>
+                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">
+                                    {copy.artworkPage.labels.edition}
+                                </p>
                                 <p className="mt-2 text-appText">{editionLabel}</p>
                             </div>
                             <div className="surface-panel-soft rounded-[1.25rem] p-4">
-                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Best format</p>
+                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">
+                                    {copy.artworkPage.labels.bestFormat}
+                                </p>
                                 <p className="mt-2 text-appText">{recommendation.bestFit}</p>
                             </div>
                             <div className="surface-panel-soft rounded-[1.25rem] p-4">
-                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Price guidance</p>
-                                <p className="mt-2 text-appText">{photo.priceFrom || 'On request by size'}</p>
+                                <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">
+                                    {copy.artworkPage.labels.priceGuidance}
+                                </p>
+                                <p className="mt-2 text-appText">{priceLabel}</p>
                             </div>
                         </div>
 
@@ -207,13 +179,13 @@ const ArtworkPage = () => {
                                 href={inquiryHref}
                                 className="theme-action inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"
                             >
-                                Ask about this work
+                                {copy.artworkPage.ctas.askAbout}
                             </a>
                             <Link
                                 to="/prints"
                                 className="theme-action-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"
                             >
-                                View print guidance
+                                {copy.artworkPage.ctas.printGuidance}
                             </Link>
                             {photo.permalink ? (
                                 <a
@@ -222,7 +194,7 @@ const ArtworkPage = () => {
                                     rel="noopener noreferrer"
                                     className="theme-action-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"
                                 >
-                                    Original post
+                                    {copy.artworkPage.ctas.originalPost}
                                 </a>
                             ) : (
                                 <a
@@ -231,24 +203,26 @@ const ArtworkPage = () => {
                                     rel="noopener noreferrer"
                                     className="theme-action-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"
                                 >
-                                    Instagram
+                                    {copy.artworkPage.ctas.instagram}
                                 </a>
                             )}
                         </div>
                     </div>
 
                     <div className="surface-panel-soft rounded-[1.75rem] p-5 md:p-6">
-                        <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Private inquiry notes</p>
+                        <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">
+                            {copy.artworkPage.labels.privateInquiryNotes}
+                        </p>
                         <div className="mt-4 grid gap-3">
-                            <div className="rounded-[1.15rem] border px-4 py-3 text-sm leading-6 text-muted-token" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
-                                Made to order with room, scale, and presentation discussed directly.
-                            </div>
-                            <div className="rounded-[1.15rem] border px-4 py-3 text-sm leading-6 text-muted-token" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
-                                Archival canvas output designed to keep tonal depth and atmosphere intact.
-                            </div>
-                            <div className="rounded-[1.15rem] border px-4 py-3 text-sm leading-6 text-muted-token" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
-                                Framed or unframed guidance can be tailored to the wall and surrounding materials.
-                            </div>
+                            {copy.artworkPage.privateInquiryNotes.map((note) => (
+                                <div
+                                    key={note}
+                                    className="rounded-[1.15rem] border px-4 py-3 text-sm leading-6 text-muted-token"
+                                    style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}
+                                >
+                                    {note}
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </aside>
@@ -256,18 +230,18 @@ const ArtworkPage = () => {
 
             <GuidedInquiryPanel
                 id="artwork-inquiry"
-                eyebrow="Artwork inquiry"
-                title={`Start the conversation around "${photo.title}".`}
-                description="If this photograph speaks to you, use the guided inquiry to make the first reply more specific around room, scale, and collector intent."
-                initialArtwork={photo.title}
+                eyebrow={copy.artworkPage.inquiry.eyebrow}
+                title={`${copy.artworkPage.inquiry.titlePrefix} "${localizedPhoto.title}".`}
+                description={copy.artworkPage.inquiry.description}
+                initialArtworkSlug={photo.slug}
             />
 
             {relatedPhotos.length > 0 ? (
                 <section id="artwork-related" className="scroll-mt-24 space-y-5 pt-2 md:scroll-mt-28">
                     <SectionHeading
-                        eyebrow="Related works"
-                        title="Other photographs likely to resonate with the same collector intent."
-                        description="Related by subject, place, atmosphere, or print character."
+                        eyebrow={copy.artworkPage.related.eyebrow}
+                        title={copy.artworkPage.related.title}
+                        description={copy.artworkPage.related.description}
                     />
                     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                         {relatedPhotos.map((relatedPhoto) => (
@@ -281,7 +255,7 @@ const ArtworkPage = () => {
                     </div>
                 </section>
             ) : null}
-        </main>
+        </PageShell>
     );
 };
 
