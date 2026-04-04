@@ -1,3 +1,5 @@
+import {hungarianMessages, italianMessages, romanianMessages} from './additionalMessages';
+
 export const messages = {
     en: {
         topBar: {
@@ -1515,6 +1517,9 @@ export const messages = {
             intro: "J'aimerais discuter d'une oeuvre photographique possible pour mon espace.",
         },
     },
+    it: italianMessages,
+    ro: romanianMessages,
+    hu: hungarianMessages,
 } as const;
 
 export type AppCopy = typeof messages.en;

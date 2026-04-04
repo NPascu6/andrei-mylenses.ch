@@ -1,4 +1,4 @@
-import {contactEmail} from '../config/site';
+import {contactEmail, whatsappHref} from '../config/site';
 import type {AppCopy} from '../i18n/messages';
 
 export interface InquiryDraft {
@@ -18,7 +18,12 @@ export interface InquiryCopy {
     intro: string;
 }
 
-export const buildGuidedInquiryHref = ({
+export const buildInquirySubject = ({
+    inquiryType,
+    artwork,
+}: InquiryDraft) => artwork ? `${inquiryType} - ${artwork}` : inquiryType;
+
+export const buildInquiryBody = ({
     inquiryType,
     artwork,
     roomType,
@@ -27,7 +32,6 @@ export const buildGuidedInquiryHref = ({
     location,
     notes,
 }: InquiryDraft, copy: InquiryCopy) => {
-    const subject = artwork ? `${inquiryType} - ${artwork}` : inquiryType;
     const lines = [
         `${copy.labels.inquiryType}: ${inquiryType}`,
         `${copy.labels.artwork}: ${artwork || copy.fallbacks.stillDeciding}`,
@@ -41,5 +45,20 @@ export const buildGuidedInquiryHref = ({
         copy.intro,
     ].filter(Boolean);
 
-    return `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+    return lines.join('\n');
+};
+
+export const buildGuidedInquiryHref = (draft: InquiryDraft, copy: InquiryCopy) => {
+    const subject = buildInquirySubject(draft);
+    const body = buildInquiryBody(draft, copy);
+
+    return `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+};
+
+export const buildWhatsAppInquiryHref = (draft: InquiryDraft, copy: InquiryCopy) => {
+    const subject = buildInquirySubject(draft);
+    const body = buildInquiryBody(draft, copy);
+    const message = `${subject}\n\n${body}`;
+
+    return `${whatsappHref}?text=${encodeURIComponent(message)}`;
 };

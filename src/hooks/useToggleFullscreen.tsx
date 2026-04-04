@@ -4,7 +4,15 @@ function useFullScreenToggle(initialState = false) {
     const [isFullScreen, setFullScreen] = useState(initialState);
 
     const toggleFullScreen = () => {
-        setFullScreen(!isFullScreen);
+        setFullScreen((current) => !current);
+    };
+
+    const openFullScreen = () => {
+        setFullScreen(true);
+    };
+
+    const closeFullScreen = () => {
+        setFullScreen(false);
     };
 
     useEffect(() => {
@@ -20,7 +28,7 @@ function useFullScreenToggle(initialState = false) {
     }, [isFullScreen]);
 
 
-    return {isFullScreen, toggleFullScreen};
+    return {isFullScreen, toggleFullScreen, openFullScreen, closeFullScreen};
 }
 
 export default useFullScreenToggle;

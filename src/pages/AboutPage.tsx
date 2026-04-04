@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
 import {Link} from 'react-router-dom';
 import portraitImage from '../assets/portrait.jpg';
+import ExpandableImage from '../components/common/ExpandableImage';
 import ArtworkTile from '../components/site/ArtworkTile';
 import PageShell from '../components/site/PageShell';
 import SectionHeading from '../components/site/SectionHeading';
@@ -25,12 +26,14 @@ const AboutPage = () => {
         <PageShell>
             <section id="about-intro" className="scroll-mt-24 grid gap-4 lg:grid-cols-[0.82fr_1.18fr] md:scroll-mt-28">
                 <div className="surface-panel overflow-hidden rounded-[2rem] p-3 md:p-4">
-                    <img
+                    <ExpandableImage
                         loading="lazy"
                         src={portraitImage}
                         alt={artistName}
-                        className="h-full min-h-[26rem] w-full rounded-[1.5rem] object-cover"
-                        style={{objectPosition: 'center 22%'}}
+                        containerClassName="overflow-hidden rounded-[1.5rem]"
+                        imgClassName="h-full min-h-[26rem] w-full rounded-[1.5rem] object-cover"
+                        imgStyle={{objectPosition: 'center 22%'}}
+                        orderDetails={undefined}
                     />
                 </div>
 
@@ -40,13 +43,13 @@ const AboutPage = () => {
                         {copy.aboutPage.title}
                     </h1>
                     <div className="mt-5 grid gap-4 text-base leading-8 text-muted-token">
-                        {copy.aboutPage.paragraphs.map((paragraph) => (
+                        {copy.aboutPage.paragraphs.map((paragraph: string) => (
                             <p key={paragraph}>{paragraph}</p>
                         ))}
                     </div>
 
                     <div className="mt-6 flex flex-wrap gap-3">
-                        {copy.aboutPage.chips.map((chip) => (
+                        {copy.aboutPage.chips.map((chip: string) => (
                             <div
                                 key={chip}
                                 className="surface-panel-soft rounded-full px-4 py-3 text-sm uppercase tracking-[0.18em] text-appText"

@@ -1,4 +1,10 @@
 import {messages} from './messages';
+import {
+    additionalCmsPhotoTranslations,
+    additionalExactLocationTranslations,
+    additionalGeneratedTitleReplacements,
+    additionalLocationSegmentTranslations,
+} from './portfolioAdditionalTranslations';
 import type {AppLocale} from './types';
 import type {
     LocalizedPortfolioPhoto,
@@ -304,6 +310,7 @@ const cmsPhotoTranslations: Record<Exclude<AppLocale, 'en'>, Record<string, CmsP
                 'Magnifique coucher de soleil sur la cote ligurienne. La photo a ete prise apres une longue journee a la plage, avant de remonter la colline au-dessus du Golfe des Poetes.',
         },
     },
+    ...additionalCmsPhotoTranslations,
 } as const;
 
 const locationSegmentTranslations = {
@@ -331,6 +338,7 @@ const locationSegmentTranslations = {
         Coastline: 'Cote',
         Liguria: 'Ligurie',
     },
+    ...additionalLocationSegmentTranslations,
 } as const;
 
 const exactLocationTranslations = {
@@ -354,6 +362,7 @@ const exactLocationTranslations = {
         'Italy': 'Italie',
         'Europe': 'Europe',
     },
+    ...additionalExactLocationTranslations,
 } as const;
 
 const generatedTitleReplacements = {
@@ -737,6 +746,7 @@ const generatedTitleReplacements = {
         ['City', 'ville'],
         ['Diary', 'journal'],
     ],
+    ...additionalGeneratedTitleReplacements,
 } as const;
 
 const escapeRegExp = (value: string) =>
@@ -792,7 +802,20 @@ const translateEdition = (edition: string | undefined, locale: AppLocale) => {
     }
 
     if (edition === 'Open edition') {
-        return locale === 'de' ? 'Offene Edition' : 'Edition ouverte';
+        switch (locale) {
+        case 'de':
+            return 'Offene Edition';
+        case 'fr':
+            return 'Edition ouverte';
+        case 'it':
+            return 'Edizione aperta';
+        case 'ro':
+            return 'Editie deschisa';
+        case 'hu':
+            return 'Nyitott kiadas';
+        default:
+            return edition;
+        }
     }
 
     const editionMatch = edition.match(/^Edition of (\d+)$/);
@@ -800,9 +823,20 @@ const translateEdition = (edition: string | undefined, locale: AppLocale) => {
         return edition;
     }
 
-    return locale === 'de'
-        ? `Auflage von ${editionMatch[1]}`
-        : `Edition de ${editionMatch[1]}`;
+    switch (locale) {
+    case 'de':
+        return `Auflage von ${editionMatch[1]}`;
+    case 'fr':
+        return `Edition de ${editionMatch[1]}`;
+    case 'it':
+        return `Edizione di ${editionMatch[1]}`;
+    case 'ro':
+        return `Editie de ${editionMatch[1]}`;
+    case 'hu':
+        return `${editionMatch[1]} darabos kiadas`;
+    default:
+        return edition;
+    }
 };
 
 const translatePriceFrom = (priceFrom: string | undefined, locale: AppLocale) => {
@@ -815,9 +849,20 @@ const translatePriceFrom = (priceFrom: string | undefined, locale: AppLocale) =>
         return priceFrom;
     }
 
-    return locale === 'de'
-        ? `Ab ${priceMatch[1]}`
-        : `A partir de ${priceMatch[1]}`;
+    switch (locale) {
+    case 'de':
+        return `Ab ${priceMatch[1]}`;
+    case 'fr':
+        return `A partir de ${priceMatch[1]}`;
+    case 'it':
+        return `Da ${priceMatch[1]}`;
+    case 'ro':
+        return `De la ${priceMatch[1]}`;
+    case 'hu':
+        return `Indulo ar ${priceMatch[1]}`;
+    default:
+        return priceFrom;
+    }
 };
 
 const isFormulaicInstagramDescription = (photo: PortfolioPhoto) =>
@@ -833,9 +878,20 @@ const translateGeneratedDescription = (
         return photo.description;
     }
 
-    return locale === 'de'
-        ? `${translatedTitle} aufgenommen in ${translatedLocation}.`
-        : `${translatedTitle} photographie a ${translatedLocation}.`;
+    switch (locale) {
+    case 'de':
+        return `${translatedTitle} aufgenommen in ${translatedLocation}.`;
+    case 'fr':
+        return `${translatedTitle} photographie a ${translatedLocation}.`;
+    case 'it':
+        return `${translatedTitle} fotografata a ${translatedLocation}.`;
+    case 'ro':
+        return `${translatedTitle} fotografiata in ${translatedLocation}.`;
+    case 'hu':
+        return `${translatedTitle} itt keszult: ${translatedLocation}.`;
+    default:
+        return photo.description;
+    }
 };
 
 export const isPortfolioCategory = (value: string): value is PortfolioCategory =>

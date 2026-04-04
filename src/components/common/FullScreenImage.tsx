@@ -1,14 +1,34 @@
-import React from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
+import {createPortal} from 'react-dom';
+import {instagramUrl} from '../../config/site';
+import {useI18n} from '../../i18n/I18nProvider';
+import {
+    buildGuidedInquiryHref,
+    buildInquiryBody,
+    buildWhatsAppInquiryHref,
+    type InquiryDraft,
+} from '../../utils/inquiry';
 
 const CloseIcon = React.lazy(() => import('../../assets/icons/CloseIcon'));
 const ChevronLeft = React.lazy(() => import('../../assets/icons/ChevronLeft'));
 const ChevronRight = React.lazy(() => import('../../assets/icons/ChevronRight'));
 
+export interface FullScreenOrderDetails {
+    title: string;
+    category?: string;
+    location?: string;
+    notes?: string;
+    permalink?: string;
+    inquiryType?: string;
+}
+
 interface FullScreenImageProps {
-    handlePrevClick?: (e: React.MouseEvent<HTMLSpanElement>) => void;
-    handleNextClick?: (e: React.MouseEvent<HTMLSpanElement>) => void;
+    handlePrevClick?: () => void;
+    handleNextClick?: () => void;
     toggleFullScreen: (e?: React.MouseEvent | React.TouchEvent) => void;
     selectedImage: string;
+    selectedImageAlt?: string;
+    orderDetails?: FullScreenOrderDetails;
     onTouchStart?: (e: React.TouchEvent<HTMLDivElement>) => void;
     onTouchEnd?: (e: React.TouchEvent<HTMLDivElement>) => void;
 }
@@ -18,66 +38,268 @@ const FullScreenImage: React.FC<FullScreenImageProps> = ({
                                                              handleNextClick,
                                                              toggleFullScreen,
                                                              selectedImage,
+                                                             selectedImageAlt = 'Full screen view',
+                                                             orderDetails,
                                                              onTouchStart,
                                                              onTouchEnd,
                                                          }) => {
-    return (
+    const {copy} = useI18n();
+    const [instagramPrepared, setInstagramPrepared] = useState(false);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                toggleFullScreen();
+            }
+
+            if (event.key === 'ArrowLeft' && handlePrevClick) {
+                handlePrevClick();
+            }
+
+            if (event.key === 'ArrowRight' && handleNextClick) {
+                handleNextClick();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [handleNextClick, handlePrevClick, toggleFullScreen]);
+
+    useEffect(() => {
+        if (!instagramPrepared) {
+            return;
+        }
+
+        const timeout = window.setTimeout(() => {
+            setInstagramPrepared(false);
+        }, 2200);
+
+        return () => {
+            window.clearTimeout(timeout);
+        };
+    }, [instagramPrepared]);
+
+    if (typeof document === 'undefined') {
+        return null;
+    }
+
+    const showSideControls = Boolean(handlePrevClick || handleNextClick);
+    const showOrderPanel = Boolean(orderDetails);
+
+    const inquiryDraft = useMemo<InquiryDraft | null>(() => {
+        if (!orderDetails) {
+            return null;
+        }
+
+        return {
+            inquiryType: orderDetails.inquiryType || copy.guidedInquiry.inquiryOptions.artworkAvailability.label,
+            artwork: orderDetails.title,
+            roomType: copy.inquiryEmail.fallbacks.stillDeciding,
+            budgetRange: copy.inquiryEmail.fallbacks.openToGuidance,
+            timeline: copy.inquiryEmail.fallbacks.justExploring,
+            location: orderDetails.location,
+            notes: orderDetails.notes || undefined,
+        };
+    }, [copy.guidedInquiry.inquiryOptions.artworkAvailability.label, copy.inquiryEmail.fallbacks.justExploring, copy.inquiryEmail.fallbacks.openToGuidance, copy.inquiryEmail.fallbacks.stillDeciding, orderDetails]);
+
+    const emailHref = inquiryDraft ? buildGuidedInquiryHref(inquiryDraft, copy.inquiryEmail) : '';
+    const whatsappInquiryHref = inquiryDraft ? buildWhatsAppInquiryHref(inquiryDraft, copy.inquiryEmail) : '';
+    const instagramDraft = inquiryDraft ? buildInquiryBody(inquiryDraft, copy.inquiryEmail) : '';
+
+    const handleInstagramAction = async () => {
+        if (instagramDraft && navigator.clipboard?.writeText) {
+            try {
+                await navigator.clipboard.writeText(instagramDraft);
+                setInstagramPrepared(true);
+            } catch (error) {
+                setInstagramPrepared(false);
+            }
+        }
+
+        window.open(instagramUrl, '_blank', 'noopener,noreferrer');
+    };
+
+    return createPortal(
         <div
             id="full-screen-photo"
-            className="flex fixed inset-0 bg-black z-50 items-center justify-center transition-opacity duration-300"
+            className="fixed inset-0 z-[120] bg-black/96 backdrop-blur-md transition-opacity duration-300"
             onClick={toggleFullScreen}
             role="dialog"
             aria-modal="true"
             aria-label="Full screen image view"
         >
-            {/* Inner container stops propagation so that clicking inside doesn't close the modal */}
             <div
-                className="flex items-center relative"
+                className="relative h-full w-full overflow-y-auto px-4 py-4 sm:px-6 sm:py-6 lg:px-8"
                 onClick={(e) => e.stopPropagation()}
             >
-                {handlePrevClick && (
-                    <span
-                        className="transform -translate-y-1/2 cursor-pointer text-white p-2"
-                        onClick={handlePrevClick}
-                        aria-label="Previous image"
-                    >
-            <ChevronLeft/>
-          </span>
-                )}
+                <div className={`grid min-h-full gap-4 lg:gap-6 ${showOrderPanel ? 'lg:grid-cols-[minmax(0,1fr)_22rem]' : ''}`}>
+                    <div className="relative min-h-[calc(100vh-2rem)] overflow-hidden rounded-[1.75rem] border border-white/10 bg-black/30 sm:min-h-[calc(100vh-3rem)]">
+                        <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-4 px-4 py-4 sm:px-6 sm:py-6">
+                            <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] uppercase tracking-[0.24em] text-white/58 backdrop-blur-xl">
+                                Full screen preview
+                            </div>
+                            <button
+                                type="button"
+                                className="pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/14 bg-white/[0.06] text-white/78 backdrop-blur-xl transition-all duration-300 hover:border-white/28 hover:bg-white/[0.12] hover:text-white"
+                                onClick={toggleFullScreen}
+                                aria-label="Close full screen view"
+                            >
+                                <CloseIcon/>
+                            </button>
+                        </div>
 
-                <div
-                    className="flex p-2"
-                    onTouchStart={onTouchStart}
-                    onTouchEnd={onTouchEnd}
-                >
-                    <img
-                        loading="lazy"
-                        src={selectedImage}
-                        alt="Full screen view"
-                        style={{maxHeight: '70vh', maxWidth: '83vw'}}
-                        className="rounded-lg object-contain"
-                    />
+                        {showSideControls ? (
+                            <div className="pointer-events-none absolute inset-y-0 left-0 right-0 z-20 flex items-center justify-between px-2 sm:px-6 lg:px-8">
+                                <div className="pointer-events-auto">
+                                    {handlePrevClick ? (
+                                        <button
+                                            type="button"
+                                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/14 bg-white/[0.06] text-white/78 backdrop-blur-xl transition-all duration-300 hover:-translate-x-0.5 hover:border-white/28 hover:bg-white/[0.12] hover:text-white sm:h-12 sm:w-12"
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                handlePrevClick();
+                                            }}
+                                            aria-label="Previous image"
+                                        >
+                                            <ChevronLeft/>
+                                        </button>
+                                    ) : (
+                                        <span className="block h-12 w-12"/>
+                                    )}
+                                </div>
+                                <div className="pointer-events-auto">
+                                    {handleNextClick ? (
+                                        <button
+                                            type="button"
+                                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/14 bg-white/[0.06] text-white/78 backdrop-blur-xl transition-all duration-300 hover:translate-x-0.5 hover:border-white/28 hover:bg-white/[0.12] hover:text-white sm:h-12 sm:w-12"
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                handleNextClick();
+                                            }}
+                                            aria-label="Next image"
+                                        >
+                                            <ChevronRight/>
+                                        </button>
+                                    ) : (
+                                        <span className="block h-12 w-12"/>
+                                    )}
+                                </div>
+                            </div>
+                        ) : null}
+
+                        <div
+                            className="flex h-full w-full items-center justify-center px-2 pb-14 pt-14 sm:px-14 sm:pb-16 sm:pt-16 lg:px-24"
+                            onTouchStart={onTouchStart}
+                            onTouchEnd={onTouchEnd}
+                        >
+                            <img
+                                loading="lazy"
+                                src={selectedImage}
+                                alt={selectedImageAlt}
+                                className="max-h-full max-w-full rounded-[1.4rem] object-contain shadow-[0_30px_120px_rgba(0,0,0,0.45)]"
+                            />
+                        </div>
+                        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center px-4 pb-4 sm:px-6 sm:pb-6">
+                            <div className="max-w-[min(80rem,100%)] rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-center text-[10px] uppercase tracking-[0.24em] text-white/58 backdrop-blur-xl sm:text-[11px]">
+                                {selectedImageAlt}
+                            </div>
+                        </div>
+                    </div>
+
+                    {showOrderPanel && inquiryDraft && orderDetails ? (
+                        <aside className="flex flex-col gap-4 rounded-[1.75rem] border border-white/10 bg-white/[0.05] p-5 text-white/80 backdrop-blur-xl sm:p-6">
+                            <div>
+                                <p className="text-[10px] uppercase tracking-[0.26em] text-white/48">
+                                    {copy.guidedInquiry.defaultEyebrow}
+                                </p>
+                                <h2 className="mt-3 font-display text-3xl text-white">
+                                    {orderDetails.title}
+                                </h2>
+                                <p className="mt-3 text-sm leading-6 text-white/66">
+                                    {copy.guidedInquiry.defaultDescription}
+                                </p>
+                            </div>
+
+                            <div className="grid gap-3">
+                                {orderDetails.category ? (
+                                    <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.04] px-4 py-3">
+                                        <p className="text-[10px] uppercase tracking-[0.22em] text-white/44">
+                                            {copy.inquiryEmail.labels.artwork}
+                                        </p>
+                                        <p className="mt-2 text-sm text-white/86">
+                                            {orderDetails.category}
+                                        </p>
+                                    </div>
+                                ) : null}
+                                {orderDetails.location ? (
+                                    <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.04] px-4 py-3">
+                                        <p className="text-[10px] uppercase tracking-[0.22em] text-white/44">
+                                            {copy.inquiryEmail.labels.location}
+                                        </p>
+                                        <p className="mt-2 text-sm text-white/86">
+                                            {orderDetails.location}
+                                        </p>
+                                    </div>
+                                ) : null}
+                                <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.04] px-4 py-3">
+                                    <p className="text-[10px] uppercase tracking-[0.22em] text-white/44">
+                                        {copy.inquiryEmail.labels.notes}
+                                    </p>
+                                    <p className="mt-2 text-sm leading-6 text-white/72">
+                                        {inquiryDraft.notes || copy.guidedInquiry.assurancePoints[1]}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid gap-3">
+                                <a
+                                    href={emailHref}
+                                    className="inline-flex items-center justify-center rounded-full border border-white/14 bg-white/[0.08] px-4 py-3 text-sm uppercase tracking-[0.18em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-white/28 hover:bg-white/[0.14]"
+                                >
+                                    {copy.bottomBar.email}
+                                </a>
+                                <a
+                                    href={whatsappInquiryHref}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center justify-center rounded-full border border-white/14 bg-white/[0.08] px-4 py-3 text-sm uppercase tracking-[0.18em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-white/28 hover:bg-white/[0.14]"
+                                >
+                                    {copy.bottomBar.whatsapp}
+                                </a>
+                                <button
+                                    type="button"
+                                    onClick={handleInstagramAction}
+                                    className="inline-flex items-center justify-center rounded-full border border-white/14 bg-white/[0.08] px-4 py-3 text-sm uppercase tracking-[0.18em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-white/28 hover:bg-white/[0.14]"
+                                >
+                                    {copy.bottomBar.instagram}
+                                </button>
+                            </div>
+
+                            <div className="space-y-2 text-xs leading-5 text-white/48">
+                                <p>
+                                    {instagramPrepared ? 'Message copied. Paste it into Instagram.' : 'Instagram opens the profile and prepares your order text for pasting.'}
+                                </p>
+                                {orderDetails.permalink ? (
+                                    <a
+                                        href={orderDetails.permalink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex text-white/62 transition-colors duration-300 hover:text-white"
+                                    >
+                                        Open original post
+                                    </a>
+                                ) : null}
+                            </div>
+                        </aside>
+                    ) : null}
                 </div>
-
-                {handleNextClick && (
-                    <span
-                        className="transform -translate-y-1/2 cursor-pointer text-white p-2"
-                        onClick={handleNextClick}
-                        aria-label="Next image"
-                    >
-            <ChevronRight/>
-          </span>
-                )}
             </div>
-
-            <span
-                className="absolute top-2 right-2 cursor-pointer text-white p-2"
-                onClick={toggleFullScreen}
-                aria-label="Close full screen view"
-            >
-        <CloseIcon/>
-      </span>
         </div>
+        ,
+        document.body
     );
 };
 

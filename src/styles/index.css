@@ -351,6 +351,25 @@
         box-shadow: inset 0 0 0 1px rgba(var(--accent-color), 0.2);
     }
 
+    .image-expand-button {
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(7, 10, 12, 0.28);
+        color: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(14px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+        opacity: 0.92;
+        transition: transform 220ms ease, border-color 220ms ease, background 220ms ease, color 220ms ease, opacity 220ms ease;
+    }
+
+    .image-expand-button:hover,
+    .image-expand-button:focus-visible {
+        transform: translateY(-1px);
+        border-color: rgba(255, 255, 255, 0.24);
+        background: rgba(7, 10, 12, 0.44);
+        color: rgba(255, 255, 255, 1);
+        opacity: 1;
+    }
+
     .theme-link {
         color: var(--color-nav);
         transition: color 220ms ease, opacity 220ms ease;

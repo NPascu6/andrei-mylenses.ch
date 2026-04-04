@@ -1,9 +1,8 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import useFullScreenToggle from '../../hooks/useToggleFullscreen';
+import ExpandableImage from './ExpandableImage';
 
 const ChevronLeft = React.lazy(() => import('../../assets/icons/ChevronLeft'));
 const ChevronRight = React.lazy(() => import('../../assets/icons/ChevronRight'));
-const FullScreenImage = React.lazy(() => import('./FullScreenImage'));
 
 interface ImageSliderProps {
     images: string[];
@@ -15,7 +14,6 @@ const ImageSlider: React.FC<ImageSliderProps> = ({images, autoSlideTimeout = 400
     const [currentImageIndex, setCurrentImageIndex] = useState<number>(
         () => Math.floor(Math.random() * images.length)
     );
-    const {isFullScreen, toggleFullScreen} = useFullScreenToggle();
 
     // Refs for swipe support.
     const touchStartX = useRef<number | null>(null);
@@ -34,17 +32,25 @@ const ImageSlider: React.FC<ImageSliderProps> = ({images, autoSlideTimeout = 400
         );
     }, [images.length]);
 
+    const handlePrevNavigation = useCallback(() => {
+        goToPrevious();
+    }, [goToPrevious]);
+
+    const handleNextNavigation = useCallback(() => {
+        goToNext();
+    }, [goToNext]);
+
     // Mouse click handlers.
     const handlePrevClick = (e: React.MouseEvent<HTMLSpanElement>) => {
         e.stopPropagation();
         e.preventDefault();
-        goToPrevious();
+        handlePrevNavigation();
     };
 
     const handleNextClick = (e: React.MouseEvent<HTMLSpanElement>) => {
         e.stopPropagation();
         e.preventDefault();
-        goToNext();
+        handleNextNavigation();
     };
 
     // Touch event handlers for swipe support.
@@ -70,10 +76,10 @@ const ImageSlider: React.FC<ImageSliderProps> = ({images, autoSlideTimeout = 400
     // Auto-slide effect.
     useEffect(() => {
         const autoSlideInterval = setInterval(() => {
-            goToNext();
+            handleNextNavigation();
         }, autoSlideTimeout);
         return () => clearInterval(autoSlideInterval);
-    }, [autoSlideTimeout, goToNext]);
+    }, [autoSlideTimeout, handleNextNavigation]);
 
     return (
         <div
@@ -87,18 +93,25 @@ const ImageSlider: React.FC<ImageSliderProps> = ({images, autoSlideTimeout = 400
       </span>
 
             <div
-                className="relative flex justify-center rounded-lg cursor-pointer"
+                className="flex justify-center rounded-lg"
                 style={{height: '15em', maxHeight: '15em', minHeight: '15em'}}
-                onClick={toggleFullScreen}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
             >
-                <img
-                    loading="lazy"
+                <ExpandableImage
                     src={images[currentImageIndex]}
+                    modalSrc={images[currentImageIndex]}
                     alt={`Slide ${currentImageIndex + 1}`}
-                    className="w-full rounded-lg object-contain p-1"
-                    style={{border: '1px solid var(--color-line)'}}
+                    containerClassName="flex h-full w-full justify-center rounded-lg"
+                    imgClassName="w-full rounded-lg object-contain p-1"
+                    imgStyle={{border: '1px solid var(--color-line)'}}
+                    onTouchStart={handleTouchStart}
+                    onTouchEnd={handleTouchEnd}
+                    modalHandlePrevClick={handlePrevNavigation}
+                    modalHandleNextClick={handleNextNavigation}
+                    modalOnTouchStart={handleTouchStart}
+                    modalOnTouchEnd={handleTouchEnd}
+                    orderDetails={undefined}
                 />
             </div>
 
@@ -108,17 +121,6 @@ const ImageSlider: React.FC<ImageSliderProps> = ({images, autoSlideTimeout = 400
             >
         <ChevronRight/>
       </span>
-
-            {isFullScreen && (
-                <FullScreenImage
-                    handlePrevClick={handlePrevClick}
-                    handleNextClick={handleNextClick}
-                    toggleFullScreen={toggleFullScreen}
-                    selectedImage={images[currentImageIndex]}
-                    onTouchStart={handleTouchStart}
-                    onTouchEnd={handleTouchEnd}
-                />
-            )}
         </div>
     );
 };

@@ -1,5 +1,6 @@
 import React, {useMemo, useState} from "react";
 import {useSelector} from "react-redux";
+import ExpandableImage from "../common/ExpandableImage";
 import {RootState} from "../../store/store";
 import SelectedPhoto from "./SelectedPhoto";
 
@@ -28,12 +29,14 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                         <div className="grid gap-5 md:grid-cols-[auto_minmax(0,1fr)] md:items-center">
                             <div className="relative mx-auto md:mx-0">
                                 <div className="absolute -inset-3 rounded-full blur-2xl" style={{backgroundColor: 'rgba(var(--accent-color), 0.16)'}}/>
-                                <img
-                                    loading="lazy"
+                                <ExpandableImage
                                     src={artistImage}
                                     alt="Andrei Pascu portrait"
-                                    className="relative h-32 w-32 rounded-full object-cover shadow-2xl shadow-black/20 md:h-36 md:w-36"
-                                    style={{border: '1px solid var(--color-line)'}}
+                                    containerClassName="relative h-32 w-32 overflow-hidden rounded-full md:h-36 md:w-36"
+                                    containerStyle={{border: '1px solid var(--color-line)'}}
+                                    imgClassName="relative h-32 w-32 rounded-full object-cover shadow-2xl shadow-black/20 md:h-36 md:w-36"
+                                    buttonClassName="right-0 top-0 h-7 w-7 md:right-0 md:top-0"
+                                    orderDetails={undefined}
                                 />
                             </div>
 
@@ -75,17 +78,22 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                 >
                     {heroPhoto && (
                         <>
-                            <img
-                                loading="eager"
+                            <ExpandableImage
                                 src={heroPhoto.fullSrc || heroPhoto.src}
+                                modalSrc={heroPhoto.fullSrc || heroPhoto.src}
                                 alt={heroPhoto.title}
-                                className="absolute inset-0 h-full w-full object-cover"
+                                containerClassName="absolute inset-0"
+                                imgClassName="absolute inset-0 h-full w-full object-cover"
+                                orderDetails={{
+                                    title: heroPhoto.title,
+                                    category: heroPhoto.category,
+                                    location: heroPhoto.location,
+                                    notes: heroPhoto.description,
+                                    permalink: heroPhoto.permalink,
+                                }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/10"/>
                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.18),_transparent_30%)]"/>
-                            <div className="absolute right-4 top-4 rounded-full border border-white/15 bg-black/35 px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm transition-colors duration-300 group-hover:bg-black/55">
-                                Maximize
-                            </div>
                             <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-8">
                                 <p className="text-xs uppercase tracking-[0.28em] text-white/60">
                                     Featured work
@@ -149,16 +157,20 @@ const PhotographerDescriptionCard: React.FC<PhotographerDescriptionCardProps> = 
                         className="group relative overflow-hidden rounded-[1.75rem] bg-black shadow-xl shadow-black/15"
                         style={{border: '1px solid var(--color-line)'}}
                     >
-                        <img
-                            loading="lazy"
+                        <ExpandableImage
                             src={photo.src}
+                            modalSrc={photo.fullSrc || photo.src}
                             alt={photo.title}
-                            className="h-56 w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                            imgClassName="h-56 w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                            orderDetails={{
+                                title: photo.title,
+                                category: photo.category,
+                                location: photo.location,
+                                notes: photo.description,
+                                permalink: photo.permalink,
+                            }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"/>
-                        <div className="absolute right-4 top-4 rounded-full border border-white/15 bg-black/35 px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm transition-colors duration-300 group-hover:bg-black/55">
-                            Maximize
-                        </div>
                         <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                             <p className="text-[10px] uppercase tracking-[0.26em] text-white/60">
                                 {photo.category} {photo.location ? ` / ${photo.location}` : ''}

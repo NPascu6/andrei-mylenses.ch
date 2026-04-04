@@ -142,7 +142,7 @@ const GuidedInquiryPanel: React.FC<GuidedInquiryPanelProps> = ({
                             {copy.guidedInquiry.assuranceTitle}
                         </p>
                         <div className="mt-4 grid gap-3">
-                            {copy.guidedInquiry.assurancePoints.map((point) => (
+                            {copy.guidedInquiry.assurancePoints.map((point: string) => (
                                 <div
                                     key={point}
                                     className="rounded-[1.15rem] border px-4 py-3 text-sm leading-6 text-muted-token"

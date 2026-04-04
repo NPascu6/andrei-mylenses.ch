@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {Link} from 'react-router-dom';
+import ExpandableImage from '../components/common/ExpandableImage';
 import GuidedInquiryPanel from '../components/common/GuidedInquiryPanel';
 import ArtworkTile from '../components/site/ArtworkTile';
 import PageShell from '../components/site/PageShell';
@@ -31,7 +32,7 @@ const PrintsPage = () => {
                         {copy.printsPage.heroDescription}
                     </p>
                     <div className="mt-6 grid gap-3 md:grid-cols-2">
-                        {copy.printsPage.trustSignals.map((signal) => (
+                        {copy.printsPage.trustSignals.map((signal: {label: string; value: string}) => (
                             <div key={signal.label} className="surface-panel-soft rounded-[1.3rem] p-4">
                                 <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">{signal.label}</p>
                                 <p className="mt-2 text-appText">{signal.value}</p>
@@ -56,19 +57,26 @@ const PrintsPage = () => {
 
                 {canvasHero ? (
                     <div className="overflow-hidden rounded-[2rem]" style={{border: '1px solid var(--color-line)'}}>
-                        <img
+                        <ExpandableImage
                             loading="lazy"
                             src={canvasHero.src}
+                            modalSrc={canvasHero.fullSrc || canvasHero.src}
                             alt={copy.printsPage.heroTitle}
-                            className="h-full min-h-[28rem] w-full object-cover"
-                            style={{objectPosition: 'center 56%'}}
+                            containerClassName="h-full"
+                            imgClassName="h-full min-h-[28rem] w-full object-cover"
+                            imgStyle={{objectPosition: 'center 56%'}}
+                            orderDetails={{
+                                title: copy.printsPage.heroTitle,
+                                category: 'Canvas',
+                                notes: copy.printsPage.heroDescription,
+                            }}
                         />
                     </div>
                 ) : null}
             </section>
 
             <section id="print-journey" className="scroll-mt-24 grid gap-4 md:scroll-mt-28 md:grid-cols-3">
-                {copy.printsPage.journey.map((step) => (
+                {copy.printsPage.journey.map((step: {step: string; title: string; description: string}) => (
                     <div key={step.step} className="surface-panel rounded-[1.8rem] p-5 md:p-6">
                         <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">{step.step}</p>
                         <h2 className="mt-3 font-display text-3xl text-appText">{step.title}</h2>

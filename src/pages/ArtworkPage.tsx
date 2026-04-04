@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {Link, Navigate, useParams} from 'react-router-dom';
+import ExpandableImage from '../components/common/ExpandableImage';
 import GuidedInquiryPanel from '../components/common/GuidedInquiryPanel';
 import ArtworkTile from '../components/site/ArtworkTile';
 import PageShell from '../components/site/PageShell';
@@ -80,18 +81,25 @@ const ArtworkPage = () => {
             <section id="artwork-top" className="scroll-mt-24 grid gap-4 xl:grid-cols-[minmax(0,1.08fr)_24rem] md:scroll-mt-28">
                 <div className="grid gap-4">
                     <div className="surface-panel overflow-hidden rounded-[2rem] p-3 md:p-4">
-                        <div className="overflow-hidden rounded-[1.5rem]">
-                            <img
-                                loading="eager"
-                                decoding="async"
-                                src={photo.mediumSrc}
-                                srcSet={photo.srcSet}
-                                sizes="(min-width: 1280px) 58vw, 100vw"
-                                alt={localizedPhoto.title}
-                                className="h-full min-h-[26rem] w-full object-cover"
-                                style={{objectPosition: getPhotoObjectPosition(photo)}}
-                            />
-                        </div>
+                        <ExpandableImage
+                            containerClassName="overflow-hidden rounded-[1.5rem]"
+                            loading="eager"
+                            decoding="async"
+                            src={photo.mediumSrc}
+                            modalSrc={photo.fullSrc}
+                            srcSet={photo.srcSet}
+                            sizes="(min-width: 1280px) 58vw, 100vw"
+                            alt={localizedPhoto.title}
+                            imgClassName="h-full min-h-[26rem] w-full object-cover"
+                            imgStyle={{objectPosition: getPhotoObjectPosition(photo)}}
+                            orderDetails={{
+                                title: localizedPhoto.title,
+                                category: localizedPhoto.category,
+                                location: localizedPhoto.location,
+                                notes: localizedPhoto.description,
+                                permalink: photo.permalink,
+                            }}
+                        />
                     </div>
 
                     <div className="grid gap-4 md:grid-cols-3">
@@ -214,7 +222,7 @@ const ArtworkPage = () => {
                             {copy.artworkPage.labels.privateInquiryNotes}
                         </p>
                         <div className="mt-4 grid gap-3">
-                            {copy.artworkPage.privateInquiryNotes.map((note) => (
+                            {copy.artworkPage.privateInquiryNotes.map((note: string) => (
                                 <div
                                     key={note}
                                     className="rounded-[1.15rem] border px-4 py-3 text-sm leading-6 text-muted-token"

@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
 import {Link} from 'react-router-dom';
 import artistImage from '../assets/portrait.jpg';
+import ExpandableImage from '../components/common/ExpandableImage';
 import ArtworkTile from '../components/site/ArtworkTile';
 import PageShell from '../components/site/PageShell';
 import SectionHeading from '../components/site/SectionHeading';
@@ -199,7 +200,7 @@ const MainPage = () => {
                         {copy.mainPage.printExperience.description}
                     </p>
                     <div className="mt-6 grid gap-3 md:grid-cols-3">
-                        {copy.mainPage.printExperience.cards.map((card) => (
+                        {copy.mainPage.printExperience.cards.map((card: {label: string; value: string}) => (
                             <div
                                 key={card.label}
                                 className="rounded-[1.25rem] border p-4"
@@ -224,12 +225,20 @@ const MainPage = () => {
 
                 {canvasHero ? (
                     <div className="overflow-hidden rounded-[2rem]" style={{border: '1px solid var(--color-line)'}}>
-                        <img
+                        <ExpandableImage
                             loading="lazy"
                             src={canvasHero.src}
+                            modalSrc={canvasHero.fullSrc || canvasHero.src}
                             alt={copy.mainPage.printExperience.title}
-                            className="h-full min-h-[26rem] w-full object-cover"
-                            style={{objectPosition: 'center 58%'}}
+                            containerClassName="h-full"
+                            imgClassName="h-full min-h-[26rem] w-full object-cover"
+                            imgStyle={{objectPosition: 'center 58%'}}
+                            orderDetails={{
+                                title: copy.mainPage.printExperience.title,
+                                category: 'Canvas',
+                                location: artistName,
+                                notes: copy.mainPage.printExperience.description,
+                            }}
                         />
                     </div>
                 ) : null}
@@ -247,12 +256,14 @@ const MainPage = () => {
                         {copy.mainPage.artistStory.description}
                     </p>
                     <div className="mt-6 flex items-center gap-4">
-                        <img
-                            loading="lazy"
+                        <ExpandableImage
                             src={artistImage}
                             alt={artistName}
-                            className="h-20 w-20 rounded-full object-cover"
-                            style={{border: '1px solid var(--color-line)'}}
+                            containerClassName="h-20 w-20 overflow-hidden rounded-full"
+                            containerStyle={{border: '1px solid var(--color-line)'}}
+                            imgClassName="h-20 w-20 rounded-full object-cover"
+                            buttonClassName="right-0 top-0 h-7 w-7 md:right-0 md:top-0"
+                            orderDetails={undefined}
                         />
                         <div>
                             <p className="text-appText">{artistName}</p>
