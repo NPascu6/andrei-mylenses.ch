@@ -1,7 +1,9 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
+import {useBodyScrollLock} from './useBodyScrollLock';
 
 function useFullScreenToggle(initialState = false) {
     const [isFullScreen, setFullScreen] = useState(initialState);
+    useBodyScrollLock(isFullScreen);
 
     const toggleFullScreen = () => {
         setFullScreen((current) => !current);
@@ -14,19 +16,6 @@ function useFullScreenToggle(initialState = false) {
     const closeFullScreen = () => {
         setFullScreen(false);
     };
-
-    useEffect(() => {
-        if (isFullScreen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
-
-        return () => {
-            document.body.style.overflow = 'auto'; // Reset body overflow on unmount
-        };
-    }, [isFullScreen]);
-
 
     return {isFullScreen, toggleFullScreen, openFullScreen, closeFullScreen};
 }

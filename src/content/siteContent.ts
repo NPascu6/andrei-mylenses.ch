@@ -3,6 +3,11 @@ import inquiryGuide from './site/inquiryGuide.json';
 import curation from './site/curation.json';
 import collectorExperience from './site/collectorExperience.json';
 import consultationExperience from './site/consultationExperience.json';
+import {
+    normalizeJourneySteps,
+    normalizeStringList,
+    normalizeTitleList,
+} from '../utils/contentNormalization';
 
 export interface PortfolioExperienceContent {
     eyebrow: string;
@@ -55,71 +60,6 @@ export interface ConsultationExperienceContent {
     assuranceTitle: string;
     assurancePoints: string[];
 }
-
-const normalizeTitleList = (value: unknown): string[] => {
-    if (!Array.isArray(value)) {
-        return [];
-    }
-
-    return value
-        .map((entry) => {
-            if (typeof entry === 'string') {
-                return entry;
-            }
-
-            if (entry && typeof entry === 'object' && 'artworkTitle' in entry) {
-                return String((entry as {artworkTitle?: string}).artworkTitle || '');
-            }
-
-            return '';
-        })
-        .map((entry) => entry.trim())
-        .filter(Boolean);
-};
-
-const normalizeStringList = (value: unknown): string[] => {
-    if (!Array.isArray(value)) {
-        return [];
-    }
-
-    return value
-        .map((entry) => {
-            if (typeof entry === 'string') {
-                return entry;
-            }
-
-            if (entry && typeof entry === 'object' && 'point' in entry) {
-                return String((entry as {point?: string}).point || '');
-            }
-
-            return String(entry || '');
-        })
-        .map((entry) => entry.trim())
-        .filter(Boolean);
-};
-
-const normalizeJourneySteps = (value: unknown): CollectorJourneyStep[] => {
-    if (!Array.isArray(value)) {
-        return [];
-    }
-
-    return value
-        .map((entry) => {
-            if (!entry || typeof entry !== 'object') {
-                return null;
-            }
-
-            const title = String((entry as {title?: string}).title || '').trim();
-            const description = String((entry as {description?: string}).description || '').trim();
-
-            if (!title || !description) {
-                return null;
-            }
-
-            return {title, description};
-        })
-        .filter((entry): entry is CollectorJourneyStep => Boolean(entry));
-};
 
 export const portfolioExperienceContent: PortfolioExperienceContent = {
     eyebrow: portfolioExperience.eyebrow || 'Collector curation',
@@ -182,8 +122,8 @@ export const collectorExperienceContent: CollectorExperienceContent = {
         collectorExperience.journeyDescription ||
         'The site follows a more professional rhythm: discover a focused selection, understand the print fit, then browse the wider archive.',
     journeySteps:
-        normalizeJourneySteps(collectorExperience.journeySteps).length > 0
-            ? normalizeJourneySteps(collectorExperience.journeySteps)
+        normalizeJourneySteps<CollectorJourneyStep>(collectorExperience.journeySteps).length > 0
+            ? normalizeJourneySteps<CollectorJourneyStep>(collectorExperience.journeySteps)
             : [
                 {
                     title: 'Start with a shortlist',

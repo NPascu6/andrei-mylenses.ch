@@ -1,12 +1,9 @@
 import React from "react";
 import {Link} from 'react-router-dom';
-import {
-    contactEmailHref,
-    instagramUrl,
-    siteTitle,
-    whatsappHref,
-} from "../../config/site";
+import {siteTitle} from "../../config/site";
 import {useI18n} from '../../i18n/I18nProvider';
+import {surfaceStyle} from '../../styles/surfaces';
+import {contactActions} from '../../utils/contactActions';
 
 const BottomBar = () => {
     const {copy} = useI18n();
@@ -14,7 +11,7 @@ const BottomBar = () => {
     return (
         <footer id="contact" className="relative mt-2 scroll-mt-24 px-4 pb-10 pt-0 md:scroll-mt-28 md:px-6">
             <div className="mx-auto max-w-7xl">
-                <div className="surface-panel rounded-[2rem] px-6 py-7 md:px-8">
+                <div className="surface-panel rounded-4xl px-6 py-7 md:px-8">
                     <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
                         <div className="space-y-4">
                             <p className="eyebrow-text text-sm uppercase tracking-[0.32em]">{copy.bottomBar.eyebrow}</p>
@@ -38,10 +35,10 @@ const BottomBar = () => {
                                 <p className="mt-2 text-appText">{copy.bottomBar.nextStepDescription}</p>
                             </div>
                             <div className="grid gap-3 md:grid-cols-2">
-                                <div className="rounded-[1.2rem] border px-4 py-4 text-sm leading-6 text-muted-token" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
+                                <div className="rounded-[1.2rem] border px-4 py-4 text-sm leading-6 text-muted-token" style={surfaceStyle}>
                                     {copy.bottomBar.supportCards[0]}
                                 </div>
-                                <div className="rounded-[1.2rem] border px-4 py-4 text-sm leading-6 text-muted-token" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
+                                <div className="rounded-[1.2rem] border px-4 py-4 text-sm leading-6 text-muted-token" style={surfaceStyle}>
                                     {copy.bottomBar.supportCards[1]}
                                 </div>
                             </div>
@@ -60,13 +57,13 @@ const BottomBar = () => {
                                 </Link>
                             </div>
                             <div className="flex flex-wrap gap-3">
-                                <a href={contactEmailHref} className="theme-chip rounded-full px-4 py-3 text-sm uppercase tracking-[0.18em]">
+                                <a href={contactActions.email} className="theme-chip rounded-full px-4 py-3 text-sm uppercase tracking-[0.18em]">
                                     {copy.bottomBar.email}
                                 </a>
-                                <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="theme-chip rounded-full px-4 py-3 text-sm uppercase tracking-[0.18em]">
+                                <a href={contactActions.whatsapp} target="_blank" rel="noopener noreferrer" className="theme-chip rounded-full px-4 py-3 text-sm uppercase tracking-[0.18em]">
                                     {copy.bottomBar.whatsapp}
                                 </a>
-                                <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="theme-chip rounded-full px-4 py-3 text-sm uppercase tracking-[0.18em]">
+                                <a href={contactActions.instagram} target="_blank" rel="noopener noreferrer" className="theme-chip rounded-full px-4 py-3 text-sm uppercase tracking-[0.18em]">
                                     {copy.bottomBar.instagram}
                                 </a>
                             </div>

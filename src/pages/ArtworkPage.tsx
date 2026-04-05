@@ -5,93 +5,60 @@ import GuidedInquiryPanel from '../components/common/GuidedInquiryPanel';
 import ArtworkTile from '../components/site/ArtworkTile';
 import PageShell from '../components/site/PageShell';
 import SectionHeading from '../components/site/SectionHeading';
-import {
-    findPortfolioPhotoBySlug,
-    getPhotoObjectPosition,
-    getRelatedPortfolioPhotos,
-} from '../content/portfolioLibrary';
-import {instagramUrl} from '../config/site';
 import {usePageTitle} from '../hooks/usePageTitle';
 import {useI18n} from '../i18n/I18nProvider';
-import {localizePortfolioPhoto} from '../i18n/portfolio';
-import {
-    buildArtworkSizeGuidance,
-    formatTakenAt,
-    getPresentationGuidance,
-} from '../utils/artworkDetails';
-import {buildGuidedInquiryHref} from '../utils/inquiry';
-import {getPrintRecommendation} from '../utils/printRecommendations';
+import {surfaceStyle} from '../styles/surfaces';
+import {contactActions} from '../utils/contactActions';
+import {getArtworkPageViewModel} from '../utils/artworkPage';
 
 const ArtworkPage = () => {
     const {slug} = useParams();
     const {copy, locale} = useI18n();
-    const photo = findPortfolioPhotoBySlug(slug);
-    const localizedPhoto = useMemo(
-        () => (photo ? localizePortfolioPhoto(photo, locale) : null),
-        [locale, photo]
+    const viewModel = useMemo(
+        () => getArtworkPageViewModel({slug, locale, copy}),
+        [copy, locale, slug],
     );
 
-    const recommendation = useMemo(
-        () =>
-            photo
-                ? getPrintRecommendation({
-                    title: photo.title,
-                    category: photo.category,
-                    location: photo.location,
-                    locale,
-                })
-                : null,
-        [locale, photo]
-    );
+    usePageTitle(viewModel?.metaTitle);
 
-    const relatedPhotos = useMemo(
-        () => (photo ? getRelatedPortfolioPhotos(photo, 4).map((entry) => localizePortfolioPhoto(entry, locale)) : []),
-        [locale, photo]
-    );
-
-    usePageTitle(localizedPhoto ? `${localizedPhoto.title} | My Lenses` : undefined);
-
-    if (!photo || !localizedPhoto || !recommendation) {
+    if (!viewModel) {
         return <Navigate to="/collection" replace/>;
     }
 
-    const inquiryHref = buildGuidedInquiryHref(
-        {
-            inquiryType: copy.guidedInquiry.inquiryOptions.artworkAvailability.label,
-            artwork: localizedPhoto.title,
-            roomType: copy.guidedInquiry.roomOptions.stillDeciding,
-            budgetRange: localizedPhoto.priceFrom || copy.guidedInquiry.budget.openToGuidance,
-            timeline: copy.guidedInquiry.timeline.nextMonth,
-            location: localizedPhoto.location,
-            notes: localizedPhoto.description,
-        },
-        copy.inquiryEmail
-    );
-
-    const takenAtLabel = formatTakenAt(photo.takenAt, locale);
-    const availabilityLabel = localizedPhoto.availability || copy.artworkPage.availabilityFallback;
-    const editionLabel = localizedPhoto.edition || copy.artworkPage.editionFallback;
-    const priceLabel = localizedPhoto.priceFrom || copy.artworkPage.priceFallback;
-    const presentationGuidance = getPresentationGuidance(photo.category, photo.orientation, locale);
-    const sizeGuidance = buildArtworkSizeGuidance(photo.sizes, recommendation.recommendedSize, priceLabel, locale);
-    const collectorMood = localizedPhoto.roomMood || recommendation.idealSetting;
+    const {
+        photo,
+        localizedPhoto,
+        recommendation,
+        relatedPhotos,
+        inquiryHref,
+        takenAtLabel,
+        availabilityLabel,
+        editionLabel,
+        priceLabel,
+        presentationGuidance,
+        sizeGuidance,
+        collectorMood,
+        imageObjectPosition,
+    } = viewModel;
 
     return (
         <PageShell className="gap-4 pt-4">
             <section id="artwork-top" className="scroll-mt-24 grid gap-4 xl:grid-cols-[minmax(0,1.08fr)_24rem] md:scroll-mt-28">
                 <div className="grid gap-4">
-                    <div className="surface-panel overflow-hidden rounded-[2rem] p-3 md:p-4">
+                    <div className="surface-panel overflow-hidden rounded-4xl p-3 md:p-4">
                         <ExpandableImage
-                            containerClassName="overflow-hidden rounded-[1.5rem]"
+                            containerClassName="overflow-hidden rounded-3xl"
                             loading="eager"
                             decoding="async"
+                            presentation="balanced"
                             src={photo.mediumSrc}
                             modalSrc={photo.fullSrc}
                             srcSet={photo.srcSet}
                             sizes="(min-width: 1280px) 58vw, 100vw"
                             alt={localizedPhoto.title}
-                            imgClassName="h-full min-h-[26rem] w-full object-cover"
-                            imgStyle={{objectPosition: getPhotoObjectPosition(photo)}}
+                            imgClassName="min-h-[26rem] w-full object-contain p-3 md:p-4"
+                            imgStyle={{objectPosition: imageObjectPosition}}
+                            backgroundStyle={{backgroundPosition: imageObjectPosition}}
                             orderDetails={{
                                 title: localizedPhoto.title,
                                 category: localizedPhoto.category,
@@ -148,7 +115,7 @@ const ArtworkPage = () => {
                 </div>
 
                 <aside className="space-y-4 xl:sticky xl:top-28 xl:h-fit">
-                    <div className="surface-panel rounded-[2rem] p-6 md:p-8">
+                    <div className="surface-panel rounded-4xl p-6 md:p-8">
                         <p className="eyebrow-text text-[11px] uppercase tracking-[0.3em]">
                             {localizedPhoto.category} {localizedPhoto.location ? ` / ${localizedPhoto.location}` : ''}
                         </p>
@@ -206,7 +173,7 @@ const ArtworkPage = () => {
                                 </a>
                             ) : (
                                 <a
-                                    href={instagramUrl}
+                                    href={contactActions.instagram}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="theme-action-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"
@@ -226,7 +193,7 @@ const ArtworkPage = () => {
                                 <div
                                     key={note}
                                     className="rounded-[1.15rem] border px-4 py-3 text-sm leading-6 text-muted-token"
-                                    style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}
+                                    style={surfaceStyle}
                                 >
                                     {note}
                                 </div>
@@ -257,7 +224,7 @@ const ArtworkPage = () => {
                                 key={relatedPhoto.slug}
                                 photo={relatedPhoto}
                                 showDescription={false}
-                                imageClassName="h-[18rem] md:h-[20rem]"
+                                imageClassName="h-72 md:h-80"
                             />
                         ))}
                     </div>

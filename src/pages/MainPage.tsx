@@ -6,51 +6,34 @@ import ArtworkTile from '../components/site/ArtworkTile';
 import PageShell from '../components/site/PageShell';
 import SectionHeading from '../components/site/SectionHeading';
 import {artistName} from '../config/site';
-import {
-    canvasPreviewImages,
-    curatedCollectionViews,
-    featuredPortfolioPhotos,
-    heroPortfolioPhoto,
-    portfolioStats,
-    printReadyPortfolioPhotos,
-    recentPortfolioPhotos,
-} from '../content/portfolioLibrary';
 import {usePageTitle} from '../hooks/usePageTitle';
 import {useI18n} from '../i18n/I18nProvider';
-import {
-    localizePortfolioPhoto,
-    translateCollectionDescription,
-    translateCollectionLabel,
-} from '../i18n/portfolio';
+import {borderedSurfaceStyle, surfaceSoftStyle, surfaceStyle} from '../styles/surfaces';
+import {getMainPageViewModel} from '../utils/mainPage';
+import {resolvePageTitle} from '../utils/pageMetadata';
 
 const MainPage = () => {
     const {copy, locale} = useI18n();
-    const heroPhoto = useMemo(
-        () => (heroPortfolioPhoto ? localizePortfolioPhoto(heroPortfolioPhoto, locale) : null),
-        [locale]
+    const {
+        heroPhoto,
+        collectorPicks,
+        recentPicks,
+        printHighlights,
+        canvasHero,
+        collectionStarts,
+        statsCards,
+    } = useMemo(
+        () => getMainPageViewModel(locale, copy.mainPage),
+        [copy.mainPage, locale],
     );
-    const collectorPicks = useMemo(
-        () => featuredPortfolioPhotos.slice(0, 3).map((photo) => localizePortfolioPhoto(photo, locale)),
-        [locale]
-    );
-    const recentPicks = useMemo(
-        () => recentPortfolioPhotos.slice(0, 3).map((photo) => localizePortfolioPhoto(photo, locale)),
-        [locale]
-    );
-    const printHighlights = useMemo(
-        () => printReadyPortfolioPhotos.slice(0, 3).map((photo) => localizePortfolioPhoto(photo, locale)),
-        [locale]
-    );
-    const collectionStarts = curatedCollectionViews.slice(0, 6);
-    const canvasHero = canvasPreviewImages[0];
 
-    usePageTitle(copy.mainPage.pageTitle);
+    usePageTitle(resolvePageTitle(copy.mainPage.pageTitle));
 
     return (
         <PageShell>
             {heroPhoto ? (
                 <section id="top" className="surface-panel relative scroll-mt-24 overflow-hidden rounded-[2.25rem] p-6 md:scroll-mt-28 md:p-8 lg:p-10">
-                    <div className="absolute inset-x-0 top-0 h-48 bg-[radial-gradient(circle_at_top_left,_rgba(var(--accent-color),0.24),_transparent_62%)]"/>
+                    <div className="absolute inset-x-0 top-0 h-48 bg-[radial-gradient(circle_at_top_left,rgba(var(--accent-color),0.24),transparent_62%)]"/>
                     <div className="relative grid gap-7 lg:grid-cols-[0.86fr_1.14fr] lg:items-start lg:gap-8">
                         <div className="space-y-6">
                             <p className="eyebrow-text text-[11px] uppercase tracking-[0.34em]">
@@ -77,33 +60,26 @@ const MainPage = () => {
                                 </Link>
                             </div>
                             <div className="grid gap-3 sm:grid-cols-2">
-                                <div className="surface-panel-soft rounded-[1.35rem] p-4">
-                                    <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">
-                                        {copy.mainPage.stats.collectionLabel}
-                                    </p>
-                                    <p className="mt-2 font-display text-3xl text-appText">{portfolioStats.total}+</p>
-                                    <p className="mt-2 text-sm leading-6 text-muted-token">
-                                        {copy.mainPage.stats.collectionDescription}
-                                    </p>
-                                </div>
-                                <div className="surface-panel-soft rounded-[1.35rem] p-4">
-                                    <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">
-                                        {copy.mainPage.stats.printReadyLabel}
-                                    </p>
-                                    <p className="mt-2 font-display text-3xl text-appText">{portfolioStats.printReady}+</p>
-                                    <p className="mt-2 text-sm leading-6 text-muted-token">
-                                        {copy.mainPage.stats.printReadyDescription}
-                                    </p>
-                                </div>
+                                {statsCards.map((card) => (
+                                    <div key={card.label} className="surface-panel-soft rounded-[1.35rem] p-4">
+                                        <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">
+                                            {card.label}
+                                        </p>
+                                        <p className="mt-2 font-display text-3xl text-appText">{card.value}</p>
+                                        <p className="mt-2 text-sm leading-6 text-muted-token">
+                                            {card.description}
+                                        </p>
+                                    </div>
+                                ))}
                             </div>
                             <div className="flex flex-wrap gap-2">
                                 {collectionStarts.map((view) => (
                                     <Link
                                         key={view.slug}
-                                        to={`/collection?filter=${encodeURIComponent(view.label)}`}
+                                        to={view.href}
                                         className="theme-chip rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.18em]"
                                     >
-                                        {translateCollectionLabel(view.label, locale)}
+                                        {view.translatedLabel}
                                     </Link>
                                 ))}
                             </div>
@@ -113,8 +89,7 @@ const MainPage = () => {
                             photo={heroPhoto}
                             priority
                             badge={copy.mainPage.featuredBadge}
-                            className="min-h-[34rem]"
-                            imageClassName="h-[34rem] md:h-[46rem]"
+                            imageClassName="h-[32rem] md:h-[40rem]"
                             responsiveSizes="(min-width: 1280px) 52vw, 100vw"
                         />
                     </div>
@@ -141,8 +116,7 @@ const MainPage = () => {
                         <ArtworkTile
                             photo={collectorPicks[0]}
                             badge={copy.mainPage.collectorSelection.collectorFavoriteBadge}
-                            className="min-h-[30rem]"
-                            imageClassName="h-[30rem] md:h-[38rem]"
+                            imageClassName="h-[28rem] md:h-[34rem]"
                             responsiveSizes="(min-width: 1280px) 44vw, 100vw"
                         />
                     ) : null}
@@ -156,18 +130,18 @@ const MainPage = () => {
                                 {collectionStarts.slice(0, 4).map((view) => (
                                     <Link
                                         key={view.slug}
-                                        to={`/collection?filter=${encodeURIComponent(view.label)}`}
+                                        to={view.href}
                                         className="rounded-[1.2rem] border px-4 py-4 transition-all duration-300 hover:-translate-y-0.5"
-                                        style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}
+                                        style={surfaceStyle}
                                     >
                                         <p className="text-[10px] uppercase tracking-[0.22em] text-nav-token">
                                             {view.photos.length} {copy.collectionPage.worksLabel}
                                         </p>
                                         <p className="mt-2 text-appText">
-                                            {translateCollectionLabel(view.label, locale)}
+                                            {view.translatedLabel}
                                         </p>
                                         <p className="mt-2 text-sm leading-6 text-muted-token">
-                                            {translateCollectionDescription(view.label, view.description, locale)}
+                                            {view.translatedDescription}
                                         </p>
                                     </Link>
                                 ))}
@@ -180,7 +154,7 @@ const MainPage = () => {
                                     key={photo.slug}
                                     photo={photo}
                                     showDescription={false}
-                                    imageClassName="h-[17rem] md:h-[18rem]"
+                                    imageClassName="h-[17rem] md:h-72"
                                 />
                             ))}
                         </div>
@@ -189,7 +163,7 @@ const MainPage = () => {
             </section>
 
             <section id="print-experience" className="scroll-mt-24 grid gap-4 lg:grid-cols-[0.95fr_1.05fr] md:scroll-mt-28">
-                <div className="surface-panel rounded-[2rem] p-6 md:p-8">
+                <div className="surface-panel rounded-4xl p-6 md:p-8">
                     <p className="eyebrow-text text-[11px] uppercase tracking-[0.3em]">
                         {copy.mainPage.printExperience.eyebrow}
                     </p>
@@ -204,7 +178,7 @@ const MainPage = () => {
                             <div
                                 key={card.label}
                                 className="rounded-[1.25rem] border p-4"
-                                style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface-soft)'}}
+                                style={surfaceSoftStyle}
                             >
                                 <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">
                                     {card.label}
@@ -224,15 +198,17 @@ const MainPage = () => {
                 </div>
 
                 {canvasHero ? (
-                    <div className="overflow-hidden rounded-[2rem]" style={{border: '1px solid var(--color-line)'}}>
+                    <div className="overflow-hidden rounded-4xl" style={borderedSurfaceStyle}>
                         <ExpandableImage
                             loading="lazy"
+                            presentation="balanced"
                             src={canvasHero.src}
                             modalSrc={canvasHero.fullSrc || canvasHero.src}
                             alt={copy.mainPage.printExperience.title}
-                            containerClassName="h-full"
-                            imgClassName="h-full min-h-[26rem] w-full object-cover"
+                            containerClassName="h-full min-h-[26rem]"
+                            imgClassName="h-full w-full object-contain p-4 md:p-5"
                             imgStyle={{objectPosition: 'center 58%'}}
+                            backgroundStyle={{backgroundPosition: 'center 58%'}}
                             orderDetails={{
                                 title: copy.mainPage.printExperience.title,
                                 category: 'Canvas',
@@ -245,7 +221,7 @@ const MainPage = () => {
             </section>
 
             <section id="artist-story" className="scroll-mt-24 grid gap-4 lg:grid-cols-[0.72fr_1.28fr] md:scroll-mt-28">
-                <div className="surface-panel rounded-[2rem] p-6 md:p-8">
+                <div className="surface-panel rounded-4xl p-6 md:p-8">
                     <p className="eyebrow-text text-[11px] uppercase tracking-[0.3em]">
                         {copy.mainPage.artistStory.eyebrow}
                     </p>
@@ -260,7 +236,7 @@ const MainPage = () => {
                             src={artistImage}
                             alt={artistName}
                             containerClassName="h-20 w-20 overflow-hidden rounded-full"
-                            containerStyle={{border: '1px solid var(--color-line)'}}
+                            containerStyle={borderedSurfaceStyle}
                             imgClassName="h-20 w-20 rounded-full object-cover"
                             buttonClassName="right-0 top-0 h-7 w-7 md:right-0 md:top-0"
                             orderDetails={undefined}

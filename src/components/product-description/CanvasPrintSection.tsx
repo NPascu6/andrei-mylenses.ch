@@ -4,6 +4,8 @@ import ExpandableImage from "../common/ExpandableImage";
 import {RootState} from "../../store/store";
 import GallerySection from "./GallerySection";
 import SelectedPhoto from "../main-page/SelectedPhoto";
+import {surfaceStyle} from "../../styles/surfaces";
+import {contactActions} from "../../utils/contactActions";
 import {scrollToSection} from "../../utils/scrollToSection";
 import {
     collectorExperienceContent,
@@ -129,7 +131,8 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                                             src={photo.src}
                                             modalSrc={photo.fullSrc || photo.src}
                                             alt={photo.title}
-                                            imgClassName="h-72 w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                                            containerClassName="h-72"
+                                            imgClassName="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                                             orderDetails={{
                                                 title: photo.title,
                                                 category: photo.category,
@@ -138,7 +141,7 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                                                 permalink: photo.permalink,
                                             }}
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"/>
+                                        <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent"/>
                                         <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/40 px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/85 backdrop-blur-sm">
                                             Featured print
                                         </div>
@@ -170,7 +173,7 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                                         <div
                                             key={point}
                                             className="rounded-[1.25rem] border px-4 py-4 text-sm leading-6 text-muted-token"
-                                            style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}
+                                            style={surfaceStyle}
                                         >
                                             <span className="text-appText">{point}</span>
                                         </div>
@@ -191,7 +194,7 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                                         <article
                                             key={step.title}
                                             className="rounded-[1.35rem] border p-4"
-                                            style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}
+                                            style={surfaceStyle}
                                         >
                                             <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Step {index + 1}</p>
                                             <h4 className="mt-2 font-display text-2xl text-appText">{step.title}</h4>
@@ -209,7 +212,7 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
 
             <section
                 id="prints"
-                className="surface-panel scroll-mt-24 grid gap-5 overflow-hidden rounded-[2rem] p-4 md:scroll-mt-28 lg:grid-cols-[0.95fr_1.05fr] lg:p-6"
+                className="surface-panel scroll-mt-24 grid gap-5 overflow-hidden rounded-4xl p-4 md:scroll-mt-28 lg:grid-cols-[0.95fr_1.05fr] lg:p-6"
             >
                 <button
                     type="button"
@@ -231,7 +234,7 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                                     notes: 'Interested in sizes, finish, and availability for this canvas preview.',
                                 }}
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent"/>
+                            <div className="absolute inset-0 bg-linear-to-t from-black via-black/35 to-transparent"/>
                         </>
                     )}
 
@@ -246,7 +249,7 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
 
                 <div className="grid gap-3">
                     <div className="grid gap-4 md:grid-cols-3">
-                        <article className="surface-panel-soft rounded-[1.5rem] p-4">
+                        <article className="surface-panel-soft rounded-3xl p-4">
                             <p className="text-nav-token text-xs uppercase tracking-[0.22em]">Format</p>
                             <h4 className="mt-3 font-display text-2xl text-appText">Giclee canvas</h4>
                             <p className="text-muted-token mt-3 text-sm leading-6">
@@ -254,7 +257,7 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                             </p>
                         </article>
 
-                        <article className="surface-panel-soft rounded-[1.5rem] p-4">
+                        <article className="surface-panel-soft rounded-3xl p-4">
                             <p className="text-nav-token text-xs uppercase tracking-[0.22em]">Presentation</p>
                             <h4 className="mt-3 font-display text-2xl text-appText">50x30 / 90x60</h4>
                             <p className="text-muted-token mt-3 text-sm leading-6">
@@ -262,7 +265,7 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                             </p>
                         </article>
 
-                        <article className="surface-panel-soft rounded-[1.5rem] p-4">
+                        <article className="surface-panel-soft rounded-3xl p-4">
                             <p className="text-nav-token text-xs uppercase tracking-[0.22em]">Collector Offer</p>
                             <h4 className="mt-3 font-display text-2xl text-appText">40 CHF+</h4>
                             <p className="text-muted-token mt-3 text-sm leading-6">
@@ -283,15 +286,15 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                         </div>
 
                         <div className="mt-6 grid gap-3 md:grid-cols-3">
-                            <div className="rounded-[1.35rem] border p-4" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
+                            <div className="rounded-[1.35rem] border p-4" style={surfaceStyle}>
                                 <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Archival quality</p>
                                 <p className="mt-2 text-sm leading-6 text-muted-token">Built to preserve color depth and subtle tonal transitions over time.</p>
                             </div>
-                            <div className="rounded-[1.35rem] border p-4" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
+                            <div className="rounded-[1.35rem] border p-4" style={surfaceStyle}>
                                 <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Room-aware selection</p>
                                 <p className="mt-2 text-sm leading-6 text-muted-token">Guidance based on mood, scale, and the kind of wall presence you want.</p>
                             </div>
-                            <div className="rounded-[1.35rem] border p-4" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
+                            <div className="rounded-[1.35rem] border p-4" style={surfaceStyle}>
                                 <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Direct artist inquiry</p>
                                 <p className="mt-2 text-sm leading-6 text-muted-token">A personal conversation rather than an impersonal checkout flow.</p>
                             </div>
@@ -306,7 +309,7 @@ const CanvasPrintSection: React.FC<CanvasPrintSectionProps> = ({loadedCanvasImag
                                 Request a print consultation
                             </button>
                             <a
-                                href="https://www.instagram.com/andrei_mylenses/"
+                                href={contactActions.instagram}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="theme-action-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm uppercase tracking-[0.2em]"

@@ -1,7 +1,8 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {Link} from 'react-router-dom';
 import Favicon32 from '../../assets/favicon-32x32.png';
 import {artistName, siteTitle} from '../../config/site';
+import {useDismissibleLayer} from '../../hooks/useDismissibleLayer';
 import {useI18n} from '../../i18n/I18nProvider';
 import {getThemePreset, themePresets, type ThemePresetId} from '../../utils/themePreferences';
 
@@ -13,6 +14,11 @@ interface TopBarProps {
 const lightThemePresets = themePresets.filter((preset) => preset.mode === 'light');
 const darkThemePresets = themePresets.filter((preset) => preset.mode === 'dark');
 
+const themePresetGroups = [
+    {mode: 'light', presets: lightThemePresets},
+    {mode: 'dark', presets: darkThemePresets},
+] as const;
+
 const TopBar = ({
     themePreset,
     onThemePresetChange,
@@ -21,32 +27,18 @@ const TopBar = ({
     const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
     const preferencesPanelRef = useRef<HTMLDivElement | null>(null);
     const activePreset = getThemePreset(themePreset);
+    const closePreferences = useCallback(() => {
+        setIsPreferencesOpen(false);
+    }, []);
+    const togglePreferences = useCallback(() => {
+        setIsPreferencesOpen((open) => !open);
+    }, []);
+    useDismissibleLayer(preferencesPanelRef, isPreferencesOpen, closePreferences);
 
-    useEffect(() => {
-        if (!isPreferencesOpen) {
-            return;
-        }
-
-        const handlePointerDown = (event: MouseEvent) => {
-            if (preferencesPanelRef.current && !preferencesPanelRef.current.contains(event.target as Node)) {
-                setIsPreferencesOpen(false);
-            }
-        };
-
-        const handleEscape = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                setIsPreferencesOpen(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handlePointerDown);
-        window.addEventListener('keydown', handleEscape);
-
-        return () => {
-            document.removeEventListener('mousedown', handlePointerDown);
-            window.removeEventListener('keydown', handleEscape);
-        };
-    }, [isPreferencesOpen]);
+    const preferencesBadges = useMemo(
+        () => [localeLabels[locale], activePreset.label],
+        [activePreset.label, locale, localeLabels],
+    );
 
     return (
         <header className="sticky top-0 z-50 border-b backdrop-blur-2xl" style={{borderColor: 'var(--color-line)', backgroundColor: 'color-mix(in srgb, var(--color-bg) 76%, transparent)'}}>
@@ -72,7 +64,7 @@ const TopBar = ({
                     <div ref={preferencesPanelRef} className="relative">
                         <button
                             type="button"
-                            onClick={() => setIsPreferencesOpen((open) => !open)}
+                            onClick={togglePreferences}
                             className={`inline-flex items-center gap-2.5 rounded-full border px-3 py-2 text-left transition-all duration-300 md:px-4 md:py-2.5 ${isPreferencesOpen ? 'theme-chip-active' : 'theme-chip'}`}
                             aria-label={copy.topBar.preferencesLabel}
                             aria-expanded={isPreferencesOpen}
@@ -86,7 +78,7 @@ const TopBar = ({
                                     {copy.topBar.preferencesLabel}
                                 </span>
                                 <span className="block text-[11px] uppercase tracking-[0.18em] text-appText md:text-[12px]">
-                                    {localeLabels[locale]} / {activePreset.label}
+                                    {preferencesBadges.join(' / ')}
                                 </span>
                             </span>
                         </button>
@@ -103,12 +95,15 @@ const TopBar = ({
                                         </p>
                                     </div>
                                     <div className="flex flex-wrap justify-end gap-2">
-                                        <div className="rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-appText" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface-soft)'}}>
-                                            {localeLabels[locale]}
-                                        </div>
-                                        <div className="rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-appText" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface-soft)'}}>
-                                            {activePreset.label}
-                                        </div>
+                                        {preferencesBadges.map((badge) => (
+                                            <div
+                                                key={badge}
+                                                className="rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-appText"
+                                                style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface-soft)'}}
+                                            >
+                                                {badge}
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
 
@@ -134,13 +129,10 @@ const TopBar = ({
                                     </div>
 
                                     <div className="grid gap-4 md:grid-cols-2">
-                                        {[
-                                            {label: copy.topBar.lightThemesLabel, presets: lightThemePresets},
-                                            {label: copy.topBar.darkThemesLabel, presets: darkThemePresets},
-                                        ].map((group) => (
-                                            <div key={group.label} className="surface-panel-soft rounded-[1.25rem] p-3">
+                                        {themePresetGroups.map((group) => (
+                                            <div key={group.mode} className="surface-panel-soft rounded-[1.25rem] p-3">
                                                 <p className="text-nav-token text-[10px] uppercase tracking-[0.24em]">
-                                                    {group.label}
+                                                    {group.mode === 'light' ? copy.topBar.lightThemesLabel : copy.topBar.darkThemesLabel}
                                                 </p>
                                                 <div className="mt-3 grid gap-2">
                                                     {group.presets.map((preset) => {
@@ -152,9 +144,9 @@ const TopBar = ({
                                                                 type="button"
                                                                 onClick={() => {
                                                                     onThemePresetChange(preset.value);
-                                                                    setIsPreferencesOpen(false);
+                                                                    closePreferences();
                                                                 }}
-                                                                className={`rounded-[1rem] border px-4 py-3 text-left transition-all duration-300 ${isActive ? 'theme-chip-active' : 'theme-chip'}`}
+                                                                className={`rounded-2xl border px-4 py-3 text-left transition-all duration-300 ${isActive ? 'theme-chip-active' : 'theme-chip'}`}
                                                             >
                                                                 <span className="flex items-center justify-between gap-3">
                                                                     <span>

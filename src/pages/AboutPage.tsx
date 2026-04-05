@@ -9,35 +9,39 @@ import {artistName} from '../config/site';
 import {featuredPortfolioPhotos, recentPortfolioPhotos} from '../content/portfolioLibrary';
 import {usePageTitle} from '../hooks/usePageTitle';
 import {useI18n} from '../i18n/I18nProvider';
-import {localizePortfolioPhoto} from '../i18n/portfolio';
+import {localizePortfolioPhotos} from '../utils/localizedPortfolio';
+import {resolvePageTitle} from '../utils/pageMetadata';
 
 const AboutPage = () => {
     const {copy, locale} = useI18n();
     const aboutHighlights = useMemo(
-        () => [...featuredPortfolioPhotos.slice(0, 2), ...recentPortfolioPhotos.slice(0, 2)]
-            .slice(0, 4)
-            .map((photo) => localizePortfolioPhoto(photo, locale)),
+        () => localizePortfolioPhotos(
+            [...featuredPortfolioPhotos.slice(0, 2), ...recentPortfolioPhotos.slice(0, 2)].slice(0, 4),
+            locale,
+        ),
         [locale]
     );
 
-    usePageTitle(copy.aboutPage.pageTitle);
+    usePageTitle(resolvePageTitle(copy.aboutPage.pageTitle));
 
     return (
         <PageShell>
             <section id="about-intro" className="scroll-mt-24 grid gap-4 lg:grid-cols-[0.82fr_1.18fr] md:scroll-mt-28">
-                <div className="surface-panel overflow-hidden rounded-[2rem] p-3 md:p-4">
+                <div className="surface-panel overflow-hidden rounded-4xl p-3 md:p-4">
                     <ExpandableImage
                         loading="lazy"
+                        presentation="balanced"
                         src={portraitImage}
                         alt={artistName}
-                        containerClassName="overflow-hidden rounded-[1.5rem]"
-                        imgClassName="h-full min-h-[26rem] w-full rounded-[1.5rem] object-cover"
+                        containerClassName="min-h-[26rem] overflow-hidden rounded-3xl"
+                        imgClassName="h-full w-full rounded-3xl object-contain p-3 md:p-4"
                         imgStyle={{objectPosition: 'center 22%'}}
+                        backgroundStyle={{backgroundPosition: 'center 22%'}}
                         orderDetails={undefined}
                     />
                 </div>
 
-                <div className="surface-panel rounded-[2rem] p-6 md:p-8">
+                <div className="surface-panel rounded-4xl p-6 md:p-8">
                     <p className="eyebrow-text text-[11px] uppercase tracking-[0.3em]">{copy.aboutPage.eyebrow}</p>
                     <h1 className="mt-3 font-display text-4xl text-appText md:text-6xl">
                         {copy.aboutPage.title}

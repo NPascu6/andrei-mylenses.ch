@@ -1,5 +1,10 @@
-import React, {useEffect, useRef} from "react";
+import React, {useCallback} from "react";
+import {useBodyScrollLock} from "../../hooks/useBodyScrollLock";
+import {useOverlayKeyboardNavigation} from "../../hooks/useOverlayKeyboardNavigation";
+import {useSwipeNavigation} from "../../hooks/useSwipeNavigation";
 import {useI18n} from "../../i18n/I18nProvider";
+import ImageStage from "../common/ImageStage";
+import {buildMailtoHref, contactActions} from "../../utils/contactActions";
 import {scrollToSection} from "../../utils/scrollToSection";
 import {getPrintRecommendation} from "../../utils/printRecommendations";
 
@@ -28,82 +33,69 @@ interface SelectedPhotoProps {
 }
 
 const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) => {
-    const touchStartX = useRef<number | null>(null);
     const {locale} = useI18n();
     const selectedImage = images[index];
-
-    useEffect(() => {
-        const onKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                onClose();
+    const goPrev = useCallback(() => {
+        setIndex((currentIndex) => {
+            if (currentIndex === null) {
+                return 0;
             }
 
-            if (event.key === 'ArrowLeft') {
-                setIndex((index - 1 + images.length) % images.length);
+            return (currentIndex - 1 + images.length) % images.length;
+        });
+    }, [images.length, setIndex]);
+
+    const goNext = useCallback(() => {
+        setIndex((currentIndex) => {
+            if (currentIndex === null) {
+                return 0;
             }
 
-            if (event.key === 'ArrowRight') {
-                setIndex((index + 1) % images.length);
-            }
-        };
+            return (currentIndex + 1) % images.length;
+        });
+    }, [images.length, setIndex]);
 
-        document.body.style.overflow = 'hidden';
-        window.addEventListener('keydown', onKeyDown);
+    useBodyScrollLock(Boolean(selectedImage));
+    useOverlayKeyboardNavigation({
+        enabled: Boolean(selectedImage),
+        onClose,
+        onPrev: goPrev,
+        onNext: goNext,
+    });
 
-        return () => {
-            document.body.style.overflow = '';
-            window.removeEventListener('keydown', onKeyDown);
-        };
-    }, [images.length, index, onClose, setIndex]);
+    const {handleTouchStart, handleTouchEnd} = useSwipeNavigation({
+        onSwipeLeft: goNext,
+        onSwipeRight: goPrev,
+    });
 
     if (!selectedImage) {
         return null;
     }
 
-    const goPrev = () => setIndex((index - 1 + images.length) % images.length);
-    const goNext = () => setIndex((index + 1) % images.length);
     const recommendation = getPrintRecommendation({
         title: selectedImage.title,
         category: selectedImage.category,
         location: selectedImage.location,
         locale,
     });
-    const handleScrollToPrints = () => {
+    const handleScrollToPrints = useCallback(() => {
         onClose();
         window.setTimeout(() => scrollToSection('prints'), 20);
-    };
-
-    const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
-        touchStartX.current = event.touches[0].clientX;
-    };
-
-    const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
-        if (touchStartX.current === null) {
-            return;
-        }
-
-        const delta = event.changedTouches[0].clientX - touchStartX.current;
-        touchStartX.current = null;
-
-        if (delta > 40) {
-            goPrev();
-        } else if (delta < -40) {
-            goNext();
-        }
-    };
+    }, [onClose]);
 
     return (
         <div
-            className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-black/88 px-4 py-4 backdrop-blur-md md:px-5 md:py-6 lg:items-center"
+            className="fixed inset-0 z-80 flex items-start justify-center overflow-y-auto bg-black/88 px-4 py-4 backdrop-blur-md md:px-5 md:py-6 lg:items-center"
             onClick={onClose}
         >
             <div
-                className="relative grid w-full max-w-7xl gap-4 overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b0f13] p-3 shadow-2xl shadow-black/60 max-lg:min-h-[min(100%,calc(100vh-2rem))] lg:h-[min(92vh,980px)] lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)] lg:p-5"
+                className="relative grid w-full max-w-7xl gap-4 overflow-hidden rounded-4xl border border-white/10 bg-[#0b0f13] p-3 shadow-2xl shadow-black/60 max-lg:min-h-[min(100%,calc(100vh-2rem))] lg:h-[min(92vh,980px)] lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)] lg:p-5"
                 onClick={(event) => event.stopPropagation()}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
             >
                 <button
+                    type="button"
                     onClick={onClose}
                     className="absolute right-3 top-3 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/40 text-white transition-colors hover:border-white/30 hover:bg-black/60"
                     aria-label="Close image"
@@ -111,15 +103,17 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                     <CloseIcon/>
                 </button>
 
-                <div className="relative flex min-h-[44vh] items-center justify-center overflow-hidden rounded-[1.5rem] bg-white/5 lg:min-h-0">
-                    <img
+                <div className="relative flex min-h-[44vh] items-center justify-center overflow-hidden rounded-3xl bg-white/5 lg:min-h-0">
+                    <ImageStage
                         loading="lazy"
                         src={selectedImage.fullSrc || selectedImage.src}
                         alt={selectedImage.title}
-                        className="max-h-[60vh] w-full rounded-[1.5rem] object-contain lg:h-full lg:max-h-[calc(92vh-3rem)]"
+                        presentation="balanced"
+                        imgClassName="max-h-[60vh] w-full rounded-3xl object-contain p-2 lg:h-full lg:max-h-[calc(92vh-3rem)] lg:p-4"
                     />
 
                     <button
+                        type="button"
                         onClick={goPrev}
                         className="absolute left-3 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/45 text-white transition-colors hover:border-white/30 hover:bg-black/65"
                         aria-label="Previous image"
@@ -128,6 +122,7 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                     </button>
 
                     <button
+                        type="button"
                         onClick={goNext}
                         className="absolute right-3 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-black/45 text-white transition-colors hover:border-white/30 hover:bg-black/65"
                         aria-label="Next image"
@@ -136,7 +131,7 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                     </button>
                 </div>
 
-                <aside className="flex min-h-0 flex-col overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/5 p-5 text-white md:p-6 lg:h-full">
+                <aside className="flex min-h-0 flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 text-white md:p-6 lg:h-full">
                     <div className="min-h-0 flex-1 space-y-5 overflow-y-auto pr-1 pb-1 lg:pr-2">
                         <div>
                             <p className="text-xs uppercase tracking-[0.3em] text-white/72">
@@ -195,7 +190,7 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
 
                         <div className="grid gap-3">
                             <a
-                                href={`mailto:andrei.pascu86@yahoo.com?subject=${encodeURIComponent(`Print Inquiry - ${selectedImage.title}`)}`}
+                                href={buildMailtoHref(`Print Inquiry - ${selectedImage.title}`)}
                                 className="theme-action inline-flex w-full items-center justify-center rounded-full px-5 py-4 text-sm uppercase tracking-[0.22em]"
                             >
                                 Request this canvas
@@ -220,14 +215,14 @@ const SelectedPhoto = ({images, index, setIndex, onClose}: SelectedPhotoProps) =
                                     </a>
                                 ) : (
                                     <a
-                                        href="mailto:andrei.pascu86@yahoo.com?subject=Artwork%20Availability"
+                                        href={buildMailtoHref('Artwork Availability')}
                                         className="theme-action-secondary inline-flex items-center justify-center rounded-full px-4 py-3 text-xs uppercase tracking-[0.2em]"
                                     >
                                         Availability
                                     </a>
                                 )}
                                 <a
-                                    href="https://www.instagram.com/andrei_mylenses/"
+                                    href={contactActions.instagram}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="theme-action-secondary inline-flex items-center justify-center rounded-full px-4 py-3 text-xs uppercase tracking-[0.2em]"

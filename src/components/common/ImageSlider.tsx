@@ -1,4 +1,5 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
+import {useSwipeNavigation} from '../../hooks/useSwipeNavigation';
 import ExpandableImage from './ExpandableImage';
 
 const ChevronLeft = React.lazy(() => import('../../assets/icons/ChevronLeft'));
@@ -10,16 +11,9 @@ interface ImageSliderProps {
 }
 
 const ImageSlider: React.FC<ImageSliderProps> = ({images, autoSlideTimeout = 4000}) => {
-    // Initialize the slider with a random image index.
     const [currentImageIndex, setCurrentImageIndex] = useState<number>(
-        () => Math.floor(Math.random() * images.length)
+        () => (images.length ? Math.floor(Math.random() * images.length) : 0)
     );
-
-    // Refs for swipe support.
-    const touchStartX = useRef<number | null>(null);
-    const touchEndX = useRef<number | null>(null);
-
-    // Helper functions for navigation (navigation works regardless of full-screen state).
     const goToPrevious = useCallback(() => {
         setCurrentImageIndex((prevIndex) =>
             prevIndex > 0 ? prevIndex - 1 : images.length - 1
@@ -32,65 +26,46 @@ const ImageSlider: React.FC<ImageSliderProps> = ({images, autoSlideTimeout = 400
         );
     }, [images.length]);
 
-    const handlePrevNavigation = useCallback(() => {
-        goToPrevious();
-    }, [goToPrevious]);
+    const {handleTouchStart, handleTouchEnd} = useSwipeNavigation({
+        onSwipeLeft: goToNext,
+        onSwipeRight: goToPrevious,
+    });
 
-    const handleNextNavigation = useCallback(() => {
-        goToNext();
-    }, [goToNext]);
-
-    // Mouse click handlers.
-    const handlePrevClick = (e: React.MouseEvent<HTMLSpanElement>) => {
-        e.stopPropagation();
-        e.preventDefault();
-        handlePrevNavigation();
-    };
-
-    const handleNextClick = (e: React.MouseEvent<HTMLSpanElement>) => {
-        e.stopPropagation();
-        e.preventDefault();
-        handleNextNavigation();
-    };
-
-    // Touch event handlers for swipe support.
-    const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-        touchStartX.current = e.touches[0].clientX;
-    };
-
-    const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-        touchEndX.current = e.changedTouches[0].clientX;
-        if (touchStartX.current === null || touchEndX.current === null) return;
-
-        const swipeDistance = touchEndX.current - touchStartX.current;
-        if (swipeDistance > 0) {
-            goToPrevious();
-        } else if (swipeDistance < 0) {
-            goToNext();
-        }
-        // Reset touch values.
-        touchStartX.current = null;
-        touchEndX.current = null;
-    };
-
-    // Auto-slide effect.
     useEffect(() => {
+        if (!images.length) {
+            return;
+        }
+
         const autoSlideInterval = setInterval(() => {
-            handleNextNavigation();
+            goToNext();
         }, autoSlideTimeout);
         return () => clearInterval(autoSlideInterval);
-    }, [autoSlideTimeout, handleNextNavigation]);
+    }, [autoSlideTimeout, goToNext, images.length]);
+
+    useEffect(() => {
+        if (currentImageIndex < images.length) {
+            return;
+        }
+
+        setCurrentImageIndex(0);
+    }, [currentImageIndex, images.length]);
+
+    if (!images.length) {
+        return null;
+    }
 
     return (
         <div
             className="surface-panel flex min-w-full items-center justify-center rounded-lg transition-colors duration-300"
         >
-            <span
+            <button
+                type="button"
                 className="theme-link flex -translate-y-1/2 cursor-pointer p-2"
-                onClick={handlePrevClick}
+                onClick={goToPrevious}
+                aria-label="Previous slide"
             >
-        <ChevronLeft/>
-      </span>
+                <ChevronLeft/>
+            </button>
 
             <div
                 className="flex justify-center rounded-lg"
@@ -99,28 +74,30 @@ const ImageSlider: React.FC<ImageSliderProps> = ({images, autoSlideTimeout = 400
                 onTouchEnd={handleTouchEnd}
             >
                 <ExpandableImage
+                    presentation="balanced"
                     src={images[currentImageIndex]}
                     modalSrc={images[currentImageIndex]}
                     alt={`Slide ${currentImageIndex + 1}`}
-                    containerClassName="flex h-full w-full justify-center rounded-lg"
-                    imgClassName="w-full rounded-lg object-contain p-1"
-                    imgStyle={{border: '1px solid var(--color-line)'}}
+                    containerClassName="flex h-full w-full justify-center overflow-hidden rounded-lg"
+                    imgClassName="h-full w-full rounded-lg object-contain p-1"
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
-                    modalHandlePrevClick={handlePrevNavigation}
-                    modalHandleNextClick={handleNextNavigation}
+                    modalHandlePrevClick={goToPrevious}
+                    modalHandleNextClick={goToNext}
                     modalOnTouchStart={handleTouchStart}
                     modalOnTouchEnd={handleTouchEnd}
                     orderDetails={undefined}
                 />
             </div>
 
-            <span
+            <button
+                type="button"
                 className="theme-link flex -translate-y-1/2 cursor-pointer p-2"
-                onClick={handleNextClick}
+                onClick={goToNext}
+                aria-label="Next slide"
             >
-        <ChevronRight/>
-      </span>
+                <ChevronRight/>
+            </button>
         </div>
     );
 };

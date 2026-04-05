@@ -32,20 +32,19 @@ export const getActiveCollectionFilter = (requestedFilter?: string) =>
 export const getCollectionView = (filter: string) =>
     findCuratedCollectionView(filter);
 
+const collectionFilterStrategies = {
+    'Collector starters': () => featuredPortfolioPhotos,
+    'Print-ready': () => printReadyPortfolioPhotos,
+    Recent: () => recentPortfolioPhotos,
+} as const;
+
 export const getVisiblePortfolioPhotos = (
     filter: string,
     activeCollectionView?: PortfolioCollectionView
 ) => {
-    if (filter === 'Collector starters') {
-        return featuredPortfolioPhotos;
-    }
-
-    if (filter === 'Print-ready') {
-        return printReadyPortfolioPhotos;
-    }
-
-    if (filter === 'Recent') {
-        return recentPortfolioPhotos;
+    const strategy = collectionFilterStrategies[filter as keyof typeof collectionFilterStrategies];
+    if (strategy) {
+        return strategy();
     }
 
     if (activeCollectionView) {

@@ -2,6 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import ExpandableImage from '../common/ExpandableImage';
 import SelectedPhoto from './SelectedPhoto';
 import {curationContent, portfolioExperienceContent} from '../../content/siteContent';
+import {surfaceStyle} from '../../styles/surfaces';
 
 interface GalleryImage {
     src: string;
@@ -113,7 +114,7 @@ const PhotoGallery = ({images}: PhotoGalleryProps) => {
                         {portfolioExperienceContent.description}
                     </p>
                 </div>
-                <div className="rounded-[1.25rem] border px-4 py-3 text-sm leading-6 text-muted-token" style={{borderColor: 'var(--color-line)', backgroundColor: 'var(--color-surface)'}}>
+                <div className="rounded-[1.25rem] border px-4 py-3 text-sm leading-6 text-muted-token" style={surfaceStyle}>
                     <p className="text-nav-token text-[10px] uppercase tracking-[0.22em]">Canvas-ready selection</p>
                     <p className="mt-2 text-appText">{featuredCount} works currently highlighted for collectors and print inquiries.</p>
                 </div>
@@ -137,7 +138,7 @@ const PhotoGallery = ({images}: PhotoGalleryProps) => {
                 })}
             </div>
 
-            <div className="surface-panel relative overflow-hidden rounded-[2rem] px-4 py-5 md:px-5 md:py-6">
+            <div className="surface-panel relative overflow-hidden rounded-4xl px-4 py-5 md:px-5 md:py-6">
                 <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                     <div className="space-y-2">
                         <p className="eyebrow-text text-[11px] uppercase">{portfolioExperienceContent.archiveEyebrow}</p>
@@ -156,8 +157,8 @@ const PhotoGallery = ({images}: PhotoGalleryProps) => {
                         <button
                             key={`${image.title}-${idx}`}
                             onClick={() => setSelectedIndex(idx)}
-                            className="group mb-4 block w-full break-inside-avoid overflow-hidden rounded-[1.4rem] text-left shadow-xl shadow-black/5 transition-transform duration-500 hover:-translate-y-1"
-                            style={{border: '1px solid var(--color-line)', backgroundColor: 'var(--color-surface)'}}
+                            className="group mb-4 block w-full break-inside-avoid overflow-hidden rounded-[1.4rem] border text-left shadow-xl shadow-black/5 transition-transform duration-500 hover:-translate-y-1"
+                            style={surfaceStyle}
                         >
                             <ExpandableImage
                                 containerClassName="overflow-hidden"
@@ -165,7 +166,7 @@ const PhotoGallery = ({images}: PhotoGalleryProps) => {
                                 src={image.src}
                                 modalSrc={image.fullSrc || image.src}
                                 alt={image.title}
-                                imgClassName="w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                                imgClassName="h-auto w-full transition-transform duration-700 group-hover:scale-[1.03]"
                                 orderDetails={{
                                     title: image.title,
                                     category: image.category,
@@ -174,7 +175,7 @@ const PhotoGallery = ({images}: PhotoGalleryProps) => {
                                     permalink: image.permalink,
                                 }}
                             >
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-90"/>
+                                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-transparent opacity-90"/>
                                 {image.featured && (
                                     <div className="absolute left-4 top-4 rounded-full border border-white/15 bg-black/45 px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/85 backdrop-blur-sm">
                                         Best for canvas
@@ -197,7 +198,7 @@ const PhotoGallery = ({images}: PhotoGalleryProps) => {
                 </div>
 
                 {hasMoreImages && (
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[var(--color-appBackground)] via-[color-mix(in_srgb,var(--color-appBackground)_76%,transparent)] to-transparent" />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-(--color-appBackground) via-[color-mix(in_srgb,var(--color-appBackground)_76%,transparent)] to-transparent" />
                 )}
             </div>
 

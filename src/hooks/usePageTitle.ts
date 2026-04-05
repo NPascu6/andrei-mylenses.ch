@@ -1,4 +1,5 @@
 import {useEffect} from 'react';
+import {setDocumentTitle} from '../utils/browserRuntime';
 
 export const usePageTitle = (title?: string) => {
     useEffect(() => {
@@ -6,6 +7,6 @@ export const usePageTitle = (title?: string) => {
             return;
         }
 
-        document.title = title;
+        setDocumentTitle(title);
     }, [title]);
 };

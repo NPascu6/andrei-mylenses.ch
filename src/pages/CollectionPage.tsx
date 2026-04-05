@@ -10,10 +10,12 @@ import {
 import {usePageTitle} from '../hooks/usePageTitle';
 import {useI18n} from '../i18n/I18nProvider';
 import {
-    localizePortfolioPhoto,
     translateCollectionDescription,
     translateCollectionLabel,
 } from '../i18n/portfolio';
+import {getSelectableSurfaceStyle} from '../styles/surfaces';
+import {localizeOptionalPortfolioPhoto, localizePortfolioPhotos} from '../utils/localizedPortfolio';
+import {resolvePageTitle} from '../utils/pageMetadata';
 import {
     availableCollectionFilters,
     getActiveCollectionFilter,
@@ -24,17 +26,17 @@ import {
 const CollectionPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const {copy, locale} = useI18n();
-    usePageTitle(copy.collectionPage.pageTitle);
+    usePageTitle(resolvePageTitle(copy.collectionPage.pageTitle));
 
     const requestedFilter = searchParams.get('filter') || 'All';
     const activeFilter = getActiveCollectionFilter(requestedFilter);
     const activeCollectionView = getCollectionView(activeFilter);
     const visiblePhotos = useMemo(
-        () => getVisiblePortfolioPhotos(activeFilter, activeCollectionView).map((photo) => localizePortfolioPhoto(photo, locale)),
+        () => localizePortfolioPhotos(getVisiblePortfolioPhotos(activeFilter, activeCollectionView), locale),
         [activeCollectionView, activeFilter, locale]
     );
     const localizedHeroPhoto = useMemo(
-        () => (heroPortfolioPhoto ? localizePortfolioPhoto(heroPortfolioPhoto, locale) : null),
+        () => localizeOptionalPortfolioPhoto(heroPortfolioPhoto, locale),
         [locale]
     );
 
@@ -49,7 +51,7 @@ const CollectionPage = () => {
 
     return (
         <PageShell>
-            <section id="collection-intro" className="surface-panel scroll-mt-24 rounded-[2rem] p-6 md:scroll-mt-28 md:p-8">
+            <section id="collection-intro" className="surface-panel scroll-mt-24 rounded-4xl p-6 md:scroll-mt-28 md:p-8">
                 <SectionHeading
                     eyebrow={copy.collectionPage.eyebrow}
                     title={copy.collectionPage.title}
@@ -69,7 +71,7 @@ const CollectionPage = () => {
                         <ArtworkTile
                             photo={localizedHeroPhoto}
                             badge={copy.collectionPage.featuredEntryBadge}
-                            imageClassName="h-[24rem] md:h-[30rem]"
+                            imageClassName="h-[26rem] md:h-[32rem]"
                             responsiveSizes="(min-width: 1280px) 44vw, 100vw"
                         />
                         <div className="surface-panel-soft rounded-[1.75rem] p-5 md:p-6">
@@ -85,10 +87,7 @@ const CollectionPage = () => {
                                         className={`rounded-[1.2rem] border px-4 py-4 text-left transition-all duration-300 ${
                                             activeFilter === view.label ? 'theme-chip theme-chip-active text-appText' : ''
                                         }`}
-                                        style={{
-                                            borderColor: 'var(--color-line)',
-                                            backgroundColor: activeFilter === view.label ? 'var(--color-surface-strong)' : 'var(--color-surface)',
-                                        }}
+                                        style={getSelectableSurfaceStyle(activeFilter === view.label)}
                                     >
                                         <p className="text-[10px] uppercase tracking-[0.22em] text-nav-token">
                                             {view.photos.length} {copy.collectionPage.worksLabel}
@@ -123,7 +122,7 @@ const CollectionPage = () => {
                     ))}
                 </div>
 
-                <div className="surface-panel rounded-[2rem] px-4 py-5 md:px-5 md:py-6">
+                <div className="surface-panel rounded-4xl px-4 py-5 md:px-5 md:py-6">
                     <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                         <div className="space-y-2">
                             <p className="eyebrow-text text-[11px] uppercase">

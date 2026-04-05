@@ -1,3 +1,8 @@
+import {
+    readLocalStorageItem,
+    writeLocalStorageItem,
+} from './browserRuntime';
+
 export type ThemePresetId =
     | 'alabaster'
     | 'editorial'
@@ -39,17 +44,21 @@ export const getThemePresetForMode = (mode: 'light' | 'dark'): ThemePresetId =>
     themePresets.find((preset) => preset.mode === mode)?.value || DEFAULT_THEME_PREFERENCES.themePreset;
 
 export const applyThemePreferences = (preferences: ThemePreferences) => {
+    if (typeof document === 'undefined') {
+        return;
+    }
+
     const preset = getThemePreset(preferences.themePreset);
     document.documentElement.setAttribute('data-theme', preset.mode);
     document.documentElement.setAttribute('data-theme-preset', preset.value);
 };
 
 export const persistThemePreferences = (preferences: ThemePreferences) => {
-    localStorage.setItem('themePreset', preferences.themePreset);
+    writeLocalStorageItem('themePreset', preferences.themePreset);
 };
 
 export const loadThemePreferences = (): ThemePreferences => ({
-    themePreset: (localStorage.getItem('themePreset') as ThemePresetId) || DEFAULT_THEME_PREFERENCES.themePreset,
+    themePreset: (readLocalStorageItem('themePreset') as ThemePresetId) || DEFAULT_THEME_PREFERENCES.themePreset,
 });
 
 export const loadThemePreferencesFromLocation = (search: string): ThemePreferences => {

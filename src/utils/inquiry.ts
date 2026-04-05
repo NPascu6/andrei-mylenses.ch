@@ -1,5 +1,5 @@
-import {contactEmail, whatsappHref} from '../config/site';
 import type {AppCopy} from '../i18n/messages';
+import {buildMailtoHref, buildWhatsAppShareHref} from './contactActions';
 
 export interface InquiryDraft {
     inquiryType: string;
@@ -52,7 +52,7 @@ export const buildGuidedInquiryHref = (draft: InquiryDraft, copy: InquiryCopy) =
     const subject = buildInquirySubject(draft);
     const body = buildInquiryBody(draft, copy);
 
-    return `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return buildMailtoHref(subject, body);
 };
 
 export const buildWhatsAppInquiryHref = (draft: InquiryDraft, copy: InquiryCopy) => {
@@ -60,5 +60,5 @@ export const buildWhatsAppInquiryHref = (draft: InquiryDraft, copy: InquiryCopy)
     const body = buildInquiryBody(draft, copy);
     const message = `${subject}\n\n${body}`;
 
-    return `${whatsappHref}?text=${encodeURIComponent(message)}`;
+    return buildWhatsAppShareHref(message);
 };

@@ -8,22 +8,24 @@ import SectionHeading from '../components/site/SectionHeading';
 import {canvasPreviewImages, printReadyPortfolioPhotos} from '../content/portfolioLibrary';
 import {usePageTitle} from '../hooks/usePageTitle';
 import {useI18n} from '../i18n/I18nProvider';
-import {localizePortfolioPhoto} from '../i18n/portfolio';
+import {borderedSurfaceStyle} from '../styles/surfaces';
+import {localizePortfolioSlice} from '../utils/localizedPortfolio';
+import {resolvePageTitle} from '../utils/pageMetadata';
 
 const PrintsPage = () => {
     const {copy, locale} = useI18n();
     const printHighlights = useMemo(
-        () => printReadyPortfolioPhotos.slice(0, 4).map((photo) => localizePortfolioPhoto(photo, locale)),
+        () => localizePortfolioSlice(printReadyPortfolioPhotos, locale, 4),
         [locale]
     );
     const canvasHero = canvasPreviewImages[0];
 
-    usePageTitle(copy.printsPage.pageTitle);
+    usePageTitle(resolvePageTitle(copy.printsPage.pageTitle));
 
     return (
         <PageShell>
             <section id="prints-intro" className="scroll-mt-24 grid gap-4 lg:grid-cols-[0.98fr_1.02fr] md:scroll-mt-28">
-                <div className="surface-panel rounded-[2rem] p-6 md:p-8">
+                <div className="surface-panel rounded-4xl p-6 md:p-8">
                     <p className="eyebrow-text text-[11px] uppercase tracking-[0.3em]">{copy.printsPage.eyebrow}</p>
                     <h1 className="mt-3 font-display text-4xl text-appText md:text-6xl">
                         {copy.printsPage.heroTitle}
@@ -56,15 +58,17 @@ const PrintsPage = () => {
                 </div>
 
                 {canvasHero ? (
-                    <div className="overflow-hidden rounded-[2rem]" style={{border: '1px solid var(--color-line)'}}>
+                    <div className="overflow-hidden rounded-4xl" style={borderedSurfaceStyle}>
                         <ExpandableImage
                             loading="lazy"
+                            presentation="balanced"
                             src={canvasHero.src}
                             modalSrc={canvasHero.fullSrc || canvasHero.src}
                             alt={copy.printsPage.heroTitle}
-                            containerClassName="h-full"
-                            imgClassName="h-full min-h-[28rem] w-full object-cover"
+                            containerClassName="h-full min-h-[28rem]"
+                            imgClassName="h-full w-full object-contain p-4 md:p-5"
                             imgStyle={{objectPosition: 'center 56%'}}
+                            backgroundStyle={{backgroundPosition: 'center 56%'}}
                             orderDetails={{
                                 title: copy.printsPage.heroTitle,
                                 category: 'Canvas',
