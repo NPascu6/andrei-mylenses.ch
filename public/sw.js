@@ -1,7 +1,7 @@
-const SHELL_CACHE = 'mylenses-shell-v1';
-const STATIC_CACHE = 'mylenses-static-v1';
-const IMAGE_CACHE = 'mylenses-images-v1';
-const FONT_CACHE = 'mylenses-fonts-v1';
+const SHELL_CACHE = 'mylenses-shell-v2';
+const STATIC_CACHE = 'mylenses-static-v2';
+const IMAGE_CACHE = 'mylenses-images-v2';
+const FONT_CACHE = 'mylenses-fonts-v2';
 const KNOWN_CACHES = [SHELL_CACHE, STATIC_CACHE, IMAGE_CACHE, FONT_CACHE];
 
 const APP_SHELL_URLS = [
@@ -72,9 +72,13 @@ const staleWhileRevalidate = async (request, cacheName) => {
     const cachedResponse = await caches.match(request);
     const networkResponsePromise = fetch(request)
         .then((response) => putInCache(cacheName, request, response))
-        .catch(() => undefined);
+        .catch(() => null);
 
-    return cachedResponse || networkResponsePromise || fetch(request);
+    if (cachedResponse) {
+        return cachedResponse;
+    }
+
+    return (await networkResponsePromise) || Response.error();
 };
 
 const cacheFirst = async (request, cacheName) => {
@@ -83,8 +87,12 @@ const cacheFirst = async (request, cacheName) => {
         return cachedResponse;
     }
 
-    const response = await fetch(request);
-    return putInCache(cacheName, request, response);
+    try {
+        const response = await fetch(request);
+        return putInCache(cacheName, request, response);
+    } catch {
+        return Response.error();
+    }
 };
 
 self.addEventListener('fetch', (event) => {
@@ -96,9 +104,6 @@ self.addEventListener('fetch', (event) => {
 
     const url = new URL(request.url);
     const isSameOrigin = url.origin === self.location.origin;
-    const isGoogleFontStyle = url.origin === 'https://fonts.googleapis.com';
-    const isGoogleFontFile = url.origin === 'https://fonts.gstatic.com';
-
     if (isSameOrigin && url.pathname.startsWith('/admin')) {
         return;
     }
@@ -113,17 +118,13 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
+    if (isSameOrigin && request.destination === 'font') {
+        event.respondWith(cacheFirst(request, FONT_CACHE));
+        return;
+    }
+
     if (isSameOrigin && request.destination === 'image') {
         event.respondWith(cacheFirst(request, IMAGE_CACHE));
         return;
-    }
-
-    if (isGoogleFontStyle) {
-        event.respondWith(staleWhileRevalidate(request, FONT_CACHE));
-        return;
-    }
-
-    if (isGoogleFontFile) {
-        event.respondWith(cacheFirst(request, FONT_CACHE));
     }
 });
