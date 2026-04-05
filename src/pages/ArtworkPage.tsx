@@ -223,6 +223,7 @@ const ArtworkPage = () => {
                             <ArtworkTile
                                 key={relatedPhoto.slug}
                                 photo={relatedPhoto}
+                                variant="compact"
                                 showDescription={false}
                                 imageClassName="h-72 md:h-80"
                             />

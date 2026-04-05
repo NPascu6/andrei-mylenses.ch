@@ -1,25 +1,37 @@
 const photoThumbModules = import.meta.glob('../assets/photos/*.{jpg,jpeg,png,webp}', {
     eager: true,
     import: 'default',
-    query: '?w=640&format=webp',
+    query: '?w=480&format=webp&quality=68&effort=4',
 }) as Record<string, string>;
 
 const photoMediumModules = import.meta.glob('../assets/photos/*.{jpg,jpeg,png,webp}', {
     eager: true,
     import: 'default',
-    query: '?w=960&format=webp',
+    query: '?w=768&format=webp&quality=72&effort=4',
 }) as Record<string, string>;
 
 const photoDisplayModules = import.meta.glob('../assets/photos/*.{jpg,jpeg,png,webp}', {
     eager: true,
     import: 'default',
-    query: '?w=1600&format=webp',
+    query: '?w=1280&format=webp&quality=74&effort=4',
 }) as Record<string, string>;
 
-const canvasDisplayModules = import.meta.glob('../assets/canvas/*.{jpg,jpeg,png,webp}', {
+const photoFullModules = import.meta.glob('../assets/photos/*.{jpg,jpeg,png,webp}', {
     eager: true,
     import: 'default',
-    query: '?w=1600&format=webp',
+    query: '?w=1920&format=webp&quality=80&effort=4',
+}) as Record<string, string>;
+
+const canvasPreviewModules = import.meta.glob('../assets/canvas/*.{jpg,jpeg,png,webp}', {
+    eager: true,
+    import: 'default',
+    query: '?w=1280&format=webp&quality=74&effort=4',
+}) as Record<string, string>;
+
+const canvasFullModules = import.meta.glob('../assets/canvas/*.{jpg,jpeg,png,webp}', {
+    eager: true,
+    import: 'default',
+    query: '?w=1920&format=webp&quality=80&effort=4',
 }) as Record<string, string>;
 
 export interface ImportedImageAsset {
@@ -49,14 +61,16 @@ const buildSrcSet = (entries: Array<{src: string; width: number}>) => {
 const buildImageAssets = (
     thumbSources: Record<string, string>,
     mediumSources: Record<string, string>,
-    displaySources: Record<string, string>
+    displaySources: Record<string, string>,
+    fullSources: Record<string, string>,
 ): ImportedImageAsset[] =>
     Object.keys(thumbSources)
         .sort((left, right) => getBaseName(left).localeCompare(getBaseName(right)))
         .map((path) => {
             const src = thumbSources[path];
             const mediumSrc = mediumSources[path] || src;
-            const fullSrc = displaySources[path] || mediumSrc;
+            const displaySrc = displaySources[path] || mediumSrc;
+            const fullSrc = fullSources[path] || displaySrc;
 
             return {
                 fileName: getFileName(path),
@@ -65,19 +79,25 @@ const buildImageAssets = (
                 mediumSrc,
                 fullSrc,
                 srcSet: buildSrcSet([
-                    {src, width: 640},
-                    {src: mediumSrc, width: 960},
-                    {src: fullSrc, width: 1600},
+                    {src, width: 480},
+                    {src: mediumSrc, width: 768},
+                    {src: displaySrc, width: 1280},
                 ]),
             };
         });
 
-export const images = buildImageAssets(photoThumbModules, photoMediumModules, photoDisplayModules);
+export const images = buildImageAssets(
+    photoThumbModules,
+    photoMediumModules,
+    photoDisplayModules,
+    photoFullModules,
+);
 
-export const canvasImages = Object.keys(canvasDisplayModules)
+export const canvasImages = Object.keys(canvasPreviewModules)
     .sort((left, right) => getBaseName(left).localeCompare(getBaseName(right)))
     .map((path) => ({
         fileName: getFileName(path),
         title: getBaseName(path),
-        src: canvasDisplayModules[path],
+        src: canvasPreviewModules[path],
+        fullSrc: canvasFullModules[path] || canvasPreviewModules[path],
     }));

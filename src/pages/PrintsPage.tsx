@@ -100,9 +100,10 @@ const PrintsPage = () => {
                         <ArtworkTile
                             key={photo.slug}
                             photo={photo}
+                            variant="compact"
                             badge={copy.printsPage.highlights.badge}
                             showDescription={false}
-                            imageClassName="h-[19rem] md:h-[21rem]"
+                            imageClassName="h-[17.5rem] md:h-[19.5rem]"
                         />
                     ))}
                 </div>

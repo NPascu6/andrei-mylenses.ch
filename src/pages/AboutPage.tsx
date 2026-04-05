@@ -85,8 +85,9 @@ const AboutPage = () => {
                         <ArtworkTile
                             key={photo.slug}
                             photo={photo}
+                            variant="compact"
                             showDescription={false}
-                            imageClassName="h-[19rem] md:h-[21rem]"
+                            imageClassName="h-[17.5rem] md:h-[19.5rem]"
                         />
                     ))}
                 </div>

@@ -89,7 +89,8 @@ const MainPage = () => {
                             photo={heroPhoto}
                             priority
                             badge={copy.mainPage.featuredBadge}
-                            imageClassName="h-[32rem] md:h-[40rem]"
+                            variant="feature"
+                            imageClassName="h-[30rem] md:h-[38rem]"
                             responsiveSizes="(min-width: 1280px) 52vw, 100vw"
                         />
                     </div>
@@ -116,7 +117,8 @@ const MainPage = () => {
                         <ArtworkTile
                             photo={collectorPicks[0]}
                             badge={copy.mainPage.collectorSelection.collectorFavoriteBadge}
-                            imageClassName="h-[28rem] md:h-[34rem]"
+                            variant="feature"
+                            imageClassName="h-[26rem] md:h-[32rem]"
                             responsiveSizes="(min-width: 1280px) 44vw, 100vw"
                         />
                     ) : null}
@@ -153,6 +155,7 @@ const MainPage = () => {
                                 <ArtworkTile
                                     key={photo.slug}
                                     photo={photo}
+                                    variant="compact"
                                     showDescription={false}
                                     imageClassName="h-[17rem] md:h-72"
                                 />
@@ -263,9 +266,10 @@ const MainPage = () => {
                         <ArtworkTile
                             key={photo.slug}
                             photo={photo}
+                            variant="compact"
                             badge={index === 0 ? copy.mainPage.newerWorkBadge : undefined}
                             showDescription={false}
-                            imageClassName="h-[19rem] md:h-[23rem]"
+                            imageClassName="h-[17.5rem] md:h-[20rem]"
                         />
                     ))}
                 </div>
@@ -282,8 +286,9 @@ const MainPage = () => {
                         <ArtworkTile
                             key={photo.slug}
                             photo={photo}
+                            variant="compact"
                             badge={copy.mainPage.printForward.badge}
-                            imageClassName="h-[19rem] md:h-[22rem]"
+                            imageClassName="h-[17.5rem] md:h-[19.5rem]"
                         />
                     ))}
                 </div>

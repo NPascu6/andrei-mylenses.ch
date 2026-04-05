@@ -14,6 +14,11 @@ import {
     translateCollectionLabel,
 } from '../i18n/portfolio';
 import {getSelectableSurfaceStyle} from '../styles/surfaces';
+import {
+    buildCollectionArchiveBlocks,
+    getCollectionArchiveResponsiveSizes,
+    getCollectionArchiveTileImageClassName,
+} from '../utils/collectionArchive';
 import {localizeOptionalPortfolioPhoto, localizePortfolioPhotos} from '../utils/localizedPortfolio';
 import {resolvePageTitle} from '../utils/pageMetadata';
 import {
@@ -34,6 +39,10 @@ const CollectionPage = () => {
     const visiblePhotos = useMemo(
         () => localizePortfolioPhotos(getVisiblePortfolioPhotos(activeFilter, activeCollectionView), locale),
         [activeCollectionView, activeFilter, locale]
+    );
+    const archiveBlocks = useMemo(
+        () => buildCollectionArchiveBlocks(visiblePhotos),
+        [visiblePhotos],
     );
     const localizedHeroPhoto = useMemo(
         () => localizeOptionalPortfolioPhoto(heroPortfolioPhoto, locale),
@@ -71,7 +80,8 @@ const CollectionPage = () => {
                         <ArtworkTile
                             photo={localizedHeroPhoto}
                             badge={copy.collectionPage.featuredEntryBadge}
-                            imageClassName="h-[26rem] md:h-[32rem]"
+                            variant="feature"
+                            imageClassName="h-[24rem] md:h-[30rem]"
                             responsiveSizes="(min-width: 1280px) 44vw, 100vw"
                         />
                         <div className="surface-panel-soft rounded-[1.75rem] p-5 md:p-6">
@@ -139,15 +149,35 @@ const CollectionPage = () => {
                         </p>
                     </div>
 
-                    <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
-                        {visiblePhotos.map((photo) => (
-                            <div key={photo.slug} className="mb-4 break-inside-avoid">
-                                <ArtworkTile
-                                    photo={photo}
-                                    showDescription={false}
-                                    imageClassName="h-auto max-h-[36rem] min-h-[19rem]"
-                                    responsiveSizes="(min-width: 1536px) 22vw, (min-width: 1280px) 28vw, (min-width: 640px) 44vw, 100vw"
-                                />
+                    <div className="grid gap-5">
+                        {archiveBlocks.map((block) => (
+                            <div
+                                key={block.lead.slug}
+                                className={`grid gap-4 ${block.supporting.length > 0 ? 'xl:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] xl:items-start' : ''}`}
+                            >
+                                <div className={block.reverse ? 'xl:order-2' : ''}>
+                                    <ArtworkTile
+                                        photo={block.lead}
+                                        variant="feature"
+                                        imageClassName={getCollectionArchiveTileImageClassName(block.lead, 'feature')}
+                                        responsiveSizes={getCollectionArchiveResponsiveSizes('feature')}
+                                    />
+                                </div>
+
+                                {block.supporting.length > 0 ? (
+                                    <div className={`grid gap-4 sm:grid-cols-2 ${block.reverse ? 'xl:order-1' : ''}`}>
+                                        {block.supporting.map((photo) => (
+                                            <ArtworkTile
+                                                key={photo.slug}
+                                                photo={photo}
+                                                variant="compact"
+                                                showDescription={false}
+                                                imageClassName={getCollectionArchiveTileImageClassName(photo, 'compact')}
+                                                responsiveSizes={getCollectionArchiveResponsiveSizes('compact')}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : null}
                             </div>
                         ))}
                     </div>
