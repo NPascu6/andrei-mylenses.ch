@@ -5,7 +5,7 @@ import {useI18n} from '../../i18n/I18nProvider';
 import {surfaceDividerStyle} from '../../styles/surfaces';
 import {contactActions} from '../../utils/contactActions';
 import {scrollToSection} from '../../utils/scrollToSection';
-import {getPageNavigationItems, getQuickSidebarPageLabel, getSectionNavigationItems} from '../../utils/sectionNavigation';
+import {getPageNavigationItems, getSectionNavigationItems} from '../../utils/sectionNavigation';
 
 const getSidebarPillClasses = (active: boolean, emphasize = false) =>
     `sidebar-pill rounded-full px-3.5 py-2 text-[10px] uppercase tracking-[0.2em] ${
@@ -34,22 +34,17 @@ const QuickSidebar = () => {
         return getSectionNavigationItems(location.pathname, copy.quickSidebar);
     }, [copy.quickSidebar, location.pathname]);
 
-    const activePageLabel = useMemo(() => {
-        return getQuickSidebarPageLabel(location.pathname, copy.quickSidebar, pageNavigationItems);
-    }, [copy.quickSidebar, location.pathname, pageNavigationItems]);
-
     const activeSection = useActiveSection(sectionNavigationItems);
 
     return (
         <>
-            <aside className="fixed right-4 top-24 z-40 hidden xl:block 2xl:right-6">
+            <aside className="fixed left-4 top-24 z-40 hidden xl:block 2xl:left-6">
                 <nav
                     aria-label={copy.quickSidebar.navigation}
                     className="sidebar-shell surface-panel flex max-h-[calc(100vh-7rem)] w-[216px] flex-col gap-4 overflow-y-auto rounded-[1.75rem] p-4"
                 >
                     <div>
                         <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">{copy.quickSidebar.navigation}</p>
-                        <p className="mt-2 font-display text-[1.9rem] leading-none text-appText">{activePageLabel}</p>
                         <div className="mt-3 grid gap-2">
                             {pageNavigationItems.map((item) => (
                                 <NavLink
@@ -60,24 +55,6 @@ const QuickSidebar = () => {
                                 >
                                     <span>{item.label}</span>
                                 </NavLink>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="h-px" style={surfaceDividerStyle}/>
-
-                    <div>
-                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">{copy.quickSidebar.onThisPage}</p>
-                        <div className="mt-3 grid gap-2">
-                            {sectionNavigationItems.map((item) => (
-                                <button
-                                    key={item.sectionId}
-                                    type="button"
-                                    onClick={() => scrollToSection(item.sectionId)}
-                                    className={getSidebarPillClasses(activeSection === item.sectionId)}
-                                >
-                                    <span>{item.label}</span>
-                                </button>
                             ))}
                         </div>
                     </div>
@@ -118,6 +95,29 @@ const QuickSidebar = () => {
                                 >
                                     {item.label}
                                 </a>
+                            ))}
+                        </div>
+                    </div>
+                </nav>
+            </aside>
+
+            <aside className="fixed right-4 top-24 z-40 hidden xl:block 2xl:right-6">
+                <nav
+                    aria-label={copy.quickSidebar.onThisPage}
+                    className="sidebar-shell surface-panel flex max-h-[calc(100vh-7rem)] w-[216px] flex-col gap-4 overflow-y-auto rounded-[1.75rem] p-4"
+                >
+                    <div>
+                        <p className="text-nav-token text-[10px] uppercase tracking-[0.28em]">{copy.quickSidebar.onThisPage}</p>
+                        <div className="mt-3 grid gap-2">
+                            {sectionNavigationItems.map((item) => (
+                                <button
+                                    key={item.sectionId}
+                                    type="button"
+                                    onClick={() => scrollToSection(item.sectionId)}
+                                    className={getSidebarPillClasses(activeSection === item.sectionId)}
+                                >
+                                    <span>{item.label}</span>
+                                </button>
                             ))}
                         </div>
                     </div>
